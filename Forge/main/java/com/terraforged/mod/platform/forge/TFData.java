@@ -29,8 +29,9 @@ import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.data.ModBiomes;
 import com.terraforged.mod.data.ModCaves;
 import com.terraforged.mod.data.ModClimates;
+import com.terraforged.mod.data.ModPresets;
 import com.terraforged.mod.data.ModTerrainTypes;
-import com.terraforged.mod.data.ModTerrains;
+import com.terraforged.mod.data.ModTerrain;
 import com.terraforged.mod.data.ModVegetation;
 import com.terraforged.mod.lifecycle.Stage;
 
@@ -49,19 +50,9 @@ public class TFData extends Stage {
 		.add(TerraForged.CAVES, ModCaves::register)
 		.add(TerraForged.CLIMATES, ModClimates::register)
 		.add(TerraForged.TERRAIN_TYPES, ModTerrainTypes::register)
-		.add(TerraForged.TERRAINS, ModTerrains::register)
-		.add(TerraForged.VEGETATIONS, ModVegetation::register)
-		.add(Registries.WORLD_PRESET, (ctx) -> {
-//			var noiseSettings = ctx.lookup(Registries.NOISE_SETTINGS);
-//			Holder<NoiseGeneratorSettings> holder = noiseSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD);
-//			HolderGetter<DimensionType> holdergetter = ctx.lookup(Registries.DIMENSION_TYPE);
-//	        var overworldDimensionType = holdergetter.getOrThrow(BuiltinDimensionTypes.OVERWORLD);
-//	        var multiNoiseBiomeSourceParameterLists = ctx.lookup(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
-//	        Holder.Reference<MultiNoiseBiomeSourceParameterList> reference = multiNoiseBiomeSourceParameterLists.getOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD);
-//			ctx.register(TerraForged.resolve(Registries.WORLD_PRESET, "test"), new WorldPreset(ImmutableMap.of(
-//				LevelStem.OVERWORLD, new LevelStem(overworldDimensionType, new NoiseBasedChunkGenerator(MultiNoiseBiomeSource.createFromPreset(reference), holder))
-//			)));
-		});
+		.add(TerraForged.TERRAIN, ModTerrain::register)
+		.add(TerraForged.VEGETATION, ModVegetation::register)
+		.add(Registries.WORLD_PRESET, ModPresets::register);
 	
     @Override
     protected void doInit() {

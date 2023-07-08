@@ -9,6 +9,7 @@ import com.terraforged.engine.cell.Cell;
 import com.terraforged.noise.util.NoiseUtil;
 import com.terraforged.noise.util.Vec2f;
 
+//TODO remove this?
 public enum BiomeType {
     TROPICAL_RAINFOREST(7, 83, 48, new Color(7, 83, 48)),
     SAVANNA(151, 165, 39, new Color(151, 165, 39)),

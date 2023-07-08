@@ -24,59 +24,26 @@
 
 package com.terraforged.mod.worldgen.asset;
 
-import java.util.LinkedHashMap;
-
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.data.codec.LazyCodec;
+import com.terraforged.mod.util.storage.WeightMap;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
 
-public class ClimateType {
-    public static final String IGNORE = "forge:registry_name";
-
-    public static final Codec<ClimateType> DIRECT_CODEC = LazyCodec.<ClimateType>of(() -> new Codec<>() {
-    	
-        @Override
-        public <T> DataResult<Pair<ClimateType, T>> decode(DynamicOps<T> ops, T input) {
-        	return ops.getMap(input).map(map -> {
-                var weights = new Object2FloatOpenHashMap<ResourceLocation>();
-                map.entries().forEach(e -> {
-                    var name = ops.getStringValue(e.getFirst()).result().orElseThrow();
-                    if (name.equals(IGNORE)) return;
-
-                    float weight = ops.getNumberValue(e.getSecond()).result().orElseThrow().floatValue();
-                    weights.put(new ResourceLocation(name), weight);
-                });
-                return new ClimateType(weights);
-            }).map(weights -> Pair.of(weights, input));
-        }
-
-        @Override
-        public <T> DataResult<T> encode(ClimateType input, DynamicOps<T> ops, T prefix) {
-            var map = new LinkedHashMap<T, T>();
-            for (var entry : input.weights.object2FloatEntrySet()) {
-                map.put(ops.createString(entry.getKey().toString()), ops.createFloat(entry.getFloatValue()));
-            }
-            return DataResult.success(ops.createMap(map));
-        }
-    });
+public record ClimateType(WeightMap<Holder<Biome>> biomes) {
+    public static final Codec<ClimateType> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    	WeightMap.codec(Biome.CODEC, Holder[]::new).fieldOf("biomes").forGetter(ClimateType::biomes)
+    ).apply(instance, ClimateType::new));
     public static final Codec<Holder<ClimateType>> CODEC = RegistryFileCodec.create(TerraForged.CLIMATES, DIRECT_CODEC);
-
-    private final Object2FloatMap<ResourceLocation> weights;
-
-    public ClimateType(Object2FloatMap<ResourceLocation> weights) {
-        this.weights = weights;
+    
+    public boolean isEmpty() {
+    	return this.biomes.isEmpty();
     }
-
-    public Object2FloatMap<ResourceLocation> getWeights() {
-        return weights;
+    
+    public Holder<Biome> getValue(float noise) {
+    	return this.biomes.getValue(noise);
     }
 }

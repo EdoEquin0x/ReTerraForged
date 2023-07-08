@@ -26,14 +26,17 @@ package com.terraforged.mod.worldgen;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.data.codec.Codecs;
 import com.terraforged.mod.util.storage.WeightMap;
+import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
@@ -48,7 +51,6 @@ import com.terraforged.mod.worldgen.util.ThreadPool;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
@@ -59,7 +61,6 @@ import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -77,12 +78,13 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 public class Generator extends ChunkGenerator implements IGenerator {
 	// should these take HolderSets instead?
 	public static final Codec<Generator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    	TerrainLevels.CODEC.optionalFieldOf("levels", TerrainLevels.DEFAULT.get()).forGetter((g) -> g.levels),
+    	TerrainLevels.CODEC.optionalFieldOf("levels", TerrainLevels.DEFAULT).forGetter((g) -> g.levels),
+    	Codec.unboundedMap(Codecs.forEnum(BiomeType::valueOf, BiomeType::name), ClimateType.CODEC).fieldOf("climates").forGetter((g) -> g.climates),
     	WeightMap.codec(TerrainNoise.CODEC, Holder[]::new).fieldOf("terrain").forGetter((g) -> g.terrain),
-    	RegistryOps.retrieveRegistryLookup(Registries.BIOME).forGetter((g) -> g.biomes),
-    	Codecs.array(VegetationConfig.CODEC, Holder[]::new).fieldOf("vegetation").forGetter((g) -> g.vegetation),
-    	Codecs.array(Structure.CODEC, Holder[]::new).fieldOf("structures").forGetter((g) -> g.structures),
-    	Codecs.array(NoiseCave.CODEC, Holder[]::new).fieldOf("caves").forGetter((g) -> g.caves),
+    	Codecs.forArray(VegetationConfig.CODEC, Holder[]::new).fieldOf("vegetation").forGetter((g) -> g.vegetation),
+    	Codecs.forArray(Structure.CODEC, Holder[]::new).fieldOf("structures").forGetter((g) -> g.structures),
+    	Codecs.forArray(NoiseCave.CODEC, Holder[]::new).fieldOf("caves").forGetter((g) -> g.caves),
+    	RegistryOps.retrieveGetter(Registries.BIOME),
     	RegistryOps.retrieveGetter(Registries.NOISE_SETTINGS)
 	).apply(instance, instance.stable(GeneratorPreset::build)));
 
@@ -95,7 +97,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
     protected final ThreadLocal<GeneratorResource> localResource = ThreadLocal.withInitial(GeneratorResource::new);
     private OptionalLong seed = OptionalLong.empty(); //TODO this is a hack, remove this
     protected final WeightMap<Holder<TerrainNoise>> terrain;
-    protected final RegistryLookup<Biome> biomes;
+    protected final Map<BiomeType, Holder<ClimateType>> climates;
     protected final Holder<VegetationConfig>[] vegetation;
     protected final Holder<Structure>[] structures;
     protected final Holder<NoiseCave>[] caves;
@@ -107,7 +109,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
     	BiomeGenerator biomeGenerator,
     	INoiseGenerator noiseGenerator,
     	WeightMap<Holder<TerrainNoise>> terrain,
-    	RegistryLookup<Biome> biomes,
+    	Map<BiomeType, Holder<ClimateType>> climates,
     	Holder<VegetationConfig>[] vegetation,
     	Holder<Structure>[] structures,
     	Holder<NoiseCave>[] caves
@@ -120,7 +122,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
         this.noiseGenerator = noiseGenerator;
         this.terrainCache = new TerrainCache(levels, noiseGenerator);
         this.terrain = terrain;
-        this.biomes = biomes;
+        this.climates = climates;
         this.vegetation = vegetation;
         this.structures = structures;
         this.caves = caves;
@@ -294,5 +296,6 @@ public class Generator extends ChunkGenerator implements IGenerator {
         lines.add("Height Noise: " + sample.heightNoise);
         lines.add("Ocean Proximity: " + (1 - sample.continentNoise));
         lines.add("River Proximity: " + (1 - sample.riverNoise));
+        lines.add("");
     }
 }

@@ -47,7 +47,7 @@ public class VegetationConfig implements ContextSeedable<VegetationConfig> {
     	TagKey.hashedCodec(Registries.BIOME).fieldOf("biomes").forGetter(VegetationConfig::biomes),
     	ViabilityCodec.CODEC.fieldOf("viability").forGetter(VegetationConfig::viability)
     ).apply(instance, VegetationConfig::new));
-    public static final Codec<Holder<VegetationConfig>> CODEC = RegistryFileCodec.create(TerraForged.VEGETATIONS, DIRECT_CODEC);
+    public static final Codec<Holder<VegetationConfig>> CODEC = RegistryFileCodec.create(TerraForged.VEGETATION, DIRECT_CODEC);
 
     private final float frequency;
     private final float jitter;

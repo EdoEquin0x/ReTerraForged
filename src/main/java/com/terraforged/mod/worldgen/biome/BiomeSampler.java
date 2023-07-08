@@ -24,36 +24,84 @@
 
 package com.terraforged.mod.worldgen.biome;
 
+import java.util.Map;
+
 import com.terraforged.engine.world.biome.type.BiomeType;
-import com.terraforged.mod.worldgen.biome.util.BiomeMapManager;
+import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.noise.INoiseGenerator;
 import com.terraforged.mod.worldgen.noise.climate.ClimateSample;
 import com.terraforged.mod.worldgen.noise.continent.ContinentPoints;
+
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 
+//TODO move all these fields to a config or something
 public class BiomeSampler extends IBiomeSampler.Sampler implements IBiomeSampler {
-    protected final BiomeMapManager biomeMapManager;
+    protected final Map<BiomeType, Holder<ClimateType>> climates;
+    private final Holder<Biome> plains;
+    private final Holder<Biome> deepColdOcean;
+    private final Holder<Biome> deepFrozenOcean;
+    private final Holder<Biome> deepLukewarmOcean;
+    private final Holder<Biome> deepOcean;
+    private final Holder<Biome> coldOcean;
+    private final Holder<Biome> frozenOcean;
+    private final Holder<Biome> warmOcean;
+    private final Holder<Biome> ocean;
+    private final Holder<Biome> snowyBeach;
+    private final Holder<Biome> stonyBeach;
+    private final Holder<Biome> beach;
+    private final Holder<Biome> frozenRiver;
+    private final Holder<Biome> river;
     protected final float beachSize = 0.005f;
 
-    public BiomeSampler(INoiseGenerator noiseGenerator, BiomeMapManager biomeMapManager) {
+    public BiomeSampler(
+    	INoiseGenerator noiseGenerator, 
+    	Map<BiomeType, Holder<ClimateType>> climates,
+    	Holder<Biome> plains,
+    	Holder<Biome> deepColdOcean,
+    	Holder<Biome> deepFrozenOcean,
+    	Holder<Biome> deepLukewarmOcean,
+    	Holder<Biome> deepOcean,
+    	Holder<Biome> coldOcean,
+    	Holder<Biome> frozenOcean,
+    	Holder<Biome> warmOcean,
+    	Holder<Biome> ocean,
+    	Holder<Biome> snowyBeach,
+    	Holder<Biome> stonyBeach,
+    	Holder<Biome> beach,
+    	Holder<Biome> frozenRiver,
+    	Holder<Biome> river
+    ) {
         super(noiseGenerator);
-        this.biomeMapManager = biomeMapManager;
+        this.climates = climates;
+        this.plains = plains;
+        this.deepColdOcean = deepColdOcean;
+        this.deepFrozenOcean = deepFrozenOcean;
+        this.deepLukewarmOcean = deepLukewarmOcean;
+        this.deepOcean = deepOcean;
+        this.coldOcean = coldOcean;
+        this.frozenOcean = frozenOcean;
+        this.warmOcean = warmOcean;
+        this.ocean = ocean;
+        this.snowyBeach = snowyBeach;
+        this.stonyBeach = stonyBeach;
+        this.beach = beach;
+        this.frozenRiver = frozenRiver;
+        this.river = river;
     }
 
     public Holder<Biome> sampleBiome(int seed, int x, int z) {
-        var sample = getSample(seed, x, z);
-        var biome = getInitialBiome(sample.biomeNoise, sample.climateType);
-        return getBiomeOverride(biome, sample);
+        var sample = this.getSample(seed, x, z);
+        var biome = this.getInitialBiome(sample.biomeNoise, sample.climateType);
+        return this.getBiomeOverride(biome, sample);
     }
 
     private Holder<Biome> getInitialBiome(float noise, BiomeType climateType) {
-        var map = biomeMapManager.getBiomeMap().get(climateType);
-        if (map == null || map.isEmpty()) {
-            return biomeMapManager.get(Biomes.PLAINS);
+        var climate = this.climates.get(climateType).value();
+        if (climate == null || climate.isEmpty()) {
+            return this.plains;
         }
-        return map.getValue(noise);
+        return climate.getValue(noise);
     }
 
     protected Holder<Biome> getBiomeOverride(Holder<Biome> input, ClimateSample sample) {
@@ -61,32 +109,32 @@ public class BiomeSampler extends IBiomeSampler.Sampler implements IBiomeSampler
 
         if (sample.continentNoise <= ContinentPoints.SHALLOW_OCEAN) {
             return switch (biomeType) {
-                case TAIGA, COLD_STEPPE -> biomeMapManager.get(Biomes.DEEP_COLD_OCEAN);
-                case TUNDRA -> biomeMapManager.get(Biomes.DEEP_FROZEN_OCEAN);
-                case DESERT, SAVANNA, TROPICAL_RAINFOREST -> biomeMapManager.get(Biomes.DEEP_LUKEWARM_OCEAN);
-                default -> biomeMapManager.get(Biomes.DEEP_OCEAN);
+                case TAIGA, COLD_STEPPE -> this.deepColdOcean;
+                case TUNDRA -> this.deepFrozenOcean;
+                case DESERT, SAVANNA, TROPICAL_RAINFOREST -> this.deepLukewarmOcean;
+                default -> this.deepOcean;
             };
         }
 
         if (sample.continentNoise <= ContinentPoints.BEACH) {
             return switch (biomeType) {
-                case TAIGA, COLD_STEPPE -> biomeMapManager.get(Biomes.COLD_OCEAN);
-                case TUNDRA -> biomeMapManager.get(Biomes.FROZEN_OCEAN);
-                case DESERT, SAVANNA, TROPICAL_RAINFOREST -> biomeMapManager.get(Biomes.WARM_OCEAN);
-                default -> biomeMapManager.get(Biomes.OCEAN);
+                case TAIGA, COLD_STEPPE -> this.coldOcean;
+                case TUNDRA -> this.frozenOcean;
+                case DESERT, SAVANNA, TROPICAL_RAINFOREST -> this.warmOcean;
+                default -> this.ocean;
             };
         }
 
-        if (sample.continentNoise <= ContinentPoints.BEACH + beachSize) {
+        if (sample.continentNoise <= ContinentPoints.BEACH + this.beachSize) {
             return switch (biomeType) {
-                case TUNDRA -> biomeMapManager.get(Biomes.SNOWY_BEACH);
-                case COLD_STEPPE -> biomeMapManager.get(Biomes.STONY_SHORE);
-                default -> biomeMapManager.get(Biomes.BEACH);
+                case TUNDRA -> this.snowyBeach;
+                case COLD_STEPPE -> this.stonyBeach;
+                default -> this.beach;
             };
         }
 
         if ((sample.terrainType.isRiver() || sample.terrainType.isLake()) && sample.riverNoise == 0) {
-            return biomeType == BiomeType.TUNDRA ? biomeMapManager.get(Biomes.FROZEN_RIVER) : biomeMapManager.get(Biomes.RIVER);
+            return biomeType == BiomeType.TUNDRA ? this.frozenRiver : this.river;
         }
 
         return input;

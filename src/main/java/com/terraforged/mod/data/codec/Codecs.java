@@ -25,6 +25,7 @@
 package com.terraforged.mod.data.codec;
 
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 
@@ -53,10 +54,14 @@ public class Codecs {
                 .orElseThrow();
     }
     
-    public static <V> Codec<V[]> array(Codec<V> elementCodec, IntFunction<V[]> generator) {
+    public static <V> Codec<V[]> forArray(Codec<V> elementCodec, IntFunction<V[]> generator) {
     	return Codec.list(elementCodec).xmap((v) -> {
     		return v.toArray(generator);
     	}, ImmutableList::copyOf);
+    }
+    
+    public static <T extends Enum<T>> Codec<T> forEnum(Function<String, T> enumLookup, Function<T, String> nameLookup) {
+    	return Codec.STRING.xmap(String::toUpperCase, String::toLowerCase).xmap(enumLookup::apply, nameLookup::apply);
     }
 
     public static <V> V modify(V v, Codec<V> codec, UnaryOperator<JsonObject> modifier) {

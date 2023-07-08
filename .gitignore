@@ -41,3 +41,4 @@ Users/
 .cache/
 .apt_generated/
 .settings/
+/.apt_generated_tests/

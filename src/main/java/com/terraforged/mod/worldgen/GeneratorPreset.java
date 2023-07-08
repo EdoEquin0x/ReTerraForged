@@ -24,7 +24,12 @@
 
 package com.terraforged.mod.worldgen;
 
+import java.util.Map;
+
+import com.terraforged.engine.world.biome.type.BiomeType;
+import com.terraforged.mod.data.ModBiomes;
 import com.terraforged.mod.util.storage.WeightMap;
+import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
@@ -35,10 +40,10 @@ import com.terraforged.mod.worldgen.terrain.TerrainLevels;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
@@ -49,18 +54,37 @@ public class GeneratorPreset {
 
 	public static Generator build(
 		TerrainLevels levels,
+    	Map<BiomeType, Holder<ClimateType>> climates,
 		WeightMap<Holder<TerrainNoise>> terrain,
-		RegistryLookup<Biome> biomes,
 		Holder<VegetationConfig>[] vegetation,
 		Holder<Structure>[] structures,
 		Holder<NoiseCave>[] caves,
+		HolderGetter<Biome> biomes,
 		HolderGetter<NoiseGeneratorSettings> noiseSettings
 	) {
         var biomeGenerator = new BiomeGenerator(vegetation, structures, caves);
         var noiseGenerator = new NoiseGenerator(levels, terrain).withErosion();
-        var biomeSource = new Source(noiseGenerator, biomes);
+        var biomeSource = new Source(
+        	noiseGenerator,
+        	climates,
+        	biomes.getOrThrow(ModBiomes.CAVE),
+        	biomes.getOrThrow(Biomes.PLAINS),
+        	biomes.getOrThrow(Biomes.DEEP_COLD_OCEAN),
+        	biomes.getOrThrow(Biomes.DEEP_FROZEN_OCEAN),
+        	biomes.getOrThrow(Biomes.DEEP_LUKEWARM_OCEAN),
+        	biomes.getOrThrow(Biomes.DEEP_OCEAN),
+        	biomes.getOrThrow(Biomes.COLD_OCEAN),
+        	biomes.getOrThrow(Biomes.FROZEN_OCEAN),
+        	biomes.getOrThrow(Biomes.WARM_OCEAN),
+        	biomes.getOrThrow(Biomes.OCEAN),
+        	biomes.getOrThrow(Biomes.SNOWY_BEACH),
+        	biomes.getOrThrow(Biomes.STONY_SHORE),
+        	biomes.getOrThrow(Biomes.BEACH),
+        	biomes.getOrThrow(Biomes.FROZEN_RIVER),
+        	biomes.getOrThrow(Biomes.RIVER)
+        );
         var vanillaGen = getVanillaGen(biomeSource, noiseSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
-        return new Generator(levels, vanillaGen, biomeSource, biomeGenerator, noiseGenerator, terrain, biomes, vegetation, structures, caves);
+        return new Generator(levels, vanillaGen, biomeSource, biomeGenerator, noiseGenerator, terrain, climates, vegetation, structures, caves);
     }
 
     public static VanillaGen getVanillaGen(

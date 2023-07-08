@@ -73,9 +73,9 @@ public class TFForge extends TerraForged implements CommonAPI {
     void onCreateDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
     	event.dataPackRegistry(TerraForged.CLIMATES, ClimateType.DIRECT_CODEC);
     	event.dataPackRegistry(TerraForged.CAVES, NoiseCave.DIRECT_CODEC);
-    	event.dataPackRegistry(TerraForged.TERRAINS, TerrainNoise.DIRECT_CODEC);
+    	event.dataPackRegistry(TerraForged.TERRAIN, TerrainNoise.DIRECT_CODEC);
     	event.dataPackRegistry(TerraForged.TERRAIN_TYPES, TerrainType.DIRECT_CODEC);
-    	event.dataPackRegistry(TerraForged.VEGETATIONS, VegetationConfig.DIRECT_CODEC);
+    	event.dataPackRegistry(TerraForged.VEGETATION, VegetationConfig.DIRECT_CODEC);
     }
     
     @SubscribeEvent

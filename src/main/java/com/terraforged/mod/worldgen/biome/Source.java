@@ -24,21 +24,23 @@
 
 package com.terraforged.mod.worldgen.biome;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
 import com.terraforged.engine.util.pos.PosUtil;
+import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.data.codec.ErrorCodec;
 import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
-import com.terraforged.mod.worldgen.biome.util.BiomeMapManager;
+import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.cave.CaveType;
 import com.terraforged.mod.worldgen.noise.INoiseGenerator;
 
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
@@ -48,18 +50,35 @@ public class Source extends BiomeSource {
     public static final Climate.Sampler NOOP_CLIMATE_SAMPLER = Climate.empty();
 
     protected int seed;
-    protected final Set<Holder<Biome>> possibleBiomes;
+    protected final Map<BiomeType, Holder<ClimateType>> climates;
     protected final BiomeSampler biomeSampler;
-    protected final BiomeMapManager biomeMapManager;
     protected final CaveBiomeSampler caveBiomeSampler;
     @SuppressWarnings("unchecked")
 	protected final LongCache<Holder<Biome>> cache = LossyCache.concurrent(2048, i -> new Holder[i]);
 
-    public Source(INoiseGenerator noise, HolderLookup<Biome> biomes) {
-        this.biomeMapManager = new BiomeMapManager(biomes);
-        this.possibleBiomes = new ObjectLinkedOpenHashSet<>(biomeMapManager.getOverworldBiomes());
-        this.biomeSampler = new BiomeSampler(noise, biomeMapManager);
-        this.caveBiomeSampler = new CaveBiomeSampler(800, biomeMapManager);
+    @SuppressWarnings("unchecked")
+	public Source(
+    	INoiseGenerator noise, 
+    	Map<BiomeType, Holder<ClimateType>> climates,
+    	Holder<Biome> cave,
+    	Holder<Biome> plains,
+    	Holder<Biome> deepColdOcean,
+    	Holder<Biome> deepFrozenOcean,
+    	Holder<Biome> deepLukewarmOcean,
+    	Holder<Biome> deepOcean,
+    	Holder<Biome> coldOcean,
+    	Holder<Biome> frozenOcean,
+    	Holder<Biome> warmOcean,
+    	Holder<Biome> ocean,
+    	Holder<Biome> snowyBeach,
+    	Holder<Biome> stonyShore,
+    	Holder<Biome> beach,
+    	Holder<Biome> frozenRiver,
+    	Holder<Biome> river
+    ) {
+    	this.climates = climates;
+        this.biomeSampler = new BiomeSampler(noise, climates, plains, deepColdOcean, deepFrozenOcean, deepLukewarmOcean, deepOcean, coldOcean, frozenOcean, warmOcean, ocean, snowyBeach, stonyShore, beach, frozenRiver, river);
+        this.caveBiomeSampler = new CaveBiomeSampler(800, new Holder[] { cave });
     }
 
     public void withSeed(long seed) {
@@ -83,7 +102,7 @@ public class Source extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return this.possibleBiomes.stream();
+		return extractBiomes(this.climates.values()).stream();
 	}
 
     @Override
@@ -93,24 +112,34 @@ public class Source extends BiomeSource {
 
     @Override
     public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
-        return cache.computeIfAbsent(seed, PosUtil.pack(x, z), this::compute);
+        return this.cache.computeIfAbsent(this.seed, PosUtil.pack(x, z), this::compute);
     }
 
     public BiomeSampler getBiomeSampler() {
-        return biomeSampler;
+        return this.biomeSampler;
     }
 
     public CaveBiomeSampler getCaveBiomeSampler() {
-        return caveBiomeSampler;
+        return this.caveBiomeSampler;
     }
 
     public Holder<Biome> getUnderGroundBiome(int seed, int x, int z, CaveType type) {
-        return caveBiomeSampler.getUnderGroundBiome(this.seed + seed, x, z, type);
+        return this.caveBiomeSampler.getUnderGroundBiome(this.seed + seed, x, z, type);
     }
 
     protected Holder<Biome> compute(int seed, long index) {
         int x = PosUtil.unpackLeft(index) << 2;
         int z = PosUtil.unpackRight(index) << 2;
-        return biomeSampler.sampleBiome(seed, x, z);
+        return this.biomeSampler.sampleBiome(seed, x, z);
+    }
+    
+    private static Set<Holder<Biome>> extractBiomes(Collection<Holder<ClimateType>> climates) {
+    	Set<Holder<Biome>> biomes = new HashSet<>();
+    	for(Holder<ClimateType> climate : climates) {
+    		for(Holder<Biome> holder : climate.value().biomes()) {
+    			biomes.add(holder);
+    		}
+    	}
+    	return biomes;
     }
 }

@@ -24,9 +24,7 @@
 
 package com.terraforged.mod.worldgen.biome;
 
-import com.terraforged.mod.data.ModBiomes;
 import com.terraforged.mod.util.storage.WeightMap;
-import com.terraforged.mod.worldgen.biome.util.BiomeMapManager;
 import com.terraforged.mod.worldgen.cave.CaveType;
 import com.terraforged.noise.util.Noise;
 import com.terraforged.noise.util.NoiseUtil;
@@ -44,22 +42,11 @@ public class CaveBiomeSampler {
     protected final float frequency;
     protected final Map<CaveType, WeightMap<Holder<Biome>>> typeMap = new EnumMap<>(CaveType.class);
 
-    @SuppressWarnings("unchecked")
-	public CaveBiomeSampler(int scale, BiomeMapManager biomeMapManager) {
+	public CaveBiomeSampler(int scale, Holder<Biome>[] caves) {
         this.scale = scale;
         this.frequency = 1F / scale;
-
-        var cave = biomeMapManager.getOptional(ModBiomes.CAVE);
-
-        Holder<Biome>[] global = cave.isPresent() ? new Holder[]{cave.get()} : new Holder[0];
-        Holder<Biome>[] special = new Holder[0];
-        //biomeMapManager.getBiomes()
-        //      .holders()
-        //                .filter(b -> Biome.getBiomeCategory(b) == Biome.BiomeCategory.UNDERGROUND) TODO
-        //.toArray(Holder[]::new);
-
-        this.typeMap.put(CaveType.GLOBAL, create(global));
-        this.typeMap.put(CaveType.UNIQUE, create(special));
+        this.typeMap.put(CaveType.GLOBAL, create(caves));
+        this.typeMap.put(CaveType.UNIQUE, create(caves));
     }
 
     public CaveBiomeSampler(CaveBiomeSampler other) {
@@ -69,8 +56,8 @@ public class CaveBiomeSampler {
     }
 
     public Holder<Biome> getUnderGroundBiome(int seed, int x, int z, CaveType type) {
-        float noise = sample(seed + OFFSET, x, z, frequency);
-        return typeMap.get(type).getValue(noise);
+        float noise = sample(seed + OFFSET, x, z, this.frequency);
+        return this.typeMap.get(type).getValue(noise);
     }
 
     protected static float sample(int seed, int x, int z, float frequency) {
@@ -82,7 +69,7 @@ public class CaveBiomeSampler {
 
     protected static WeightMap<Holder<Biome>> create(Holder<Biome>[] biomes) {
         var weights = new float[biomes.length];
-        Arrays.fill(weights, 1);
-        return WeightMap.of(biomes, weights);
+        Arrays.fill(weights, 1.0F);
+        return WeightMap.of(weights, biomes);
     }
 }

@@ -1,23 +1,27 @@
 package com.terraforged.mod.util.storage;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.engine.util.pos.PosUtil;
 import com.terraforged.mod.data.codec.Codecs;
 import com.terraforged.mod.util.MathUtil;
 
-public class WeightMap<T> {
+public class WeightMap<T> implements Iterable<T> {
     protected final Object[] values;
     protected final float[] cumulativeWeights;
     protected final float sumWeight;
     protected final float zeroWeight;
     private float[] weights;
 
-    private WeightMap(Object[] values, float[] weights) {
+    private WeightMap(float[] weights, Object[] values) {
         this.values = values;
         this.weights = Arrays.copyOf(weights, weights.length);
         this.cumulativeWeights = getCumulativeWeights(values.length, weights);
@@ -68,6 +72,24 @@ public class WeightMap<T> {
         return 0L;
     }
 
+	@Override
+	public Iterator<T> iterator() {
+		return new Iterator<>() {
+			private int index;
+			
+			@Override
+			public boolean hasNext() {
+				return this.index < WeightMap.this.values.length;
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public T next() {
+				return (T) WeightMap.this.values[this.index++];
+			}
+		};
+	}
+
     public interface Weighted {
         float weight();
     }
@@ -77,19 +99,19 @@ public class WeightMap<T> {
         for (int i = 0; i < weights.length; i++) {
             weights[i] = values[i].weight();
         }
-        return new WeightMap<>(values, weights);
+        return new WeightMap<>(weights, values);
     }
     
-    public static <T> WeightMap<T> of(T[] values, float[] weights) {
-        return new WeightMap<>(values, weights);
+    public static <T> WeightMap<T> of(float[] weights, T[] values) {
+        return new WeightMap<>(weights, values);
     }
 
     @SuppressWarnings("unchecked")
 	public static <T> Codec<WeightMap<T>> codec(Codec<T> valueCodec, IntFunction<T[]> generator) {
-    	return Codecs.array(Entry.codec(valueCodec), (size) -> {
+    	return Codecs.forArray(Entry.codec(valueCodec), (size) -> {
     		return (Entry<T>[]) new Entry[size];
     	}).xmap((entries) -> {
-    		return new WeightMap<>(getValues(entries), getWeights(entries));
+    		return new WeightMap<>(getWeights(entries), getValues(entries));
     	}, (map) -> {
     		return getEntries(map.weights, map.values);
     	});
@@ -140,5 +162,30 @@ public class WeightMap<T> {
         }
 
         return cumulativeWeights;
+    }
+    
+    public static class Builder<T> {
+    	private List<Pair<Float, T>> entries;
+    	
+    	public Builder() {
+    		this.entries = new ArrayList<>();
+    	}
+    	
+		public Builder<T> entry(float weight, T value) {
+    		this.entries.add(Pair.of(weight, value));
+    		return this;
+    	}
+    	
+    	public <R extends T> WeightMap<R> build() {
+    		int size = this.entries.size();
+    		float[] weights = new float[size];
+    		Object[] values = new Object[size];
+    		for(int i = 0; i < size; i++) {
+    			Pair<Float, T> entry = this.entries.get(i);
+    			weights[i] = entry.getFirst();
+    			values[i] = entry.getSecond();
+    		}
+    		return new WeightMap<>(weights, values);
+    	}
     }
 }

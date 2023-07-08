@@ -24,60 +24,128 @@
 
 package com.terraforged.mod.data;
 
-import java.util.List;
 import java.util.Locale;
 
 import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.TerraForged;
+import com.terraforged.mod.util.storage.WeightMap;
 import com.terraforged.mod.worldgen.asset.ClimateType;
-import com.terraforged.mod.worldgen.biome.util.BiomeUtil;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
 public interface ModClimates {
+	ResourceKey<ClimateType> TROPICAL_RAINFOREST = resolve(BiomeType.TROPICAL_RAINFOREST);
+	ResourceKey<ClimateType> SAVANNA = resolve(BiomeType.SAVANNA);
+	ResourceKey<ClimateType> DESERT = resolve(BiomeType.DESERT);
+	ResourceKey<ClimateType> TEMPERATE_RAINFOREST = resolve(BiomeType.TEMPERATE_RAINFOREST);
+	ResourceKey<ClimateType> TEMPERATE_FOREST = resolve(BiomeType.TEMPERATE_FOREST);
+	ResourceKey<ClimateType> GRASSLAND = resolve(BiomeType.GRASSLAND);
+	ResourceKey<ClimateType> COLD_STEPPE = resolve(BiomeType.COLD_STEPPE);
+	ResourceKey<ClimateType> STEPPE = resolve(BiomeType.STEPPE);
+	ResourceKey<ClimateType> TAIGA = resolve(BiomeType.TAIGA);
+	ResourceKey<ClimateType> TUNDRA = resolve(BiomeType.TUNDRA);
+	ResourceKey<ClimateType> ALPINE = resolve(BiomeType.ALPINE);
+	
     float RARE = 1F;
     float NORMAL = 5F;
 
     static void register(BootstapContext<ClimateType> ctx) {
         var lookup = ctx.lookup(Registries.BIOME);
-        var biomes = BiomeUtil.getOverworldBiomes(lookup);
-        for (var type : BiomeType.values()) {
-        	ctx.register(resolve(type.name().toLowerCase(Locale.ROOT)), Factory.create(type, biomes));
-        }
+        
+        ctx.register(TROPICAL_RAINFOREST, 
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.JUNGLE))
+        			.build()
+        	)
+        );
+        
+        ctx.register(SAVANNA,
+           	new ClimateType(
+           		new WeightMap.Builder<>()
+           			.entry(NORMAL, lookup.getOrThrow(Biomes.SAVANNA))
+           			.build()
+            )
+        );
+        
+        ctx.register(DESERT, 
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.DESERT))
+        			.build()
+            )
+        );
+        
+        ctx.register(TEMPERATE_RAINFOREST, 
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.JUNGLE))
+        			.build()
+            )
+        );
+        
+        ctx.register(TEMPERATE_FOREST, 
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.FOREST))
+        			.entry(RARE, lookup.getOrThrow(Biomes.BIRCH_FOREST))
+        			.build()
+            )
+        );
+        
+        ctx.register(GRASSLAND, 
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.PLAINS))
+        			.build()
+            )
+        );
+        
+        ctx.register(COLD_STEPPE, 
+            new ClimateType(
+            	new WeightMap.Builder<>()
+            		.entry(NORMAL, lookup.getOrThrow(Biomes.SAVANNA_PLATEAU))
+            		.build()
+            )
+        );
+        
+        ctx.register(STEPPE, 
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.WINDSWEPT_SAVANNA))
+        			.build()
+            )
+        );
+        
+        ctx.register(TAIGA, 
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.TAIGA))
+        			.build()
+            )
+        );
+        
+        ctx.register(TUNDRA,
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.SNOWY_TAIGA))
+        			.build()
+            )
+        );
+        
+        ctx.register(ALPINE,
+        	new ClimateType(
+        		new WeightMap.Builder<>()
+        			.entry(NORMAL, lookup.getOrThrow(Biomes.TAIGA))
+        			.build()
+        	)
+        );
     }
     
-    private static ResourceKey<ClimateType> resolve(String path) {
-		return TerraForged.resolve(TerraForged.CLIMATES, path);
+    private static ResourceKey<ClimateType> resolve(BiomeType biomeType) {
+		return TerraForged.resolve(TerraForged.CLIMATES, biomeType.name().toLowerCase(Locale.ROOT));
 	}
-
-    class Factory {
-    	
-        static ClimateType create(BiomeType type, List<Holder<Biome>> biomes) {
-            var weights = new Object2FloatOpenHashMap<ResourceLocation>();
-
-            for (var biome : biomes) {
-                var biomeType = BiomeUtil.getType(biome);
-                if (biomeType == null || biomeType != type) continue;
-
-                var key = biome.unwrapKey().orElseThrow();
-
-                weights.put(key.location(), getWeight(key, biome));
-            }
-
-            return new ClimateType(weights);
-        }
-
-        static float getWeight(ResourceKey<Biome> key, Holder<Biome> biome) {
-//            if (Biome.getBiomeCategory(biome) == Biome.BiomeCategory.MUSHROOM) return RARE;
-            if (key == Biomes.ICE_SPIKES) return RARE;
-            return NORMAL;
-        }
-    }
 }

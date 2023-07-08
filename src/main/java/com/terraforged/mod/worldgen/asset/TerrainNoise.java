@@ -46,7 +46,7 @@ public class TerrainNoise implements ContextSeedable<TerrainNoise> {
     	TerrainType.CODEC.fieldOf("type").forGetter(TerrainNoise::type),
     	NoiseCodec.CODEC.fieldOf("noise").forGetter(TerrainNoise::noise)
     ).apply(instance, TerrainNoise::new));
-    public static final Codec<Holder<TerrainNoise>> CODEC = RegistryFileCodec.create(TerraForged.TERRAINS, DIRECT_CODEC);
+    public static final Codec<Holder<TerrainNoise>> CODEC = RegistryFileCodec.create(TerraForged.TERRAIN, DIRECT_CODEC);
 
     private static final double MIN_NOISE = 5.0 / 255.0;
 

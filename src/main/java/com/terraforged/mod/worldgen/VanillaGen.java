@@ -24,6 +24,8 @@
 
 package com.terraforged.mod.worldgen;
 
+import java.util.function.Supplier;
+
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -40,9 +42,8 @@ public class VanillaGen {
     protected final NoiseBasedChunkGenerator vanillaGenerator;
     protected final Holder<NoiseGeneratorSettings> settings;
 
-    protected final int lavaLevel;
-    protected final Aquifer.FluidStatus fluidStatus1;
-    protected final Aquifer.FluidStatus fluidStatus2;
+    protected final Supplier<Aquifer.FluidStatus> fluidStatus1;
+    protected final Supplier<Aquifer.FluidStatus> fluidStatus2;
     protected final Aquifer.FluidPicker globalFluidPicker;
 
     public VanillaGen(BiomeSource biomeSource, VanillaGen other) {
@@ -51,22 +52,21 @@ public class VanillaGen {
 
     public VanillaGen(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> settings) {
         this.settings = settings;
-        this.lavaLevel = Math.min(-54, settings.value().seaLevel());
-        this.fluidStatus1 = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
-        this.fluidStatus2 = new Aquifer.FluidStatus(settings.value().seaLevel(), settings.value().defaultFluid());
-        this.globalFluidPicker = (x, y, z) -> y < lavaLevel ? fluidStatus1 : fluidStatus2;
+        this.fluidStatus1 = () -> new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
+        this.fluidStatus2 = () -> new Aquifer.FluidStatus(settings.value().seaLevel(), settings.value().defaultFluid());
+        this.globalFluidPicker = (x, y, z) -> y < Math.min(-54, settings.value().seaLevel()) ? this.fluidStatus1.get() : this.fluidStatus2.get();
         this.vanillaGenerator = new NoiseBasedChunkGenerator(biomeSource, settings);
     }
 
     public Holder<NoiseGeneratorSettings> getSettings() {
-        return settings;
+        return this.settings;
     }
     
     public Aquifer.FluidPicker getGlobalFluidPicker() {
-        return globalFluidPicker;
+        return this.globalFluidPicker;
     }
 
     public CarvingContext createCarvingContext(WorldGenRegion region, ChunkAccess chunk, NoiseChunk noiseChunk, RandomState state) {
-        return new CarvingContext(vanillaGenerator, region.registryAccess(), chunk.getHeightAccessorForGeneration(), noiseChunk, state, null);
+        return new CarvingContext(this.vanillaGenerator, region.registryAccess(), chunk.getHeightAccessorForGeneration(), noiseChunk, state, null);
     }
 }

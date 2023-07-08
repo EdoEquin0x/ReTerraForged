@@ -55,8 +55,8 @@ public abstract class TerraForged implements CommonAPI {
 	public static final ResourceKey<Registry<ClimateType>> CLIMATES = registryKey("worldgen/climate");
 	public static final ResourceKey<Registry<NoiseCave>> CAVES = registryKey("worldgen/cave");
 	public static final ResourceKey<Registry<TerrainType>> TERRAIN_TYPES = registryKey("worldgen/terrain_type");
-	public static final ResourceKey<Registry<TerrainNoise>> TERRAINS = registryKey("worldgen/terrain_noise");
-	public static final ResourceKey<Registry<VegetationConfig>> VEGETATIONS = registryKey("worldgen/vegetation");
+	public static final ResourceKey<Registry<TerrainNoise>> TERRAIN = registryKey("worldgen/terrain_noise");
+	public static final ResourceKey<Registry<VegetationConfig>> VEGETATION = registryKey("worldgen/vegetation");
 
 	private final Supplier<Path> path;
 
@@ -81,6 +81,6 @@ public abstract class TerraForged implements CommonAPI {
 	}
 
 	public static <T> ResourceKey<T> resolve(ResourceKey<Registry<T>> registryKey, String valueKey) {
-		return ResourceKey.create(registryKey, TerraForged.location(valueKey));
+		return ResourceKey.create(registryKey, location(valueKey));
 	}
 }

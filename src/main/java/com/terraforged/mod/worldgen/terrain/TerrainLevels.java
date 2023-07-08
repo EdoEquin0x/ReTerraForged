@@ -24,29 +24,27 @@
 
 package com.terraforged.mod.worldgen.terrain;
 
-import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.data.codec.Codecs;
 import com.terraforged.mod.data.codec.LazyCodec;
 import com.terraforged.mod.util.MathUtil;
 import com.terraforged.mod.worldgen.noise.NoiseLevels;
 import com.terraforged.noise.util.NoiseUtil;
-import net.minecraft.world.level.dimension.DimensionType;
 
-import java.util.function.Supplier;
+import net.minecraft.world.level.dimension.DimensionType;
 
 public class TerrainLevels {
     public static final Codec<TerrainLevels> CODEC = LazyCodec.record(instance -> instance.group(
-            Codecs.opt("auto_scale", true, Codec.BOOL).forGetter(l -> l.noiseLevels.auto),
-            Codecs.opt("horizontal_scale", 1F, Codec.floatRange(0F, 10F)).forGetter(l -> l.noiseLevels.scale),
-            Codec.intRange(Limits.MIN_MIN_Y, Limits.MAX_MIN_Y).fieldOf("min_y").forGetter(l -> l.minY),
-            Codec.intRange(Limits.MIN_MAX_Y, Limits.MAX_MAX_Y).fieldOf("max_y").forGetter(l -> l.maxY),
-            Codec.intRange(Limits.MAX_MIN_Y, Limits.MAX_MAX_Y).fieldOf("base_height").forGetter(l -> l.baseHeight),
-            Codec.intRange(Limits.MIN_SEA_LEVEL, Limits.MAX_SEA_LEVEL).fieldOf("sea_level").forGetter(l -> l.seaLevel),
-            Codec.intRange(Limits.MIN_SEA_FLOOR, Limits.MAX_SEA_FLOOR).fieldOf("sea_floor").forGetter(l -> l.seaFloor)
+    	Codecs.opt("auto_scale", true, Codec.BOOL).forGetter(l -> l.noiseLevels.auto),
+    	Codecs.opt("horizontal_scale", 1F, Codec.floatRange(0F, 10F)).forGetter(l -> l.noiseLevels.scale),
+    	Codec.intRange(Limits.MIN_MIN_Y, Limits.MAX_MIN_Y).fieldOf("min_y").forGetter(l -> l.minY),
+    	Codec.intRange(Limits.MIN_MAX_Y, Limits.MAX_MAX_Y).fieldOf("max_y").forGetter(l -> l.maxY),
+    	Codec.intRange(Limits.MAX_MIN_Y, Limits.MAX_MAX_Y).fieldOf("base_height").forGetter(l -> l.baseHeight),
+    	Codec.intRange(Limits.MIN_SEA_LEVEL, Limits.MAX_SEA_LEVEL).fieldOf("sea_level").forGetter(l -> l.seaLevel),
+    	Codec.intRange(Limits.MIN_SEA_FLOOR, Limits.MAX_SEA_FLOOR).fieldOf("sea_floor").forGetter(l -> l.seaFloor)
     ).apply(instance, TerrainLevels::new));
 
-    public static final Supplier<TerrainLevels> DEFAULT = Suppliers.memoize(() -> new TerrainLevels(true, Defaults.SCALE, Defaults.MIN_Y, Defaults.MAX_Y, Defaults.MAX_BASE_HEIGHT, Defaults.SEA_LEVEL, Defaults.SEA_FLOOR));
+    public static final TerrainLevels DEFAULT = new TerrainLevels(true, Defaults.SCALE, Defaults.MIN_Y, Defaults.MAX_Y, Defaults.MAX_BASE_HEIGHT, Defaults.SEA_LEVEL, Defaults.SEA_FLOOR);
 
     public final int minY;
     public final int maxY; // Exclusive max block index

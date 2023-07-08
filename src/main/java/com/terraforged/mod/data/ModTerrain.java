@@ -44,7 +44,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
-public interface ModTerrains {
+public interface ModTerrain {
 	ResourceKey<TerrainNoise> STEPPE = resolve("steppe");
 	ResourceKey<TerrainNoise> PLAINS = resolve("plains");
 	ResourceKey<TerrainNoise> HILLS_1 = resolve("hills_1");
@@ -81,7 +81,7 @@ public interface ModTerrains {
     }
     
     private static ResourceKey<TerrainNoise> resolve(String path) {
-		return TerraForged.resolve(TerraForged.TERRAINS, path);
+		return TerraForged.resolve(TerraForged.TERRAIN, path);
 	}
 
     class Factory {

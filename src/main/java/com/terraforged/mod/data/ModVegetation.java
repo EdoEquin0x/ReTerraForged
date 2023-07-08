@@ -62,7 +62,7 @@ public interface ModVegetation {
     }
     
     private static ResourceKey<VegetationConfig> resolve(String path) {
-		return TerraForged.resolve(TerraForged.VEGETATIONS, path);
+		return TerraForged.resolve(TerraForged.VEGETATION, path);
 	}
 
     class Factory {
