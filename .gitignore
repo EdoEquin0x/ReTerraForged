@@ -42,3 +42,4 @@ Users/
 .apt_generated/
 .settings/
 /.apt_generated_tests/
+/.factorypath
