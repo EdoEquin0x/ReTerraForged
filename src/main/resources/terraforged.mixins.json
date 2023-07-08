@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.terraforged.mod.mixin",
+  "refmap": "terraforged.mixins.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins-(disabled)": [
+    "common.MixinBoat",
+    "common.MixinRegistryAccess",
+    "common.MixinRegistryOps"
+  ],
+  "disabled": [
+    "common.MixinRegistryAccess",
+    "common.MixinWorldGenSettings"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

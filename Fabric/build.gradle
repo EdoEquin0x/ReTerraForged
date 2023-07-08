@@ -1,0 +1,56 @@
+plugins {
+	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'java'
+}
+
+apply from: file("../common.gradle")
+
+sourceSets {
+	main.java { srcDirs += "../src/main/java" }
+	main.resources { srcDirs += "../src/main/resources" }
+	main.resources { srcDirs += "../generated/resources" }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+jar {
+	archivesBaseName = "${archives_base_name}-fabric-${project.minecraft_version}"
+}
+
+loom {
+	mixin.defaultRefmapName = "terraforged.mixins.refmap.json"
+
+	runs {
+		client {
+			client()
+			setConfigName("Fabric Client")
+			ideConfigGenerated(true)
+			runDir("run")
+			vmArgs "-Ddev"
+		}
+		server {
+			server()
+			setConfigName("Fabric Server")
+			ideConfigGenerated(true)
+			runDir("run")
+			vmArgs "-Ddev"
+		}
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}

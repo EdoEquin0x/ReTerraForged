@@ -1,0 +1,40 @@
+project.ext.minecraft_version = "1.19.4"
+project.ext.mod_version = "0.4.0"
+project.ext.mod_classifier = "-alpha-1"
+project.ext.mod_group = "com.terraforged"
+project.ext.archives_base_name = "TerraForged"
+
+group = mod_group
+version = mod_version + mod_classifier
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+sourceSets {
+    main.resources { srcDirs += "/generated/resources" }
+}
+
+configurations {
+    library
+    implementation.extendsFrom library
+}
+
+repositories {
+}
+
+dependencies {
+}
+
+task libraries(type: Copy) {
+    from { configurations.library.collect { it.isDirectory() ? it : zipTree(it) } }
+    into("build/classes/java/main")
+    duplicatesStrategy = "EXCLUDE"
+}
+
+classes {
+    dependsOn(libraries)
+}
+
+jar {
+    archivesBaseName = "${archives_base_name}-${minecraft_version}"
+}
+

@@ -1,0 +1,87 @@
+buildscript {
+    repositories {
+        maven { url "https://repo.spongepowered.org/maven" }
+        maven { url = "https://maven.minecraftforge.net" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: "org.spongepowered", name: "mixingradle", version: "0.7.33", changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true // 5.1.33
+    }
+}
+
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: "org.spongepowered.mixin"
+apply plugin: "java"
+
+apply from: file("common.gradle")
+
+sourceSets {
+    main.java { srcDirs += "/Forge/main/java" }
+    main.resources { srcDirs += "/Forge/main/resources" }
+}
+
+repositories {
+    maven { url "https://repo.spongepowered.org/maven" }
+
+    flatDir { dirs "lib" }
+}
+
+dependencies {
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+}
+
+jar {
+    finalizedBy("reobfJar")
+    manifest { attributes(["MixinConfigs": "terraforged.mixins.json"]) }
+}
+
+mixin {
+    add sourceSets.main, "terraforged.mixins.refmap.json"
+}
+
+minecraft {
+    mappings channel: "official", version: minecraft_version
+    runs {
+        client {
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "REGISTRIES"
+            property "forge.logging.console.level", "debug"
+            arg "-mixin.config=terraforged.mixins.json"
+            jvmArgs "-Ddev"
+            mods {
+                terraforged {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "REGISTRIES"
+            property "forge.logging.console.level", "debug"
+            arg "-mixin.config=terraforged.mixins.json"
+            jvmArgs "-Ddev"
+            mods {
+                terraforged {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file("run")
+            property "forge.logging.markers", "REGISTRIES"
+            property "forge.logging.console.level", "debug"
+            args "--mod", "terraforged", "--server", "--output", file("generated")
+            arg "-mixin.config=terraforged.mixins.json"
+            jvmArgs "-Ddatagen"
+            mods {
+                terraforged {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
