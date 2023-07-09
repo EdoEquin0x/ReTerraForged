@@ -24,19 +24,15 @@
 
 package com.terraforged.mod.worldgen.biome;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
 import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.data.codec.ErrorCodec;
 import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
-import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.cave.CaveType;
 import com.terraforged.mod.worldgen.noise.INoiseGenerator;
 
@@ -50,7 +46,7 @@ public class Source extends BiomeSource {
     public static final Climate.Sampler NOOP_CLIMATE_SAMPLER = Climate.empty();
 
     protected int seed;
-    protected final Map<BiomeType, Holder<ClimateType>> climates;
+    protected final BiomeSampler.Climate[] climates;
     protected final BiomeSampler biomeSampler;
     protected final CaveBiomeSampler caveBiomeSampler;
     @SuppressWarnings("unchecked")
@@ -59,25 +55,12 @@ public class Source extends BiomeSource {
     @SuppressWarnings("unchecked")
 	public Source(
     	INoiseGenerator noise, 
-    	Map<BiomeType, Holder<ClimateType>> climates,
+    	BiomeSampler.Climate[] climates,
     	Holder<Biome> cave,
-    	Holder<Biome> plains,
-    	Holder<Biome> deepColdOcean,
-    	Holder<Biome> deepFrozenOcean,
-    	Holder<Biome> deepLukewarmOcean,
-    	Holder<Biome> deepOcean,
-    	Holder<Biome> coldOcean,
-    	Holder<Biome> frozenOcean,
-    	Holder<Biome> warmOcean,
-    	Holder<Biome> ocean,
-    	Holder<Biome> snowyBeach,
-    	Holder<Biome> stonyShore,
-    	Holder<Biome> beach,
-    	Holder<Biome> frozenRiver,
-    	Holder<Biome> river
+    	Holder<Biome> fallback
     ) {
     	this.climates = climates;
-        this.biomeSampler = new BiomeSampler(noise, climates, plains, deepColdOcean, deepFrozenOcean, deepLukewarmOcean, deepOcean, coldOcean, frozenOcean, warmOcean, ocean, snowyBeach, stonyShore, beach, frozenRiver, river);
+        this.biomeSampler = new BiomeSampler(noise, climates, fallback);
         this.caveBiomeSampler = new CaveBiomeSampler(800, new Holder[] { cave });
     }
 
@@ -102,7 +85,7 @@ public class Source extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return extractBiomes(this.climates.values()).stream();
+		return extractBiomes(this.climates).stream();
 	}
 
     @Override
@@ -133,10 +116,10 @@ public class Source extends BiomeSource {
         return this.biomeSampler.sampleBiome(seed, x, z);
     }
     
-    private static Set<Holder<Biome>> extractBiomes(Collection<Holder<ClimateType>> climates) {
+    private static Set<Holder<Biome>> extractBiomes(BiomeSampler.Climate[] climates) {
     	Set<Holder<Biome>> biomes = new HashSet<>();
-    	for(Holder<ClimateType> climate : climates) {
-    		for(Holder<Biome> holder : climate.value().biomes()) {
+    	for(BiomeSampler.Climate climate : climates) {
+    		for(Holder<Biome> holder : climate.type().value().biomes()) {
     			biomes.add(holder);
     		}
     	}

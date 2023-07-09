@@ -26,21 +26,19 @@ package com.terraforged.mod.worldgen;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.data.codec.Codecs;
 import com.terraforged.mod.util.storage.WeightMap;
-import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
 import com.terraforged.mod.worldgen.biome.BiomeGenerator;
+import com.terraforged.mod.worldgen.biome.BiomeSampler;
 import com.terraforged.mod.worldgen.biome.Source;
 import com.terraforged.mod.worldgen.noise.INoiseGenerator;
 import com.terraforged.mod.worldgen.terrain.TerrainCache;
@@ -78,7 +76,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
 	// should these take HolderSets instead?
 	public static final Codec<Generator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     	TerrainLevels.CODEC.optionalFieldOf("levels", TerrainLevels.DEFAULT).forGetter((g) -> g.levels),
-    	Codec.unboundedMap(Codecs.forEnum(BiomeType::valueOf, BiomeType::name), ClimateType.CODEC).fieldOf("climates").forGetter((g) -> g.climates),
+    	Codecs.forArray(BiomeSampler.Climate.CODEC, BiomeSampler.Climate[]::new).fieldOf("climates").forGetter((g) -> g.climates),
     	WeightMap.codec(TerrainNoise.CODEC, Holder[]::new).fieldOf("terrain").forGetter((g) -> g.terrain),
     	Codecs.forArray(VegetationConfig.CODEC, Holder[]::new).fieldOf("vegetation").forGetter((g) -> g.vegetation),
     	Codecs.forArray(NoiseCave.CODEC, Holder[]::new).fieldOf("caves").forGetter((g) -> g.caves),
@@ -95,7 +93,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
     protected final ThreadLocal<GeneratorResource> localResource = ThreadLocal.withInitial(GeneratorResource::new);
     private OptionalLong seed = OptionalLong.empty(); //TODO this is a hack, remove this
     protected final WeightMap<Holder<TerrainNoise>> terrain;
-    protected final Map<BiomeType, Holder<ClimateType>> climates;
+    protected final BiomeSampler.Climate[] climates;
     protected final Holder<VegetationConfig>[] vegetation;
     protected final Holder<NoiseCave>[] caves;
     
@@ -106,7 +104,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
     	BiomeGenerator biomeGenerator,
     	INoiseGenerator noiseGenerator,
     	WeightMap<Holder<TerrainNoise>> terrain,
-    	Map<BiomeType, Holder<ClimateType>> climates,
+    	BiomeSampler.Climate[] climates,
     	Holder<VegetationConfig>[] vegetation,
     	Holder<NoiseCave>[] caves
     ) {
@@ -287,7 +285,8 @@ public class Generator extends ChunkGenerator implements IGenerator {
         lines.add("");
         lines.add("[TerraForged]");
         lines.add("Terrain Type: " + sample.terrainType.getName());
-        lines.add("Climate Type: " + BiomeType.get(sample.temperature, sample.moisture));
+        lines.add("Temperature: " + sample.temperature);
+        lines.add("Moisture: " + sample.moisture);
         lines.add("Base Noise: " + sample.baseNoise);
         lines.add("Height Noise: " + sample.heightNoise);
         lines.add("Ocean Proximity: " + (1 - sample.continentNoise));

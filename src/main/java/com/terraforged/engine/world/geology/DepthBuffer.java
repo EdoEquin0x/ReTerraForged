@@ -7,7 +7,7 @@ import com.terraforged.engine.concurrent.Resource;
 import com.terraforged.engine.concurrent.pool.ObjectPool;
 
 public class DepthBuffer {
-    private static final ObjectPool<DepthBuffer> pool = new ObjectPool<DepthBuffer>(5, DepthBuffer::new);
+    private static final ObjectPool<DepthBuffer> pool = new ObjectPool<>(5, DepthBuffer::new);
     private float sum;
     private float[] buffer;
 

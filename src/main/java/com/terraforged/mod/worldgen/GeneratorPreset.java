@@ -24,16 +24,13 @@
 
 package com.terraforged.mod.worldgen;
 
-import java.util.Map;
-
-import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.data.ModBiomes;
 import com.terraforged.mod.util.storage.WeightMap;
-import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
 import com.terraforged.mod.worldgen.biome.BiomeGenerator;
+import com.terraforged.mod.worldgen.biome.BiomeSampler;
 import com.terraforged.mod.worldgen.biome.Source;
 import com.terraforged.mod.worldgen.noise.NoiseGenerator;
 import com.terraforged.mod.worldgen.terrain.TerrainLevels;
@@ -53,7 +50,7 @@ public class GeneratorPreset {
 
 	public static Generator build(
 		TerrainLevels levels,
-    	Map<BiomeType, Holder<ClimateType>> climates,
+		BiomeSampler.Climate[] climates,
 		WeightMap<Holder<TerrainNoise>> terrain,
 		Holder<VegetationConfig>[] vegetation,
 		Holder<NoiseCave>[] caves,
@@ -66,20 +63,7 @@ public class GeneratorPreset {
         	noiseGenerator,
         	climates,
         	biomes.getOrThrow(ModBiomes.CAVE),
-        	biomes.getOrThrow(Biomes.PLAINS),
-        	biomes.getOrThrow(Biomes.DEEP_COLD_OCEAN),
-        	biomes.getOrThrow(Biomes.DEEP_FROZEN_OCEAN),
-        	biomes.getOrThrow(Biomes.DEEP_LUKEWARM_OCEAN),
-        	biomes.getOrThrow(Biomes.DEEP_OCEAN),
-        	biomes.getOrThrow(Biomes.COLD_OCEAN),
-        	biomes.getOrThrow(Biomes.FROZEN_OCEAN),
-        	biomes.getOrThrow(Biomes.WARM_OCEAN),
-        	biomes.getOrThrow(Biomes.OCEAN),
-        	biomes.getOrThrow(Biomes.SNOWY_BEACH),
-        	biomes.getOrThrow(Biomes.STONY_SHORE),
-        	biomes.getOrThrow(Biomes.BEACH),
-        	biomes.getOrThrow(Biomes.FROZEN_RIVER),
-        	biomes.getOrThrow(Biomes.RIVER)
+        	biomes.getOrThrow(Biomes.PLAINS)
         );
         var vanillaGen = getVanillaGen(biomeSource, noiseSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
         return new Generator(levels, vanillaGen, biomeSource, biomeGenerator, noiseGenerator, terrain, climates, vegetation, caves);

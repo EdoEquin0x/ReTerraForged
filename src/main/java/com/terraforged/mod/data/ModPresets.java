@@ -1,7 +1,6 @@
 package com.terraforged.mod.data;
 
 import com.google.common.collect.ImmutableMap;
-import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.util.storage.WeightMap;
 import com.terraforged.mod.worldgen.GeneratorPreset;
@@ -9,6 +8,7 @@ import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
+import com.terraforged.mod.worldgen.biome.BiomeSampler;
 import com.terraforged.mod.worldgen.terrain.TerrainLevels;
 
 import net.minecraft.core.Holder;
@@ -61,19 +61,9 @@ public interface ModPresets {
 					dimensions.getOrThrow(BuiltinDimensionTypes.OVERWORLD),
 					GeneratorPreset.build(
 						TerrainLevels.DEFAULT, 
-						ImmutableMap.<BiomeType, Holder<ClimateType>>builder()
-							.put(BiomeType.TROPICAL_RAINFOREST, climates.getOrThrow(ModClimates.TROPICAL_RAINFOREST))
-							.put(BiomeType.SAVANNA, climates.getOrThrow(ModClimates.SAVANNA))
-							.put(BiomeType.DESERT, climates.getOrThrow(ModClimates.DESERT))
-							.put(BiomeType.TEMPERATE_RAINFOREST, climates.getOrThrow(ModClimates.TEMPERATE_RAINFOREST))
-							.put(BiomeType.TEMPERATE_FOREST, climates.getOrThrow(ModClimates.TEMPERATE_FOREST))
-							.put(BiomeType.GRASSLAND, climates.getOrThrow(ModClimates.GRASSLAND))
-							.put(BiomeType.COLD_STEPPE, climates.getOrThrow(ModClimates.COLD_STEPPE))
-							.put(BiomeType.STEPPE, climates.getOrThrow(ModClimates.STEPPE))
-							.put(BiomeType.TAIGA, climates.getOrThrow(ModClimates.TAIGA))
-							.put(BiomeType.TUNDRA, climates.getOrThrow(ModClimates.TUNDRA))
-							.put(BiomeType.ALPINE, climates.getOrThrow(ModClimates.ALPINE))
-							.build(), 
+						new BiomeSampler.Climate[] {
+							new BiomeSampler.Climate(0.25F, 0.25F, climates.getOrThrow(ModClimates.GRASSLAND))
+						},
 						new WeightMap.Builder<>()
 							.entry(1.75F, terrain.getOrThrow(ModTerrain.BADLANDS))
 							.entry(1.5F,  terrain.getOrThrow(ModTerrain.DALES))

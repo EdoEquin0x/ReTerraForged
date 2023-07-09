@@ -53,15 +53,6 @@ public class TerrainLevels {
     public final int seaLevel; // Inclusive index of highest water block
     public final NoiseLevels noiseLevels;
 
-    public TerrainLevels() {
-        this.minY = -Defaults.MIN_Y;
-        this.maxY = Defaults.MAX_Y;
-        this.baseHeight = Defaults.MAX_BASE_HEIGHT;
-        this.seaFloor = Defaults.SEA_FLOOR;
-        this.seaLevel = Defaults.SEA_LEVEL;
-        this.noiseLevels = new NoiseLevels(false, Defaults.SCALE, seaLevel, seaFloor, maxY, baseHeight);
-    }
-
     public TerrainLevels(boolean autoScale, float scale, int minY, int maxY, int baseHeight, int seaLevel, int seaFloor) {
         this.minY = MathUtil.clamp(minY, Limits.MIN_MIN_Y, Limits.MAX_MIN_Y);
         this.maxY = MathUtil.clamp(maxY, Limits.MIN_MAX_Y, Limits.MAX_MAX_Y);

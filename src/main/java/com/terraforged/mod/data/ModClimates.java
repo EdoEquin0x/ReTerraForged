@@ -26,7 +26,6 @@ package com.terraforged.mod.data;
 
 import java.util.Locale;
 
-import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.util.storage.WeightMap;
 import com.terraforged.mod.worldgen.asset.ClimateType;
@@ -37,17 +36,17 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biomes;
 
 public interface ModClimates {
-	ResourceKey<ClimateType> TROPICAL_RAINFOREST = resolve(BiomeType.TROPICAL_RAINFOREST);
-	ResourceKey<ClimateType> SAVANNA = resolve(BiomeType.SAVANNA);
-	ResourceKey<ClimateType> DESERT = resolve(BiomeType.DESERT);
-	ResourceKey<ClimateType> TEMPERATE_RAINFOREST = resolve(BiomeType.TEMPERATE_RAINFOREST);
-	ResourceKey<ClimateType> TEMPERATE_FOREST = resolve(BiomeType.TEMPERATE_FOREST);
-	ResourceKey<ClimateType> GRASSLAND = resolve(BiomeType.GRASSLAND);
-	ResourceKey<ClimateType> COLD_STEPPE = resolve(BiomeType.COLD_STEPPE);
-	ResourceKey<ClimateType> STEPPE = resolve(BiomeType.STEPPE);
-	ResourceKey<ClimateType> TAIGA = resolve(BiomeType.TAIGA);
-	ResourceKey<ClimateType> TUNDRA = resolve(BiomeType.TUNDRA);
-	ResourceKey<ClimateType> ALPINE = resolve(BiomeType.ALPINE);
+	ResourceKey<ClimateType> TROPICAL_RAINFOREST = resolve("tropical_rainforest");
+	ResourceKey<ClimateType> SAVANNA = resolve("savanna");
+	ResourceKey<ClimateType> DESERT = resolve("desert");
+	ResourceKey<ClimateType> TEMPERATE_RAINFOREST = resolve("temperate_rainforest");
+	ResourceKey<ClimateType> TEMPERATE_FOREST = resolve("temperate_forest");
+	ResourceKey<ClimateType> GRASSLAND = resolve("grassland");
+	ResourceKey<ClimateType> COLD_STEPPE = resolve("cold_steppe");
+	ResourceKey<ClimateType> STEPPE = resolve("steppe");
+	ResourceKey<ClimateType> TAIGA = resolve("taiga");
+	ResourceKey<ClimateType> TUNDRA = resolve("tundra");
+	ResourceKey<ClimateType> ALPINE = resolve("alpine");
 	
     float RARE = 1F;
     float NORMAL = 5F;
@@ -59,7 +58,11 @@ public interface ModClimates {
         	new ClimateType(
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.JUNGLE))
-        			.build()
+        			.build(),
+        		lookup.getOrThrow(Biomes.BEACH),
+        		lookup.getOrThrow(Biomes.WARM_OCEAN),
+        		lookup.getOrThrow(Biomes.DEEP_LUKEWARM_OCEAN),
+        		lookup.getOrThrow(Biomes.RIVER)
         	)
         );
         
@@ -67,7 +70,11 @@ public interface ModClimates {
            	new ClimateType(
            		new WeightMap.Builder<>()
            			.entry(NORMAL, lookup.getOrThrow(Biomes.SAVANNA))
-           			.build()
+           			.build(),
+           		lookup.getOrThrow(Biomes.BEACH),
+           		lookup.getOrThrow(Biomes.WARM_OCEAN),
+           		lookup.getOrThrow(Biomes.DEEP_LUKEWARM_OCEAN),
+           		lookup.getOrThrow(Biomes.RIVER)
             )
         );
         
@@ -75,7 +82,11 @@ public interface ModClimates {
         	new ClimateType(
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.DESERT))
-        			.build()
+        			.build(),
+        		lookup.getOrThrow(Biomes.BEACH),
+        		lookup.getOrThrow(Biomes.WARM_OCEAN),
+        		lookup.getOrThrow(Biomes.DEEP_LUKEWARM_OCEAN),
+        		lookup.getOrThrow(Biomes.RIVER)
             )
         );
         
@@ -83,7 +94,11 @@ public interface ModClimates {
         	new ClimateType(
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.JUNGLE))
-        			.build()
+        			.build(),
+        		lookup.getOrThrow(Biomes.BEACH),
+            	lookup.getOrThrow(Biomes.OCEAN),
+            	lookup.getOrThrow(Biomes.DEEP_OCEAN),
+            	lookup.getOrThrow(Biomes.RIVER)
             )
         );
         
@@ -92,7 +107,11 @@ public interface ModClimates {
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.FOREST))
         			.entry(RARE, lookup.getOrThrow(Biomes.BIRCH_FOREST))
-        			.build()
+        			.build(),
+        		lookup.getOrThrow(Biomes.BEACH),
+        		lookup.getOrThrow(Biomes.OCEAN),
+        		lookup.getOrThrow(Biomes.DEEP_OCEAN),
+        		lookup.getOrThrow(Biomes.RIVER)
             )
         );
         
@@ -100,7 +119,11 @@ public interface ModClimates {
         	new ClimateType(
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.PLAINS))
-        			.build()
+        			.build(),
+        		lookup.getOrThrow(Biomes.BEACH),
+        		lookup.getOrThrow(Biomes.OCEAN),
+        		lookup.getOrThrow(Biomes.DEEP_OCEAN),
+        		lookup.getOrThrow(Biomes.RIVER)
             )
         );
         
@@ -108,7 +131,11 @@ public interface ModClimates {
             new ClimateType(
             	new WeightMap.Builder<>()
             		.entry(NORMAL, lookup.getOrThrow(Biomes.SAVANNA_PLATEAU))
-            		.build()
+            		.build(),
+            	lookup.getOrThrow(Biomes.STONY_SHORE),
+            	lookup.getOrThrow(Biomes.OCEAN),
+            	lookup.getOrThrow(Biomes.DEEP_OCEAN),
+            	lookup.getOrThrow(Biomes.RIVER)
             )
         );
         
@@ -116,7 +143,11 @@ public interface ModClimates {
         	new ClimateType(
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.WINDSWEPT_SAVANNA))
-        			.build()
+        			.build(),
+        		lookup.getOrThrow(Biomes.BEACH),
+        		lookup.getOrThrow(Biomes.OCEAN),
+        		lookup.getOrThrow(Biomes.DEEP_OCEAN),
+        		lookup.getOrThrow(Biomes.RIVER)
             )
         );
         
@@ -124,7 +155,11 @@ public interface ModClimates {
         	new ClimateType(
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.TAIGA))
-        			.build()
+        			.build(),
+        		lookup.getOrThrow(Biomes.BEACH),
+        		lookup.getOrThrow(Biomes.OCEAN),
+        		lookup.getOrThrow(Biomes.DEEP_OCEAN),
+        		lookup.getOrThrow(Biomes.RIVER)
             )
         );
         
@@ -132,7 +167,11 @@ public interface ModClimates {
         	new ClimateType(
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.SNOWY_TAIGA))
-        			.build()
+        			.build(),
+            	lookup.getOrThrow(Biomes.BEACH),
+            	lookup.getOrThrow(Biomes.OCEAN),
+            	lookup.getOrThrow(Biomes.DEEP_OCEAN),
+            	lookup.getOrThrow(Biomes.FROZEN_RIVER)
             )
         );
         
@@ -140,12 +179,16 @@ public interface ModClimates {
         	new ClimateType(
         		new WeightMap.Builder<>()
         			.entry(NORMAL, lookup.getOrThrow(Biomes.TAIGA))
-        			.build()
+        			.build(),
+        		lookup.getOrThrow(Biomes.BEACH),
+        		lookup.getOrThrow(Biomes.OCEAN),
+        		lookup.getOrThrow(Biomes.DEEP_OCEAN),
+        		lookup.getOrThrow(Biomes.RIVER)
         	)
         );
     }
     
-    private static ResourceKey<ClimateType> resolve(BiomeType biomeType) {
-		return TerraForged.resolve(TerraForged.CLIMATES, biomeType.name().toLowerCase(Locale.ROOT));
+    private static ResourceKey<ClimateType> resolve(String name) {
+		return TerraForged.resolve(TerraForged.CLIMATES, name.toLowerCase(Locale.ROOT));
 	}
 }
