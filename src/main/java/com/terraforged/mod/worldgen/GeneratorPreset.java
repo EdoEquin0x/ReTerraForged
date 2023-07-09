@@ -48,7 +48,6 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
-import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class GeneratorPreset {
 
@@ -57,12 +56,11 @@ public class GeneratorPreset {
     	Map<BiomeType, Holder<ClimateType>> climates,
 		WeightMap<Holder<TerrainNoise>> terrain,
 		Holder<VegetationConfig>[] vegetation,
-		Holder<Structure>[] structures,
 		Holder<NoiseCave>[] caves,
 		HolderGetter<Biome> biomes,
 		HolderGetter<NoiseGeneratorSettings> noiseSettings
 	) {
-        var biomeGenerator = new BiomeGenerator(vegetation, structures, caves);
+        var biomeGenerator = new BiomeGenerator(vegetation, caves);
         var noiseGenerator = new NoiseGenerator(levels, terrain).withErosion();
         var biomeSource = new Source(
         	noiseGenerator,
@@ -84,7 +82,7 @@ public class GeneratorPreset {
         	biomes.getOrThrow(Biomes.RIVER)
         );
         var vanillaGen = getVanillaGen(biomeSource, noiseSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
-        return new Generator(levels, vanillaGen, biomeSource, biomeGenerator, noiseGenerator, terrain, climates, vegetation, structures, caves);
+        return new Generator(levels, vanillaGen, biomeSource, biomeGenerator, noiseGenerator, terrain, climates, vegetation, caves);
     }
 
     public static VanillaGen getVanillaGen(

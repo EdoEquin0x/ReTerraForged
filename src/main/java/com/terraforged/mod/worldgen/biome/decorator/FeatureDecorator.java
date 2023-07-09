@@ -24,8 +24,6 @@
 
 package com.terraforged.mod.worldgen.biome.decorator;
 
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import com.terraforged.mod.worldgen.Generator;
@@ -46,26 +44,19 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class FeatureDecorator {
     public static final GenerationStep.Decoration[] STAGES = GenerationStep.Decoration.values();
     private static final int MAX_DECORATION_STAGE = GenerationStep.Decoration.TOP_LAYER_MODIFICATION.ordinal();
 
     private final BiomeVegetationManager vegetation;
-    private final Map<GenerationStep.Decoration, List<Holder<Structure>>> structures;
 
-    public FeatureDecorator(Holder<VegetationConfig>[] vegetation, Holder<Structure>[] structures) {
+    public FeatureDecorator(Holder<VegetationConfig>[] vegetation) {
         this.vegetation = new BiomeVegetationManager(vegetation);
-        this.structures = VanillaDecorator.buildStructureMap(structures);
     }
 
     public BiomeVegetationManager getVegetationManager() {
         return vegetation;
-    }
-
-    public List<Holder<Structure>> getStageStructures(int stage) {
-        return structures.get(STAGES[stage]);
     }
 
     public HolderSet<PlacedFeature> getStageFeatures(int stage, Biome biome) {

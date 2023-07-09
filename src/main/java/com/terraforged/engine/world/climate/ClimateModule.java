@@ -7,7 +7,6 @@ import com.terraforged.engine.Seed;
 import com.terraforged.engine.cell.Cell;
 import com.terraforged.engine.settings.Settings;
 import com.terraforged.engine.world.GeneratorContext;
-import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.engine.world.continent.Continent;
 import com.terraforged.engine.world.heightmap.ControlPoints;
 import com.terraforged.engine.world.terrain.TerrainType;
@@ -110,7 +109,6 @@ public class ClimateModule {
             this.modifyTerrain(cell, continentEdge);
         }
         this.modifyMoisture(cell, continentEdge);
-        cell.biome = BiomeType.get(cell.temperature, cell.moisture);
     }
 
     private void modifyMoisture(Cell cell, float continentEdge) {

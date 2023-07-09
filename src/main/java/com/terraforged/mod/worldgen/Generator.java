@@ -72,7 +72,6 @@ import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 public class Generator extends ChunkGenerator implements IGenerator {
@@ -82,7 +81,6 @@ public class Generator extends ChunkGenerator implements IGenerator {
     	Codec.unboundedMap(Codecs.forEnum(BiomeType::valueOf, BiomeType::name), ClimateType.CODEC).fieldOf("climates").forGetter((g) -> g.climates),
     	WeightMap.codec(TerrainNoise.CODEC, Holder[]::new).fieldOf("terrain").forGetter((g) -> g.terrain),
     	Codecs.forArray(VegetationConfig.CODEC, Holder[]::new).fieldOf("vegetation").forGetter((g) -> g.vegetation),
-    	Codecs.forArray(Structure.CODEC, Holder[]::new).fieldOf("structures").forGetter((g) -> g.structures),
     	Codecs.forArray(NoiseCave.CODEC, Holder[]::new).fieldOf("caves").forGetter((g) -> g.caves),
     	RegistryOps.retrieveGetter(Registries.BIOME),
     	RegistryOps.retrieveGetter(Registries.NOISE_SETTINGS)
@@ -99,7 +97,6 @@ public class Generator extends ChunkGenerator implements IGenerator {
     protected final WeightMap<Holder<TerrainNoise>> terrain;
     protected final Map<BiomeType, Holder<ClimateType>> climates;
     protected final Holder<VegetationConfig>[] vegetation;
-    protected final Holder<Structure>[] structures;
     protected final Holder<NoiseCave>[] caves;
     
     public Generator(
@@ -111,7 +108,6 @@ public class Generator extends ChunkGenerator implements IGenerator {
     	WeightMap<Holder<TerrainNoise>> terrain,
     	Map<BiomeType, Holder<ClimateType>> climates,
     	Holder<VegetationConfig>[] vegetation,
-    	Holder<Structure>[] structures,
     	Holder<NoiseCave>[] caves
     ) {
         super(biomeSource);
@@ -124,7 +120,6 @@ public class Generator extends ChunkGenerator implements IGenerator {
         this.terrain = terrain;
         this.climates = climates;
         this.vegetation = vegetation;
-        this.structures = structures;
         this.caves = caves;
     }
 
@@ -225,6 +220,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
     @Override
     public void applyBiomeDecoration(WorldGenLevel region, ChunkAccess chunk, StructureManager structures) {
         int seed = Seeds.get(region.getSeed());
+        
         this.biomeGenerator.decorate(chunk, region, structures, this);
         this.terrainCache.drop(seed, chunk.getPos());
     }
@@ -291,7 +287,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
         lines.add("");
         lines.add("[TerraForged]");
         lines.add("Terrain Type: " + sample.terrainType.getName());
-        lines.add("Climate Type: " + sample.climateType.name());
+        lines.add("Climate Type: " + BiomeType.get(sample.temperature, sample.moisture));
         lines.add("Base Noise: " + sample.baseNoise);
         lines.add("Height Noise: " + sample.heightNoise);
         lines.add("Ocean Proximity: " + (1 - sample.continentNoise));

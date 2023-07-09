@@ -42,7 +42,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 //TODO FIXME Fix VegetationFeatures.create()
-//TODO make sure Source.collectPossibleBiomes() works correctly
+//TODO should deserts only be on flat land? mountain deserts look really bad
 public abstract class TerraForged implements CommonAPI {
 	public static final String MODID = "terraforged";
 	public static final String TITLE = "TerraForged";

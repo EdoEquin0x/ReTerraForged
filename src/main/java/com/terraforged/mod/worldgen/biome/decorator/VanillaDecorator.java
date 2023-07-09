@@ -29,13 +29,17 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.google.common.collect.ImmutableList;
 import com.terraforged.mod.worldgen.Generator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -58,15 +62,18 @@ public class VanillaDecorator {
                                 WorldgenRandom random,
                                 StructureManager structureManager,
                                 FeatureDecorator decorator) {
-
+    	Registry<Structure> registry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        Map<Integer, List<Structure>> structuresByStep = registry.stream().collect(Collectors.groupingBy((structure) -> {
+           return structure.step().ordinal();
+        }));
         for (int stage = from; stage <= to; stage++) {
-            var structures = decorator.getStageStructures(stage);
+            var structures = structuresByStep.getOrDefault(stage, ImmutableList.of());
             var features = decorator.getStageFeatures(stage, biome.value());
             if (features == null) continue;
 
             placeStructures(seed, stage, chunk, level, generator, random, structureManager, structures);
 
-            placeFeatures(seed, structures.size(), stage, origin, level, generator, random, features);
+            placeFeatures(seed, structuresByStep.size(), stage, origin, level, generator, random, features);
         }
     }
 
@@ -77,15 +84,14 @@ public class VanillaDecorator {
                                         Generator generator,
                                         WorldgenRandom random,
                                         StructureManager structureManager,
-                                        List<Holder<Structure>> structures) {
-
+                                        List<Structure> structures) {
         var chunkPos = chunk.getPos();
         var sectionPos = SectionPos.of(chunkPos, level.getMinSection());
 
         for (int structureIndex = 0; structureIndex < structures.size(); structureIndex++) {
             random.setFeatureSeed(seed, structureIndex, stage);
 
-            var structure = structures.get(structureIndex).value();
+            var structure = structures.get(structureIndex);
             var starts = structureManager.startsForStructure(sectionPos, structure);
             for (int startIndex = 0; startIndex < starts.size(); startIndex++) {
                 var start = starts.get(startIndex);

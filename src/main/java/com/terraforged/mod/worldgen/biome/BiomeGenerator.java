@@ -41,17 +41,16 @@ import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.RandomState;
-import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class BiomeGenerator {
     private final SurfaceDecorator surfaceDecorator;
     private final FeatureDecorator featureDecorator;
     private final NoiseCaveGenerator noiseCaveGenerator;
 
-    public BiomeGenerator(Holder<VegetationConfig>[] vegetation, Holder<Structure>[] structures, Holder<NoiseCave>[] caves) {
+    public BiomeGenerator(Holder<VegetationConfig>[] vegetation, Holder<NoiseCave>[] caves) {
         this.surfaceDecorator = new SurfaceDecorator();
-        this.featureDecorator = new FeatureDecorator(vegetation, structures);
-        this.noiseCaveGenerator = new NoiseCaveGenerator(caves); //TODO
+        this.featureDecorator = new FeatureDecorator(vegetation);
+        this.noiseCaveGenerator = new NoiseCaveGenerator(caves);
     }
 
     public void surface(ChunkAccess chunk, WorldGenRegion region, RandomState state, Generator generator) {

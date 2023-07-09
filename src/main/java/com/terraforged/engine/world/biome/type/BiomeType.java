@@ -5,7 +5,6 @@ package com.terraforged.engine.world.biome.type;
 
 import java.awt.Color;
 
-import com.terraforged.engine.cell.Cell;
 import com.terraforged.noise.util.NoiseUtil;
 import com.terraforged.noise.util.Vec2f;
 
@@ -100,18 +99,6 @@ public enum BiomeType {
         int x = NoiseUtil.round(255.0f * temperature);
         int y = BiomeType.getYCurve(x, temperature, moisture);
         return BiomeType.getType(x, y);
-    }
-
-    public static void apply(Cell cell) {
-        BiomeType.applyCurve(cell);
-    }
-
-    public static void applyLinear(Cell cell) {
-        cell.biome = BiomeType.get(cell.temperature, cell.moisture);
-    }
-
-    public static void applyCurve(Cell cell) {
-        cell.biome = BiomeType.get(cell.temperature, cell.moisture);
     }
 
     private static BiomeType getType(int x, int y) {

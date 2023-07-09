@@ -27,7 +27,6 @@ package com.terraforged.mod.worldgen.noise.climate;
 import com.terraforged.engine.Seed;
 import com.terraforged.engine.settings.Settings;
 import com.terraforged.engine.world.GeneratorContext;
-import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.engine.world.climate.Moisture;
 import com.terraforged.engine.world.climate.Temperature;
 import com.terraforged.mod.util.MathUtil;
@@ -105,13 +104,6 @@ public class ClimateNoise {
         py = cellShape.adjustY(py);
 
         sampleBiome(seed, px, py, sample);
-
-        sample.climateType = BiomeType.get(sample.temperature, sample.moisture);
-
-        // TODO: Remove
-        if (sample.climateType == BiomeType.COLD_STEPPE || sample.climateType == BiomeType.STEPPE) {
-            sample.climateType = BiomeType.GRASSLAND;
-        }
     }
 
     private void sampleBiome(int seed, float x, float y, ClimateSample sample) {

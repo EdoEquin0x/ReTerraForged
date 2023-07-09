@@ -92,7 +92,8 @@ public class BiomeSampler extends IBiomeSampler.Sampler implements IBiomeSampler
 
     public Holder<Biome> sampleBiome(int seed, int x, int z) {
         var sample = this.getSample(seed, x, z);
-        var biome = this.getInitialBiome(sample.biomeNoise, sample.climateType);
+        var climateType = BiomeType.get(sample.temperature, sample.moisture);
+        var biome = this.getInitialBiome(sample.biomeNoise, climateType);
         return this.getBiomeOverride(biome, sample);
     }
 
@@ -105,10 +106,10 @@ public class BiomeSampler extends IBiomeSampler.Sampler implements IBiomeSampler
     }
 
     protected Holder<Biome> getBiomeOverride(Holder<Biome> input, ClimateSample sample) {
-        var biomeType = sample.climateType;
+        var climateType = BiomeType.get(sample.temperature, sample.moisture);
 
         if (sample.continentNoise <= ContinentPoints.SHALLOW_OCEAN) {
-            return switch (biomeType) {
+            return switch (climateType) {
                 case TAIGA, COLD_STEPPE -> this.deepColdOcean;
                 case TUNDRA -> this.deepFrozenOcean;
                 case DESERT, SAVANNA, TROPICAL_RAINFOREST -> this.deepLukewarmOcean;
@@ -117,7 +118,7 @@ public class BiomeSampler extends IBiomeSampler.Sampler implements IBiomeSampler
         }
 
         if (sample.continentNoise <= ContinentPoints.BEACH) {
-            return switch (biomeType) {
+            return switch (climateType) {
                 case TAIGA, COLD_STEPPE -> this.coldOcean;
                 case TUNDRA -> this.frozenOcean;
                 case DESERT, SAVANNA, TROPICAL_RAINFOREST -> this.warmOcean;
@@ -126,7 +127,7 @@ public class BiomeSampler extends IBiomeSampler.Sampler implements IBiomeSampler
         }
 
         if (sample.continentNoise <= ContinentPoints.BEACH + this.beachSize) {
-            return switch (biomeType) {
+            return switch (climateType) {
                 case TUNDRA -> this.snowyBeach;
                 case COLD_STEPPE -> this.stonyBeach;
                 default -> this.beach;
@@ -134,7 +135,7 @@ public class BiomeSampler extends IBiomeSampler.Sampler implements IBiomeSampler
         }
 
         if ((sample.terrainType.isRiver() || sample.terrainType.isLake()) && sample.riverNoise == 0) {
-            return biomeType == BiomeType.TUNDRA ? this.frozenRiver : this.river;
+            return climateType == BiomeType.TUNDRA ? this.frozenRiver : this.river;
         }
 
         return input;

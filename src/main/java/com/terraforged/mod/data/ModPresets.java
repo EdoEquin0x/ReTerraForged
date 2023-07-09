@@ -41,7 +41,6 @@ public interface ModPresets {
 		HolderGetter<ClimateType> climates = ctx.lookup(TerraForged.CLIMATES);
 		HolderGetter<TerrainNoise> terrain = ctx.lookup(TerraForged.TERRAIN);
 		HolderGetter<VegetationConfig> vegetation = ctx.lookup(TerraForged.VEGETATION);
-		//HolderGetter<Structure> structures = ctx.lookup(Registries.STRUCTURE);
 		HolderGetter<NoiseCave> caves = ctx.lookup(TerraForged.CAVES);
 		HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
 		HolderGetter<NoiseGeneratorSettings> noiseSettings = ctx.lookup(Registries.NOISE_SETTINGS);
@@ -101,9 +100,6 @@ public interface ModPresets {
 							vegetation.getOrThrow(ModVegetation.TREES_SPARSE_RAINFOREST),
 							vegetation.getOrThrow(ModVegetation.TREES_TEMPERATE)
 						},
-						new Holder[] {
-							//TODO
-						}, 
 						new Holder[] {
 							caves.getOrThrow(ModCaves.MEGA),
 							caves.getOrThrow(ModCaves.MEGA_DEEP),

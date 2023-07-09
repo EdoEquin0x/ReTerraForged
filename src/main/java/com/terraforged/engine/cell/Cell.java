@@ -6,7 +6,6 @@ package com.terraforged.engine.cell;
 import com.terraforged.engine.concurrent.Resource;
 import com.terraforged.engine.concurrent.SimpleResource;
 import com.terraforged.engine.concurrent.pool.ThreadLocalPool;
-import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.engine.world.terrain.TerrainType;
 
@@ -40,7 +39,6 @@ public class Cell {
     public int continentZ;
     public boolean erosionMask = false;
     public Terrain terrain = TerrainType.NONE;
-    public BiomeType biome = BiomeType.GRASSLAND;
 
     public void copyFrom(Cell other) {
         this.value = other.value;
@@ -60,7 +58,6 @@ public class Cell {
         this.gradient = other.gradient;
         this.erosion = other.erosion;
         this.sediment = other.sediment;
-        this.biome = other.biome;
         this.terrain = other.terrain;
     }
 

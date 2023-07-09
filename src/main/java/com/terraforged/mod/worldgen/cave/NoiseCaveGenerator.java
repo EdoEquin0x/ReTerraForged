@@ -44,9 +44,7 @@ public class NoiseCaveGenerator {
     protected static final float BREACH_THRESHOLD = 0.7F;
     protected static final int GLOBAL_CAVE_REPS = 2;
 
-    //TODO this should be final
     protected final Holder<NoiseCave>[] caves;
-    //TODO remove
     protected final Module uniqueCaveNoise;
     protected final Module caveBreachNoise;
     protected final ObjectPool<CarverChunk> pool;

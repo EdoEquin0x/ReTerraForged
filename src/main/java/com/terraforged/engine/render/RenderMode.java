@@ -8,6 +8,7 @@ import java.awt.Color;
 import com.terraforged.engine.cell.Cell;
 import com.terraforged.engine.concurrent.Resource;
 import com.terraforged.engine.concurrent.pool.ObjectPool;
+import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.engine.world.heightmap.Levels;
 import com.terraforged.engine.world.terrain.TerrainType;
 import com.terraforged.noise.util.NoiseUtil;
@@ -24,7 +25,8 @@ public enum RenderMode {
                     hsb[1] = 0.55f;
                     hsb[2] = 1.0f;
                 } else {
-                    Color c = cell.biome.getColor();
+                    var climateType = BiomeType.get(cell.temperature, cell.moisture);
+                    Color c = climateType.getColor();
                     Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), hsb);
                 }
                 RenderMode.color(buffer, hsb[0] * 100.0f, hsb[1] * 100.0f, hsb[2] * 100.0f, height, 0.5f, context.levels);

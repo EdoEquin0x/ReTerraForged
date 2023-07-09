@@ -24,6 +24,7 @@
 
 package com.terraforged.mod.util;
 
+import com.terraforged.engine.world.biome.type.BiomeType;
 import com.terraforged.mod.worldgen.noise.climate.ClimateSample;
 import com.terraforged.mod.worldgen.noise.continent.ContinentPoints;
 import com.terraforged.noise.util.NoiseUtil;
@@ -69,6 +70,8 @@ public class ColorUtil {
         if (sample.continentNoise <= ContinentPoints.SHALLOW_OCEAN) return 0x0066DD;
         if (sample.continentNoise <= ContinentPoints.BEACH) return 0x0099DD;
         if (sample.riverNoise <= 0) return 0x0099DD;
-        return ColorUtil.shade(sample.climateType.getColor(), shade);
+
+        var climateType = BiomeType.get(sample.temperature, sample.moisture);
+        return ColorUtil.shade(climateType.getColor(), shade);
     }
 }
