@@ -26,7 +26,7 @@ package com.terraforged.mod.worldgen.biome.decorator;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
 import com.terraforged.mod.worldgen.biome.vegetation.BiomeVegetationManager;
 import com.terraforged.mod.worldgen.biome.vegetation.VegetationFeatures;
@@ -69,7 +69,7 @@ public class FeatureDecorator {
                          WorldGenLevel level,
                          StructureManager structures,
                          CompletableFuture<TerrainData> terrain,
-                         Generator generator) {
+                         TFGenerator generator) {
         var origin = getOrigin(level, chunk);
         var biome = level.getBiome(origin);
         var random = getRandom(level.getSeed());
@@ -85,7 +85,7 @@ public class FeatureDecorator {
                              Holder<Biome> biome,
                              ChunkAccess chunk,
                              WorldGenLevel level,
-                             Generator generator,
+                             TFGenerator generator,
                              WorldgenRandom random,
                              StructureManager structureManager) {
 
@@ -97,7 +97,7 @@ public class FeatureDecorator {
                               Holder<Biome> biome,
                               ChunkAccess chunk,
                               WorldGenLevel level,
-                              Generator generator,
+                              TFGenerator generator,
                               WorldgenRandom random,
                               StructureManager structureManager) {
 
@@ -109,7 +109,7 @@ public class FeatureDecorator {
                                     Holder<Biome> biome,
                                     ChunkAccess chunk,
                                     WorldGenLevel level,
-                                    Generator generator,
+                                    TFGenerator generator,
                                     WorldgenRandom random,
                                     CompletableFuture<TerrainData> terrain) {
 

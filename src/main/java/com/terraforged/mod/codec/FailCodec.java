@@ -1,4 +1,4 @@
-package com.terraforged.mod.data.codec;
+package com.terraforged.mod.codec;
 
 import java.util.function.Supplier;
 
@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 
-public record ErrorCodec<A>(Supplier<String> error) implements Codec<A> {
+public record FailCodec<A>(Supplier<String> error) implements Codec<A> {
 	
 	@Override
 	public <T> DataResult<T> encode(A input, DynamicOps<T> ops, T prefix) {
@@ -17,5 +17,9 @@ public record ErrorCodec<A>(Supplier<String> error) implements Codec<A> {
 	@Override
 	public <T> DataResult<Pair<A, T>> decode(DynamicOps<T> ops, T input) {
 		return DataResult.error(this.error);
+	}
+	
+	public static <A> FailCodec<A> fail(String message) {
+		return new FailCodec<>(() -> message);
 	}
 }

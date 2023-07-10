@@ -26,14 +26,13 @@ package com.terraforged.mod.platform.forge;
 
 import com.google.common.collect.ImmutableSet;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.data.ModBiomes;
-import com.terraforged.mod.data.ModCaves;
-import com.terraforged.mod.data.ModClimates;
-import com.terraforged.mod.data.ModPresets;
-import com.terraforged.mod.data.ModTerrainTypes;
-import com.terraforged.mod.data.ModTerrain;
-import com.terraforged.mod.data.ModVegetation;
 import com.terraforged.mod.lifecycle.Stage;
+import com.terraforged.mod.registry.data.TFBiomes;
+import com.terraforged.mod.registry.data.TFCaves;
+import com.terraforged.mod.registry.data.TFPresets;
+import com.terraforged.mod.registry.data.TFTerrain;
+import com.terraforged.mod.registry.data.TFTerrainTypes;
+import com.terraforged.mod.registry.data.TFVegetation;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -46,13 +45,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class TFData extends Stage {
 	public static final TFData STAGE = new TFData();
 	private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-		.add(Registries.BIOME, ModBiomes::register)
-		.add(TerraForged.CAVES, ModCaves::register)
-		.add(TerraForged.CLIMATES, ModClimates::register)
-		.add(TerraForged.TERRAIN_TYPES, ModTerrainTypes::register)
-		.add(TerraForged.TERRAIN, ModTerrain::register)
-		.add(TerraForged.VEGETATION, ModVegetation::register)
-		.add(Registries.WORLD_PRESET, ModPresets::register);
+		.add(Registries.BIOME, TFBiomes::register)
+		.add(TerraForged.CAVE, TFCaves::register)
+		.add(TerraForged.TERRAIN_TYPE, TFTerrainTypes::register)
+		.add(TerraForged.TERRAIN, TFTerrain::register)
+		.add(TerraForged.VEGETATION, TFVegetation::register)
+		.add(Registries.WORLD_PRESET, TFPresets::register);
 	
     @Override
     protected void doInit() {

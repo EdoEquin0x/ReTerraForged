@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.data;
+package com.terraforged.mod.registry.data;
 
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.util.seed.RandSeed;
@@ -34,7 +34,7 @@ import com.terraforged.noise.util.NoiseUtil;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
-public interface ModCaves {
+public interface TFCaves {
 	ResourceKey<NoiseCave> SYNAPSE_HIGH = resolve("synapse_high");
 	ResourceKey<NoiseCave> SYNAPSE_MID = resolve("synapse_mid");
 	ResourceKey<NoiseCave> SYNAPSE_LOW = resolve("synapse_low");
@@ -52,7 +52,7 @@ public interface ModCaves {
     }
 
     private static ResourceKey<NoiseCave> resolve(String path) {
-		return TerraForged.resolve(TerraForged.CAVES, path);
+		return TerraForged.resolve(TerraForged.CAVE, path);
 	}
     
     class Factory {

@@ -34,7 +34,7 @@ import net.minecraft.world.level.biome.Biome;
 public class BiomeUtil {
     private static final Comparator<ResourceKey<?>> KEY_COMPARATOR = Comparator.comparing(ResourceKey::location);
 
-    public static Comparator<Holder<Biome>> BIOME_SORTER = (o1, o2) -> {
+    public final static Comparator<Holder<Biome>> BIOME_SORTER = (o1, o2) -> {
         var k1 = o1.unwrapKey().orElseThrow();
         var k2 = o2.unwrapKey().orElseThrow();
         Objects.requireNonNull(k1);

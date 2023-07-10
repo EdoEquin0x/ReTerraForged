@@ -25,7 +25,7 @@
 package com.terraforged.mod.worldgen.biome.viability;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.data.codec.SuperCodec;
+import com.terraforged.mod.codec.SuperCodec;
 import com.terraforged.mod.data.util.DataUtil;
 
 public class ViabilityCodec {

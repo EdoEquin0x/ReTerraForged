@@ -40,6 +40,11 @@ public class MathUtil {
     public static float clamp(float value, float min, float max) {
         return value < min ? min : value > max ? max : value;
     }
+    
+
+	public static float step(float value, int steps) {
+        return ((float) NoiseUtil.round(value * steps)) / steps;
+    }
 
     public static float map(float value, float min0, float max0, float min1, float max1) {
         float alpha = NoiseUtil.map(value, min0, max0, max0 - min0);

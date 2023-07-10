@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.data;
+package com.terraforged.mod.registry.data;
 
 import javax.annotation.Nullable;
 
@@ -47,7 +47,7 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-public interface ModBiomes {
+public interface TFBiomes {
 	ResourceKey<Biome> CAVE = resolve("cave");
 	ResourceKey<Biome> FOREST = resolve("forest");
 

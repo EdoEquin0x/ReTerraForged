@@ -24,13 +24,11 @@
 
 package com.terraforged.mod.worldgen.biome;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
 import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.mod.data.codec.ErrorCodec;
+import com.terraforged.mod.codec.FailCodec;
 import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
 import com.terraforged.mod.worldgen.cave.CaveType;
@@ -41,51 +39,35 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 
-public class Source extends BiomeSource {
-    public static final Codec<Source> CODEC = new ErrorCodec<>(() -> "unsupported");
-    public static final Climate.Sampler NOOP_CLIMATE_SAMPLER = Climate.empty();
-
+public class TFBiomeSource extends BiomeSource {
+    public static final Codec<TFBiomeSource> CODEC = FailCodec.fail("TODO");
+    
     protected int seed;
-    protected final BiomeSampler.Climate[] climates;
+    @Deprecated(forRemoval = true)
     protected final BiomeSampler biomeSampler;
+    @Deprecated(forRemoval = true)
     protected final CaveBiomeSampler caveBiomeSampler;
     @SuppressWarnings("unchecked")
 	protected final LongCache<Holder<Biome>> cache = LossyCache.concurrent(2048, i -> new Holder[i]);
 
     @SuppressWarnings("unchecked")
-	public Source(
-    	INoiseGenerator noise, 
-    	BiomeSampler.Climate[] climates,
-    	Holder<Biome> cave,
-    	Holder<Biome> fallback
-    ) {
-    	this.climates = climates;
-        this.biomeSampler = new BiomeSampler(noise, climates, fallback);
+	public TFBiomeSource(INoiseGenerator noise, @Deprecated(forRemoval = true) Holder<Biome> cave, BiomeSource delegate) {
+        this.biomeSampler = new BiomeSampler(noise, delegate);
         this.caveBiomeSampler = new CaveBiomeSampler(800, new Holder[] { cave });
     }
-
+    
+    public BiomeSource getDelegate() {
+    	return this.biomeSampler.getDelegate();
+    }
+    
+    @Deprecated(forRemoval = true)
     public void withSeed(long seed) {
         this.seed = (int) seed;
     }
 
-//	  i think its safe to disable this, not sure though
-    
-//    /**
-//     * Note: We provide the super-class an empty list to avoid the biome feature
-//     * order dependency exceptions (wtf mojang). We do not use the featuresByStep
-//     * list so order does not matter to us (thank god! Biome mods are going to
-//     * get this very wrong).
-//     * <p>
-//     * We instead maintain our own set with the actual biomes and override here :)
-//     */
-//    @Override
-//    public Set<Holder<Biome>> possibleBiomes() {
-//        return possibleBiomes;
-//    }
-
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return extractBiomes(this.climates).stream();
+		return this.biomeSampler.getDelegate().possibleBiomes().stream();
 	}
 
     @Override
@@ -95,7 +77,7 @@ public class Source extends BiomeSource {
 
     @Override
     public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
-        return this.cache.computeIfAbsent(this.seed, PosUtil.pack(x, z), this::compute);
+        return this.cache.computeIfAbsent(this.seed, PosUtil.pack(x, z), (seed, key) -> this.biomeSampler.sampleBiome(seed, x, y, z, sampler));
     }
 
     public BiomeSampler getBiomeSampler() {
@@ -108,21 +90,5 @@ public class Source extends BiomeSource {
 
     public Holder<Biome> getUnderGroundBiome(int seed, int x, int z, CaveType type) {
         return this.caveBiomeSampler.getUnderGroundBiome(this.seed + seed, x, z, type);
-    }
-
-    protected Holder<Biome> compute(int seed, long index) {
-        int x = PosUtil.unpackLeft(index) << 2;
-        int z = PosUtil.unpackRight(index) << 2;
-        return this.biomeSampler.sampleBiome(seed, x, z);
-    }
-    
-    private static Set<Holder<Biome>> extractBiomes(BiomeSampler.Climate[] climates) {
-    	Set<Holder<Biome>> biomes = new HashSet<>();
-    	for(BiomeSampler.Climate climate : climates) {
-    		for(Holder<Biome> holder : climate.type().value().biomes()) {
-    			biomes.add(holder);
-    		}
-    	}
-    	return biomes;
     }
 }

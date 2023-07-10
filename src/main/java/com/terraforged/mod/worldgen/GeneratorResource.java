@@ -28,7 +28,9 @@ import com.terraforged.mod.worldgen.util.BiomeBuffer2D;
 import com.terraforged.mod.worldgen.util.ChunkUtil;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class GeneratorResource {
-    public final BiomeBuffer2D biomeBuffer2D = new BiomeBuffer2D();
-    public final FriendlyByteBuf fullSection = ChunkUtil.getFullSection();
+public record GeneratorResource(BiomeBuffer2D biomeBuffer, FriendlyByteBuf fullSection) {
+
+	public GeneratorResource() {
+		this(new BiomeBuffer2D(), ChunkUtil.getFullSection());
+	}
 }

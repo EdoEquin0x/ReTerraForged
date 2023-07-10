@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.data;
+package com.terraforged.mod.registry.data;
 
 import java.util.function.BiFunction;
 
@@ -44,7 +44,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
-public interface ModTerrain {
+public interface TFTerrain {
 	ResourceKey<TerrainNoise> STEPPE = resolve("steppe");
 	ResourceKey<TerrainNoise> PLAINS = resolve("plains");
 	ResourceKey<TerrainNoise> HILLS_1 = resolve("hills_1");
@@ -61,7 +61,7 @@ public interface ModTerrain {
 	ResourceKey<TerrainNoise> MOUNTAINS_RIDGE_2 = resolve("mountains_ridge_2");
 	
     static void register(BootstapContext<TerrainNoise> ctx) {
-    	HolderGetter<com.terraforged.mod.worldgen.asset.TerrainType> holder = ctx.lookup(TerraForged.TERRAIN_TYPES);
+    	HolderGetter<com.terraforged.mod.worldgen.asset.TerrainType> holder = ctx.lookup(TerraForged.TERRAIN_TYPE);
     	
         var seed = Factory.createSeed();
         ctx.register(STEPPE, Factory.create(holder, seed, TerrainType.FLATS, LandForms::steppe));
@@ -71,11 +71,11 @@ public interface ModTerrain {
         ctx.register(DALES, Factory.create(holder, seed, TerrainType.HILLS, LandForms::dales));
         ctx.register(PLATEAU, Factory.create(holder, seed, TerrainType.PLATEAU, LandForms::plateau));
         ctx.register(BADLANDS, Factory.create(holder, seed, TerrainType.BADLANDS, LandForms::badlands));
-        ctx.register(TORRIDONIAN, Factory.create(holder, seed, ModTerrainTypes.TORRIDONIAN, LandForms::torridonian));
+        ctx.register(TORRIDONIAN, Factory.create(holder, seed, TFTerrainTypes.TORRIDONIAN, LandForms::torridonian));
         ctx.register(MOUNTAINS_1, Factory.create(holder, seed, TerrainType.MOUNTAINS, LandForms::mountains));
         ctx.register(MOUNTAINS_2, Factory.create(holder, seed, TerrainType.MOUNTAINS, LandForms::mountains2));
         ctx.register(MOUNTAINS_3, Factory.create(holder, seed, TerrainType.MOUNTAINS, LandForms::mountains3));
-        ctx.register(DOLOMITES, Factory.createDolomite(holder, seed, ModTerrainTypes.DOLOMITES));
+        ctx.register(DOLOMITES, Factory.createDolomite(holder, seed, TFTerrainTypes.DOLOMITES));
         ctx.register(MOUNTAINS_RIDGE_1, Factory.createNF(holder, seed, TerrainType.MOUNTAINS, LandForms::mountains2));
         ctx.register(MOUNTAINS_RIDGE_2, Factory.createNF(holder, seed, TerrainType.MOUNTAINS, LandForms::mountains3));
     }
@@ -126,7 +126,7 @@ public interface ModTerrain {
         }
 
         static Holder<com.terraforged.mod.worldgen.asset.TerrainType> getType(HolderGetter<com.terraforged.mod.worldgen.asset.TerrainType> getter, Terrain terrain) {
-            return getter.getOrThrow(TerraForged.resolve(TerraForged.TERRAIN_TYPES, terrain.getName()));
+            return getter.getOrThrow(TerraForged.resolve(TerraForged.TERRAIN_TYPE, terrain.getName()));
         }
 
         static TerrainSettings settings() {

@@ -11,7 +11,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.mod.data.codec.Codecs;
+import com.terraforged.mod.codec.Codecs;
 import com.terraforged.mod.util.MathUtil;
 
 public class WeightMap<T> implements Iterable<T> {

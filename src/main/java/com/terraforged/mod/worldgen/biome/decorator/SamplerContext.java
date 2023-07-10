@@ -25,7 +25,7 @@
 package com.terraforged.mod.worldgen.biome.decorator;
 
 import com.terraforged.mod.util.storage.FloatMap;
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
 import com.terraforged.mod.worldgen.biome.util.BiomeList;
 import com.terraforged.mod.worldgen.biome.vegetation.BiomeVegetation;
@@ -45,7 +45,7 @@ public class SamplerContext {
 
     public ChunkAccess chunk;
     public WorldGenLevel region;
-    public Generator generator;
+    public TFGenerator generator;
     public WorldgenRandom random;
 
     public Biome biome;

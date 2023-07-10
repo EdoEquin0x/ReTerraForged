@@ -22,30 +22,28 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.data;
+package com.terraforged.mod.registry.data;
 
+import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.mod.TerraForged;
+import com.terraforged.mod.worldgen.asset.TerrainType;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.biome.Biome;
 
-public interface ModTags {
-    TagKey<Biome> OVERWORLD = resolve(Registries.BIOME, "overworld");
+public interface TFTerrainTypes {
+    Terrain TORRIDONIAN = com.terraforged.engine.world.terrain.TerrainType.getOrCreate("torridonian", com.terraforged.engine.world.terrain.TerrainType.HILLS);
+    Terrain DOLOMITES = com.terraforged.engine.world.terrain.TerrainType.getOrCreate("dolomites", com.terraforged.engine.world.terrain.TerrainType.MOUNTAINS);
 
-    // Trees
-    TagKey<Biome> COPSES = resolve(Registries.BIOME, "trees/copses");
-    TagKey<Biome> HARDY = resolve(Registries.BIOME, "trees/hardy");
-    TagKey<Biome> HARDY_SLOPES = resolve(Registries.BIOME, "trees/hardy_slopes");
-    TagKey<Biome> PATCHY = resolve(Registries.BIOME, "trees/patchy");
-    TagKey<Biome> RAINFOREST = resolve(Registries.BIOME, "trees/rainforest");
-    TagKey<Biome> SPARSE = resolve(Registries.BIOME, "trees/sparse");
-    TagKey<Biome> SPARSE_RAINFOREST = resolve(Registries.BIOME, "trees/sparse_rainforest");
-    TagKey<Biome> TEMPERATE = resolve(Registries.BIOME, "trees/temperate");
-    
-    static <T> TagKey<T> resolve(ResourceKey<Registry<T>> registry, String path) {
-    	return TagKey.create(registry, TerraForged.location(path));
+    static void register(BootstapContext<TerrainType> ctx) {
+        com.terraforged.engine.world.terrain.TerrainType.forEach(terrain -> {
+            var type = TerrainType.of(terrain);
+            
+            ctx.register(resolve(terrain.getName()), type);
+        });
     }
+    
+    private static ResourceKey<TerrainType> resolve(String path) {
+		return TerraForged.resolve(TerraForged.TERRAIN_TYPE, path);
+	}
 }

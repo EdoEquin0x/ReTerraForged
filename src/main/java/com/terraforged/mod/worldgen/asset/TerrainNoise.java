@@ -29,8 +29,7 @@ import java.util.Comparator;
 import com.mojang.serialization.Codec;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.data.codec.LazyCodec;
-import com.terraforged.mod.util.seed.ContextSeedable;
+import com.terraforged.mod.codec.LazyCodec;
 import com.terraforged.mod.worldgen.noise.NoiseCodec;
 import com.terraforged.noise.Module;
 import com.terraforged.noise.Source;
@@ -38,7 +37,7 @@ import com.terraforged.noise.Source;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 
-public class TerrainNoise implements ContextSeedable<TerrainNoise> {
+public class TerrainNoise {
     public static final TerrainNoise NONE = new TerrainNoise(Holder.direct(TerrainType.NONE), Source.ZERO);
     public static final Comparator<TerrainNoise> COMPARATOR = Comparator.comparing(t -> t.terrain().getName());
 
@@ -56,12 +55,6 @@ public class TerrainNoise implements ContextSeedable<TerrainNoise> {
     public TerrainNoise(Holder<TerrainType> type, Module noise) {
         this.type = type;
         this.noise = noise.minValue() < MIN_NOISE ? noise.bias(MIN_NOISE).clamp(0, 1) : noise;
-    }
-
-    @Override
-    public TerrainNoise withSeed(long seed) {
-        var heightmap = withSeed(seed, noise(), Module.class);
-        return new TerrainNoise(this.type, heightmap);
     }
 
     public Holder<TerrainType> type() {

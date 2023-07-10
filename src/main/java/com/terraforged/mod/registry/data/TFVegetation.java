@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.data;
+package com.terraforged.mod.registry.data;
 
 import com.terraforged.engine.Seed;
 import com.terraforged.mod.TerraForged;
@@ -39,7 +39,7 @@ import com.terraforged.noise.Source;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
-public interface ModVegetation {
+public interface TFVegetation {
 	static ResourceKey<VegetationConfig> TREES_COPSE = resolve("trees_copse");
 	static ResourceKey<VegetationConfig> TREES_SPARSE = resolve("trees_sparse");
 	static ResourceKey<VegetationConfig> TREES_PATCHY = resolve("trees_patchy");
@@ -71,7 +71,7 @@ public interface ModVegetation {
         }
 
         static VegetationConfig copse(Seed seed) {
-            return new VegetationConfig(0.20F, 0.8F, 0.6F, ModTags.COPSES, SumViability.builder(0F)
+            return new VegetationConfig(0.20F, 0.8F, 0.6F, TFTags.COPSES, SumViability.builder(0F)
                     .with(0.2F, new SaturationViability(0.7F, 1F))
                     .with(-1.0F, new HeightViability(-100, 35, 150))
                     .with(-0.5F, new SlopeViability(65, 0.55F))
@@ -80,7 +80,7 @@ public interface ModVegetation {
         }
 
         static VegetationConfig hardy(Seed seed) {
-            return new VegetationConfig(0.22F, 0.8F, 0.7F, ModTags.HARDY, SumViability.builder(0.5F)
+            return new VegetationConfig(0.22F, 0.8F, 0.7F, TFTags.HARDY, SumViability.builder(0.5F)
                     .with(0.2F, new SaturationViability(0.85F, 1F))
                     .with(-1.0F, new HeightViability(-100, 40, 190))
                     .with(-0.8F, new SlopeViability(55, 0.65F))
@@ -90,7 +90,7 @@ public interface ModVegetation {
         }
 
         static VegetationConfig hardySlopes(Seed seed) {
-            return new VegetationConfig(0.20F, 0.8F, 0.7F, ModTags.HARDY_SLOPES, SumViability.builder(0.2F)
+            return new VegetationConfig(0.20F, 0.8F, 0.7F, TFTags.HARDY_SLOPES, SumViability.builder(0.2F)
                     .with(+0.2F, new SaturationViability(0.8F, 1F))
                     .with(-1.0F, new HeightViability(-100, 40, 150))
                     .with(+1.0F, new SlopeViability(60, 0.5F))
@@ -100,7 +100,7 @@ public interface ModVegetation {
         }
 
         static VegetationConfig sparse(Seed seed) {
-            return new VegetationConfig(0.15F, 0.75F, 0.35F, ModTags.SPARSE, SumViability.builder(0F)
+            return new VegetationConfig(0.15F, 0.75F, 0.35F, TFTags.SPARSE, SumViability.builder(0F)
                     .with(0.4F, new SaturationViability(0.95F, 1F))
                     .with(-1.0F, new HeightViability(-100, 50, 175))
                     .with(-1.0F, new SlopeViability(65, 0.6F))
@@ -109,7 +109,7 @@ public interface ModVegetation {
         }
 
         static VegetationConfig rainforest(Seed seed) {
-            return new VegetationConfig(0.35F, 0.75F, 0.7F, ModTags.RAINFOREST, SumViability.builder(0.45F)
+            return new VegetationConfig(0.35F, 0.75F, 0.7F, TFTags.RAINFOREST, SumViability.builder(0.45F)
                     .with(0.25F, new SaturationViability(0.7F, 1F))
                     .with(-1.0F, new HeightViability(-100, 60, 180))
                     .with(-0.5F, new SlopeViability(55, 0.65F))
@@ -119,7 +119,7 @@ public interface ModVegetation {
         }
 
         static VegetationConfig sparseRainforest(Seed seed) {
-            return new VegetationConfig(0.15F, 0.8F, 0.45F, ModTags.SPARSE_RAINFOREST, SumViability.builder(0.0F)
+            return new VegetationConfig(0.15F, 0.8F, 0.45F, TFTags.SPARSE_RAINFOREST, SumViability.builder(0.0F)
                     .with(0.2F, new SaturationViability(0.65F, 1F))
                     .with(-1.0F, new HeightViability(-100, 20, 150))
                     .with(-0.5F, new SlopeViability(65, 0.75F))
@@ -128,7 +128,7 @@ public interface ModVegetation {
         }
 
         static VegetationConfig temperate(Seed seed) {
-            return new VegetationConfig(0.20F, 0.8F, 0.6F, ModTags.TEMPERATE, SumViability.builder(0.7F)
+            return new VegetationConfig(0.20F, 0.8F, 0.6F, TFTags.TEMPERATE, SumViability.builder(0.7F)
                     .with(0.25F, new SaturationViability(0.95F, 1F))
                     .with(-1.0F, new HeightViability(-100, 45, 150))
                     .with(-0.6F, new SlopeViability(55, 0.65F))
@@ -138,7 +138,7 @@ public interface ModVegetation {
         }
 
         static VegetationConfig patchy(Seed seed) {
-            return new VegetationConfig(0.20F, 0.75F, 0.5F, ModTags.PATCHY, SumViability.builder(0.65F)
+            return new VegetationConfig(0.20F, 0.75F, 0.5F, TFTags.PATCHY, SumViability.builder(0.65F)
                     .with(0.2F, new SaturationViability(0.9F, 1F))
                     .with(-1.0F, new HeightViability(-100, 40, 165))
                     .with(-1.0F, new SlopeViability(60, 0.65F))

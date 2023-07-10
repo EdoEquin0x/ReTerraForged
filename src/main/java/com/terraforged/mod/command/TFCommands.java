@@ -34,9 +34,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.terraforged.engine.util.pos.PosUtil;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.engine.world.terrain.TerrainType;
-import com.terraforged.mod.worldgen.GeneratorPreset;
-import com.terraforged.mod.worldgen.Regenerator;
 import com.terraforged.mod.worldgen.Seeds;
+import com.terraforged.mod.worldgen.TFGeneratorPreset;
+import com.terraforged.mod.worldgen.TFRegenerator;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -61,7 +62,7 @@ public class TFCommands {
 
     private static LiteralArgumentBuilder<CommandSourceStack> getLocateTerrainCommand() {
         return root("locateterrain")
-                .then(Arg.terrainType()
+                .then(TFArgs.terrainType()
                         .then(Commands.argument("radius", IntegerArgumentType.integer(1))
                                 .executes(c -> locate(c, true)))
                         .executes(c -> locate(c, false)));
@@ -69,9 +70,6 @@ public class TFCommands {
 
     private static LiteralArgumentBuilder<CommandSourceStack> getTFCommand() {
         return root("tf")
-                .then(Commands.literal("export")
-                        .then(Commands.literal("structures")
-                                .executes(TFCommands::export)))
                 .then(Commands.literal("regen")
                         .then(net.minecraft.commands.Commands.argument("radius", IntegerArgumentType.integer(1))
                                 .executes(TFCommands::regen)));
@@ -82,7 +80,7 @@ public class TFCommands {
             int radius = IntegerArgumentType.getInteger(context, "radius");
             var pos = context.getSource().getPosition();
             var chunk = new ChunkPos(((int) pos.x) >> 4, ((int) pos.z) >> 4);
-            Regenerator.regenerateChunks(chunk, radius, context.getSource().getLevel(), context.getSource());
+            TFRegenerator.regenerateChunks(chunk, radius, context.getSource().getLevel(), context.getSource());
 
             return Command.SINGLE_SUCCESS;
         } catch (Throwable t) {
@@ -91,25 +89,8 @@ public class TFCommands {
         }
     }
 
-//  TODO
-    private static int export(CommandContext<CommandSourceStack> context) {
-//        var access = context.getSource().registryAccess();
-//        var structures = context.getSource().getLevel().getChunkSource().getGenerator().getSettings();
-//        DataGen.exportStructureConfigs(DataPackExporter.DEFAULT_PACK_DIR, structures, access);
-
-//        var result = MutableComponent.create(new LiteralContents("Exported structure settings"))
-//                .withStyle(s -> s.withColor(ChatFormatting.GREEN));
-
-        var result = MutableComponent.create(new LiteralContents("NOT IMPLEMENT YET"))
-                .withStyle(s -> s.withColor(ChatFormatting.GREEN));
-    	
-        context.getSource().sendSuccess(result, false);
-
-        return Command.SINGLE_SUCCESS;
-    }
-
     private static int locate(CommandContext<CommandSourceStack> context, boolean withRadius) throws CommandSyntaxException {
-        var generator = GeneratorPreset.getGenerator(context.getSource().getLevel());
+        var generator = TFGeneratorPreset.getGenerator(context.getSource().getLevel());
         if (generator == null) return Command.SINGLE_SUCCESS;
 
         String name = StringArgumentType.getString(context, "terrain");

@@ -22,22 +22,26 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.util.seed;
+package com.terraforged.mod.command;
 
-import com.terraforged.cereal.Cereal;
-import com.terraforged.cereal.spec.Context;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.terraforged.engine.world.terrain.TerrainType;
+import com.terraforged.mod.TerraForged;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
-public interface ContextSeedable<T> extends Seedable<T> {
-    default <V> V withSeed(long seed, V value, Class<V> type) {
-        try {
-            var data = Cereal.serialize(value);
-
-            var context = new Context();
-            context.getData().add("seed", seed);
-
-            return Cereal.deserialize(data.asObj(), type, context);
-        } catch (Throwable t) {
-            throw new Error("Failed to reseed value: " + value, t);
-        }
+public class TFArgs {
+    public static RequiredArgumentBuilder<CommandSourceStack, String> terrainType() {
+        return Commands.argument("terrain", StringArgumentType.string()).suggests((context, builder) -> {
+            var registries = context.getSource().getServer().registryAccess();
+            var terrainTypes = registries.registry(TerraForged.TERRAIN_TYPE);
+            if (terrainTypes.isEmpty()) {
+                TerrainType.forEach(type -> builder.suggest(type.getName()));
+            } else {
+                terrainTypes.get().forEach(type -> builder.suggest(type.getName()));
+            }
+            return builder.buildFuture();
+        });
     }
 }

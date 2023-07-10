@@ -24,14 +24,13 @@
 
 package com.terraforged.mod.worldgen;
 
-import com.terraforged.mod.data.ModBiomes;
+import com.terraforged.mod.registry.data.TFBiomes;
 import com.terraforged.mod.util.storage.WeightMap;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
 import com.terraforged.mod.worldgen.biome.BiomeGenerator;
-import com.terraforged.mod.worldgen.biome.BiomeSampler;
-import com.terraforged.mod.worldgen.biome.Source;
+import com.terraforged.mod.worldgen.biome.TFBiomeSource;
 import com.terraforged.mod.worldgen.noise.NoiseGenerator;
 import com.terraforged.mod.worldgen.terrain.TerrainLevels;
 
@@ -40,33 +39,31 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 
-public class GeneratorPreset {
+public class TFGeneratorPreset {
 
-	public static Generator build(
+	public static TFGenerator build(
 		TerrainLevels levels,
-		BiomeSampler.Climate[] climates,
 		WeightMap<Holder<TerrainNoise>> terrain,
 		Holder<VegetationConfig>[] vegetation,
 		Holder<NoiseCave>[] caves,
+		BiomeSource source,
 		HolderGetter<Biome> biomes,
 		HolderGetter<NoiseGeneratorSettings> noiseSettings
 	) {
         var biomeGenerator = new BiomeGenerator(vegetation, caves);
         var noiseGenerator = new NoiseGenerator(levels, terrain).withErosion();
-        var biomeSource = new Source(
+        var biomeSource = new TFBiomeSource(
         	noiseGenerator,
-        	climates,
-        	biomes.getOrThrow(ModBiomes.CAVE),
-        	biomes.getOrThrow(Biomes.PLAINS)
+        	biomes.getOrThrow(TFBiomes.CAVE),
+        	source
         );
         var vanillaGen = getVanillaGen(biomeSource, noiseSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD));
-        return new Generator(levels, vanillaGen, biomeSource, biomeGenerator, noiseGenerator, terrain, climates, vegetation, caves);
+        return new TFGenerator(levels, vanillaGen, biomeSource, biomeGenerator, noiseGenerator, terrain, vegetation, caves);
     }
 
     public static VanillaGen getVanillaGen(
@@ -85,11 +82,11 @@ public class GeneratorPreset {
         return getGenerator(level) != null;
     }
 
-    public static Generator getGenerator(ServerLevel level) {
+    public static TFGenerator getGenerator(ServerLevel level) {
         return getGenerator(level.getChunkSource().getGenerator());
     }
 
-    private static Generator getGenerator(ChunkGenerator chunkGenerator) {
-        return chunkGenerator instanceof Generator generator ? generator : null;
+    private static TFGenerator getGenerator(ChunkGenerator chunkGenerator) {
+        return chunkGenerator instanceof TFGenerator generator ? generator : null;
     }
 }

@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.worldgen.biome;
 
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 import com.terraforged.mod.worldgen.Seeds;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
@@ -53,16 +53,16 @@ public class BiomeGenerator {
         this.noiseCaveGenerator = new NoiseCaveGenerator(caves);
     }
 
-    public void surface(ChunkAccess chunk, WorldGenRegion region, RandomState state, Generator generator) {
+    public void surface(ChunkAccess chunk, WorldGenRegion region, RandomState state, TFGenerator generator) {
     	this.surfaceDecorator.decorate(chunk, region, generator, state);
         this.surfaceDecorator.decoratePost(chunk, region, generator);
     }
 
-    public void carve(int seed, ChunkAccess chunk, WorldGenRegion region, BiomeManager biomes, GenerationStep.Carving step, Generator generator) {
+    public void carve(int seed, ChunkAccess chunk, WorldGenRegion region, BiomeManager biomes, GenerationStep.Carving step, TFGenerator generator) {
     	this.noiseCaveGenerator.carve(seed, chunk, generator);
     }
 
-    public void decorate(ChunkAccess chunk, WorldGenLevel region, StructureManager structures, Generator generator) {
+    public void decorate(ChunkAccess chunk, WorldGenLevel region, StructureManager structures, TFGenerator generator) {
         int seed = Seeds.get(region.getSeed());
         var terrain = generator.getChunkDataAsync(seed, chunk.getPos());
 

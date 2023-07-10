@@ -32,14 +32,13 @@ import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.data.codec.Codecs;
+import com.terraforged.mod.codec.Codecs;
 import com.terraforged.mod.util.storage.WeightMap;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
 import com.terraforged.mod.worldgen.biome.BiomeGenerator;
-import com.terraforged.mod.worldgen.biome.BiomeSampler;
-import com.terraforged.mod.worldgen.biome.Source;
+import com.terraforged.mod.worldgen.biome.TFBiomeSource;
 import com.terraforged.mod.worldgen.noise.INoiseGenerator;
 import com.terraforged.mod.worldgen.terrain.TerrainCache;
 import com.terraforged.mod.worldgen.terrain.TerrainData;
@@ -60,6 +59,7 @@ import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -72,39 +72,36 @@ import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
-public class Generator extends ChunkGenerator implements IGenerator {
-	// should these take HolderSets instead?
-	public static final Codec<Generator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+public class TFGenerator extends ChunkGenerator implements IGenerator {
+	public static final Codec<TFGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     	TerrainLevels.CODEC.optionalFieldOf("levels", TerrainLevels.DEFAULT).forGetter((g) -> g.levels),
-    	Codecs.forArray(BiomeSampler.Climate.CODEC, BiomeSampler.Climate[]::new).fieldOf("climates").forGetter((g) -> g.climates),
     	WeightMap.codec(TerrainNoise.CODEC, Holder[]::new).fieldOf("terrain").forGetter((g) -> g.terrain),
     	Codecs.forArray(VegetationConfig.CODEC, Holder[]::new).fieldOf("vegetation").forGetter((g) -> g.vegetation),
     	Codecs.forArray(NoiseCave.CODEC, Holder[]::new).fieldOf("caves").forGetter((g) -> g.caves),
+    	BiomeSource.CODEC.fieldOf("biomes").forGetter((g) -> g.biomeSource.getDelegate()),
     	RegistryOps.retrieveGetter(Registries.BIOME),
     	RegistryOps.retrieveGetter(Registries.NOISE_SETTINGS)
-	).apply(instance, instance.stable(GeneratorPreset::build)));
+	).apply(instance, instance.stable(TFGeneratorPreset::build)));
 
     protected final TerrainLevels levels;
     protected final VanillaGen vanillaGen;
-    protected final Source biomeSource;
+    protected final TFBiomeSource biomeSource;
     protected final BiomeGenerator biomeGenerator;
     protected final INoiseGenerator noiseGenerator;
     protected final TerrainCache terrainCache;
     protected final ThreadLocal<GeneratorResource> localResource = ThreadLocal.withInitial(GeneratorResource::new);
     private OptionalLong seed = OptionalLong.empty(); //TODO this is a hack, remove this
     protected final WeightMap<Holder<TerrainNoise>> terrain;
-    protected final BiomeSampler.Climate[] climates;
     protected final Holder<VegetationConfig>[] vegetation;
     protected final Holder<NoiseCave>[] caves;
     
-    public Generator(
+    public TFGenerator(
     	TerrainLevels levels,
     	VanillaGen vanillaGen,
-    	Source biomeSource,
+    	TFBiomeSource biomeSource,
     	BiomeGenerator biomeGenerator,
     	INoiseGenerator noiseGenerator,
     	WeightMap<Holder<TerrainNoise>> terrain,
-    	BiomeSampler.Climate[] climates,
     	Holder<VegetationConfig>[] vegetation,
     	Holder<NoiseCave>[] caves
     ) {
@@ -116,7 +113,6 @@ public class Generator extends ChunkGenerator implements IGenerator {
         this.noiseGenerator = noiseGenerator;
         this.terrainCache = new TerrainCache(levels, noiseGenerator);
         this.terrain = terrain;
-        this.climates = climates;
         this.vegetation = vegetation;
         this.caves = caves;
     }
@@ -158,7 +154,7 @@ public class Generator extends ChunkGenerator implements IGenerator {
     }
 
     @Override
-    public Source getBiomeSource() {
+    public TFBiomeSource getBiomeSource() {
         return this.biomeSource;
     }
     
@@ -287,6 +283,9 @@ public class Generator extends ChunkGenerator implements IGenerator {
         lines.add("Terrain Type: " + sample.terrainType.getName());
         lines.add("Temperature: " + sample.temperature);
         lines.add("Moisture: " + sample.moisture);
+        lines.add("Continent noise: " + sample.continentNoise);
+        lines.add("River noise: " + sample.riverNoise);
+        lines.add("Biome noise: " + sample.biomeNoise);
         lines.add("Base Noise: " + sample.baseNoise);
         lines.add("Height Noise: " + sample.heightNoise);
         lines.add("Ocean Proximity: " + (1 - sample.continentNoise));

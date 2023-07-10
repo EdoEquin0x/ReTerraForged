@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 
 public class BoatHook {
+	
     public static boolean shouldFloat(Boat boat) {
         // Ignore if not being ridden by a player
         if (!(boat.getFirstPassenger() instanceof Player)) return false;

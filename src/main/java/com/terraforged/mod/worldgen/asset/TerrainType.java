@@ -27,7 +27,8 @@ package com.terraforged.mod.worldgen.asset;
 import com.mojang.serialization.Codec;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.data.codec.LazyCodec;
+import com.terraforged.mod.codec.LazyCodec;
+
 import net.minecraft.core.Holder;
 
 public class TerrainType {
@@ -38,7 +39,7 @@ public class TerrainType {
             Codec.STRING.fieldOf("parent").xmap(TerrainType::forName, Terrain::getName).forGetter(TerrainType::getParentType)
     ).apply(instance, TerrainType::new));
 
-    public static final Codec<Holder<TerrainType>> CODEC = LazyCodec.registry(DIRECT_CODEC, () -> TerraForged.TERRAIN_TYPES);
+    public static final Codec<Holder<TerrainType>> CODEC = LazyCodec.registry(DIRECT_CODEC, () -> TerraForged.TERRAIN_TYPE);
 
     private final String name;
     private final Terrain parentType;

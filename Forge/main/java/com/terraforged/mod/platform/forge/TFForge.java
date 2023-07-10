@@ -29,8 +29,7 @@ import java.nio.file.Path;
 import com.terraforged.mod.CommonAPI;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.command.TFCommands;
-import com.terraforged.mod.worldgen.Generator;
-import com.terraforged.mod.worldgen.asset.ClimateType;
+import com.terraforged.mod.registry.TFChunkGenerators;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.TerrainType;
@@ -40,7 +39,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -71,17 +69,15 @@ public class TFForge extends TerraForged implements CommonAPI {
     }
     
     void onCreateDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
-    	event.dataPackRegistry(TerraForged.CLIMATES, ClimateType.DIRECT_CODEC);
-    	event.dataPackRegistry(TerraForged.CAVES, NoiseCave.DIRECT_CODEC);
+    	event.dataPackRegistry(TerraForged.CAVE, NoiseCave.DIRECT_CODEC);
     	event.dataPackRegistry(TerraForged.TERRAIN, TerrainNoise.DIRECT_CODEC);
-    	event.dataPackRegistry(TerraForged.TERRAIN_TYPES, TerrainType.DIRECT_CODEC);
+    	event.dataPackRegistry(TerraForged.TERRAIN_TYPE, TerrainType.DIRECT_CODEC);
     	event.dataPackRegistry(TerraForged.VEGETATION, VegetationConfig.DIRECT_CODEC);
     }
     
-    @SubscribeEvent
     void onRegister(RegisterEvent event) {
     	event.register(Registries.CHUNK_GENERATOR, (helper) -> {
-    		helper.register("terraforged", Generator.CODEC);
+    		TFChunkGenerators.register(helper::register);
     	});
     }
     

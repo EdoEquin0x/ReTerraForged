@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.worldgen.cave;
 
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 import com.terraforged.mod.worldgen.Seeds;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import net.minecraft.core.BlockPos;
@@ -36,7 +36,7 @@ import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 
 public class NoiseCaveDecorator {
-    public static void decorate(ChunkAccess chunk, CarverChunk carver, WorldGenLevel region, Generator generator, NoiseCave config) {
+    public static void decorate(ChunkAccess chunk, CarverChunk carver, WorldGenLevel region, TFGenerator generator, NoiseCave config) {
         var biomes = carver.getBiomes(config);
         if (biomes == null) return;
 
@@ -56,7 +56,7 @@ public class NoiseCaveDecorator {
 
     public static void decorate(BlockPos pos,
                                 WorldGenLevel region,
-                                Generator generator,
+                                TFGenerator generator,
                                 BiomeGenerationSettings settings,
                                 WorldgenRandom random) {
 

@@ -35,14 +35,14 @@ public class BiomeBuffer2D implements BiomeResolver {
     public void set(int x, int z, Holder<Biome> biome) {
         x &= 3;
         z &= 3;
-        biomeBuffer2D[z << 2 | x] = biome;
+        this.biomeBuffer2D[z << 2 | x] = biome;
     }
 
     @Override
     public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
         x &= 3;
         z &= 3;
-        return biomeBuffer2D[z << 2 | x];
+        return this.biomeBuffer2D[z << 2 | x];
     }
 
     @SuppressWarnings("unchecked")

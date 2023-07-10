@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -58,7 +58,7 @@ public class VanillaDecorator {
                                 Holder<Biome> biome,
                                 ChunkAccess chunk,
                                 WorldGenLevel level,
-                                Generator generator,
+                                TFGenerator generator,
                                 WorldgenRandom random,
                                 StructureManager structureManager,
                                 FeatureDecorator decorator) {
@@ -81,7 +81,7 @@ public class VanillaDecorator {
                                         int stage,
                                         ChunkAccess chunk,
                                         WorldGenLevel level,
-                                        Generator generator,
+                                        TFGenerator generator,
                                         WorldgenRandom random,
                                         StructureManager structureManager,
                                         List<Structure> structures) {
@@ -105,7 +105,7 @@ public class VanillaDecorator {
                                       int stage,
                                       BlockPos origin,
                                       WorldGenLevel level,
-                                      Generator generator,
+                                      TFGenerator generator,
                                       WorldgenRandom random,
                                       HolderSet<PlacedFeature> features) {
 

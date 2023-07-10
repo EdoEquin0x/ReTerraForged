@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.data.codec;
+package com.terraforged.mod.codec;
 
 import com.google.common.base.Suppliers;
 import com.mojang.datafixers.kinds.App;

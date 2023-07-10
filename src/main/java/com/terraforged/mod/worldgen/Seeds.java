@@ -26,6 +26,7 @@ package com.terraforged.mod.worldgen;
 
 import net.minecraft.world.level.WorldGenLevel;
 
+@Deprecated(forRemoval = true) // 64 we're gonna use 64 bit seeds whenever i feel like implementing them
 public interface Seeds {
 
     static int get(WorldGenLevel level) {

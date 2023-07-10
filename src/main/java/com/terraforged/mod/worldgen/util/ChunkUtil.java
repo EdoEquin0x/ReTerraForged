@@ -24,12 +24,14 @@
 
 package com.terraforged.mod.worldgen.util;
 
+import java.util.function.Supplier;
+
 import com.google.common.base.Suppliers;
 import com.terraforged.mod.worldgen.GeneratorResource;
-import com.terraforged.mod.worldgen.biome.Source;
 import com.terraforged.mod.worldgen.terrain.StructureTerrain;
 import com.terraforged.mod.worldgen.terrain.TerrainData;
 import com.terraforged.mod.worldgen.terrain.TerrainLevels;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -37,6 +39,7 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,11 +49,10 @@ import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-import java.util.function.Supplier;
-
 public class ChunkUtil {
     public static final FillerBlock FILLER = ChunkUtil::getFiller;
     public static final Supplier<ByteBuf> FULL_SECTION = Suppliers.memoize(ChunkUtil::createFullPalette);
+    public static final Climate.Sampler NOOP_CLIMATE_SAMPLER = Climate.empty();
 
     public static void fillNoiseBiomes(ChunkAccess chunk, BiomeSource source, GeneratorResource resource) {
         var pos = chunk.getPos();
@@ -58,17 +60,17 @@ public class ChunkUtil {
         int biomeZ = QuartPos.fromBlock(pos.getMinBlockZ());
         var heightAccessor = chunk.getHeightAccessorForGeneration();
 
-        var biomeBuffer = resource.biomeBuffer2D;
+        var biomeBuffer = resource.biomeBuffer();
         for (int dz = 0; dz < 4; dz++) {
             for (int dx = 0; dx < 4; dx++) {
-                var biome = source.getNoiseBiome(biomeX + dx, -1, biomeZ + dz, Source.NOOP_CLIMATE_SAMPLER);
+                var biome = source.getNoiseBiome(biomeX + dx, -1, biomeZ + dz, NOOP_CLIMATE_SAMPLER);
                 biomeBuffer.set(dx, dz, biome);
             }
         }
 
         for(int i = heightAccessor.getMinSection(); i < heightAccessor.getMaxSection(); ++i) {
             var chunkSection = chunk.getSection(chunk.getSectionIndexFromSectionY(i));
-            chunkSection.fillBiomesFromNoise(biomeBuffer, Source.NOOP_CLIMATE_SAMPLER, 0, 0);
+            chunkSection.fillBiomesFromNoise(biomeBuffer, NOOP_CLIMATE_SAMPLER, 0, 0);
         }
     }
 
@@ -82,7 +84,7 @@ public class ChunkUtil {
         // which we are then reading into each chunk section below the lowest non-full chunk
         // section (determined from our heightmap). This is waaay faster than setting blocks
         // individually in the section so helps reduce the impact of low minY values.
-        var sectionData = resource.fullSection;
+        var sectionData = resource.fullSection();
         for (int sy = chunk.getMinBuildHeight(); sy < min; sy += 16) {
             int index = chunk.getSectionIndex(sy);
             var section = chunk.getSection(index);

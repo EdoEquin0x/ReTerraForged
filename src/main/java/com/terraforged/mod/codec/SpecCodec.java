@@ -22,29 +22,27 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.data.codec;
+package com.terraforged.mod.codec;
 
-import com.google.common.base.Suppliers;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
-import com.terraforged.cereal.Cereal;
-import com.terraforged.cereal.spec.Context;
+import com.terraforged.cereal.spec.DataFactory;
+import com.terraforged.cereal.spec.DataSpec;
 import com.terraforged.cereal.spec.DataSpecs;
 import com.terraforged.mod.data.util.DataUtil;
 
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
-public record SuperCodec<V>(Class<V> type, Supplier<Void> validator) implements Codec<V> {
+public record SpecCodec<V>(DataSpec<V> spec) implements Codec<V> {
     @Override
     public <T> DataResult<Pair<V, T>> decode(DynamicOps<T> ops, T input) {
         try {
-            validator.get();
             var json = ops.convertTo(JsonOps.INSTANCE, input);
             var data = DataUtil.toData(json);
-            V result = Cereal.deserialize(data.asObj(), type, Context.NONE);
+            V result = spec.deserialize(data.asObj());
             return DataResult.success(Pair.of(result, input));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -55,8 +53,7 @@ public record SuperCodec<V>(Class<V> type, Supplier<Void> validator) implements 
     @Override
     public <T> DataResult<T> encode(V input, DynamicOps<T> ops, T prefix) {
         try {
-            validator.get();
-            var data = Cereal.serialize(input, Context.NONE);
+            var data = spec.serialize(input);
             var json = DataUtil.toJson(data);
             var output = JsonOps.INSTANCE.convertTo(ops, json);
             return DataResult.success(output);
@@ -66,22 +63,24 @@ public record SuperCodec<V>(Class<V> type, Supplier<Void> validator) implements 
         }
     }
 
-    private static Supplier<Void> getValidator(Class<?> type) {
-        return Suppliers.memoize(() -> {
-            if (DataSpecs.getSubSpec(type) == null) {
-                throw new IllegalStateException("No sub-spec for type: " + type);
-            }
-            return null;
-        });
+    @SuppressWarnings("unchecked")
+    public static <T> Codec<T> of(String name) {
+        return (Codec<T>) of(DataSpecs.getSpec(name));
     }
 
-    private static final Supplier<Void> NOOP_VALIDATOR = () -> null;
-
-    public static <T> SuperCodec<T> of(Class<T> type) {
-        return new SuperCodec<>(type, getValidator(type));
+    public static <T> Codec<T> of(DataSpec<T> spec) {
+        return new SpecCodec<>(spec);
     }
 
-    public static <T> SuperCodec<T> withoutValidator(Class<T> type) {
-        return new SuperCodec<>(type, NOOP_VALIDATOR);
+    public static <T> Codec<T> create(Class<T> type, DataFactory<T> factory, Consumer<DataSpec.Builder<T>> consumer) {
+        var builder = DataSpec.builder(type, factory);
+        consumer.accept(builder);
+        return of(builder.build());
+    }
+
+    public static <T> Codec<T> create(String name, Class<T> type, DataFactory<T> factory, Consumer<DataSpec.Builder<T>> consumer) {
+        var builder = DataSpec.builder(name, type, factory);
+        consumer.accept(builder);
+        return of(builder.build());
     }
 }

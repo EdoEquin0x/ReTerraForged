@@ -25,7 +25,7 @@ AA * MIT License
 package com.terraforged.mod.worldgen.util;
 
 import com.terraforged.mod.util.ReflectionUtil;
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 import com.terraforged.mod.worldgen.Seeds;
 import com.terraforged.mod.worldgen.terrain.TerrainData;
 import it.unimi.dsi.fastutil.longs.Long2IntMap;
@@ -42,7 +42,7 @@ import java.util.concurrent.CompletableFuture;
 public class NoiseChunkUtil {
     private static final MethodHandle SURFACE_CACHE = ReflectionUtil.field(NoiseChunk.class, Long2IntMap.class);
 
-    public static NoiseChunk getNoiseChunk(long seed, ChunkAccess chunk, RandomState state, Generator generator) {
+    public static NoiseChunk getNoiseChunk(long seed, ChunkAccess chunk, RandomState state, TFGenerator generator) {
         var terrainData = generator.getChunkDataAsync(Seeds.get(seed), chunk.getPos());
 
         var noiseChunk = chunk.getOrCreateNoiseChunk(c -> {

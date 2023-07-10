@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.terraforged.mod.util.storage.ObjectPool;
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.noise.Module;
 import com.terraforged.noise.Source;
@@ -57,7 +57,7 @@ public class NoiseCaveGenerator {
         this.pool = new ObjectPool<>(POOL_SIZE, () -> this.createCarverChunk(caves.length));
     }
     
-    public void carve(int seed, ChunkAccess chunk, Generator generator) {
+    public void carve(int seed, ChunkAccess chunk, TFGenerator generator) {
         var carver = getPreCarveChunk(chunk);
         carver.terrainData = generator.getChunkData(seed, chunk.getPos());
         carver.mask = this.caveBreachNoise;
@@ -69,7 +69,7 @@ public class NoiseCaveGenerator {
         }
     }
 
-    public void decorate(int seed, ChunkAccess chunk, WorldGenLevel region, Generator generator) {
+    public void decorate(int seed, ChunkAccess chunk, WorldGenLevel region, TFGenerator generator) {
     	var carver = getPostCarveChunk(seed, chunk, generator);
 
         for (var config : this.caves) {
@@ -83,7 +83,7 @@ public class NoiseCaveGenerator {
         return this.cache.computeIfAbsent(chunk.getPos(), p -> this.pool.take().reset());
     }
 
-    private CarverChunk getPostCarveChunk(int seed, ChunkAccess chunk, Generator generator) {
+    private CarverChunk getPostCarveChunk(int seed, ChunkAccess chunk, TFGenerator generator) {
         var carver = this.cache.remove(chunk.getPos());
         if (carver != null) return carver;
 

@@ -24,100 +24,94 @@
 
 package com.terraforged.mod.worldgen.biome;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.function.ToDoubleFunction;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.worldgen.asset.ClimateType;
+import com.google.common.collect.ImmutableList;
 import com.terraforged.mod.worldgen.noise.INoiseGenerator;
 import com.terraforged.mod.worldgen.noise.climate.ClimateSample;
-import com.terraforged.mod.worldgen.noise.continent.ContinentPoints;
 
 import net.minecraft.core.Holder;
+import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.DensityFunctions;
 
-//TODO move all these fields to a config or something
-public class BiomeSampler extends IBiomeSampler.Sampler implements IBiomeSampler {
-	private final BiomeSampler.Climate[] climates;
-    private final Holder<Biome> fallback;
-    protected final float beachSize = 0.005f;
-
-    public BiomeSampler(
-    	INoiseGenerator noiseGenerator, 
-    	BiomeSampler.Climate[] climates,
-    	Holder<Biome> fallback
-    ) {
+public class BiomeSampler extends IBiomeSampler.Sampler {
+    private BiomeSource delegate;
+    private Climate.Sampler sampler;
+    
+    public BiomeSampler(INoiseGenerator noiseGenerator, BiomeSource delegate) {
         super(noiseGenerator);
-        this.climates = climates;
-        this.fallback = fallback;
-    }
-
-    public Holder<Biome> sampleBiome(int seed, int x, int z) {
-        var sample = this.getSample(seed, x, z);
-    	//TODO don't stream here, too expensive
-        Climate climate = Arrays.stream(this.climates).min(Comparator.comparing((cl) -> {
-			return cl.fitness(sample.temperature, sample.moisture);
-		})).orElse(null); //TODO bad orElse(null)
-        if (climate == null || climate.type.get().isEmpty()) {
-            return this.fallback;
-        }
-        var biome = this.getInitialBiome(climate.type.get(), sample.biomeNoise);
-        return this.getBiomeOverride(biome, climate.type.get(), sample);
-    }
-
-    private Holder<Biome> getInitialBiome(ClimateType type, float noise) {
-        return type.getValue(noise);
-    }
-
-    protected Holder<Biome> getBiomeOverride(Holder<Biome> input, ClimateType type, ClimateSample sample) {
-        if (sample.continentNoise <= ContinentPoints.SHALLOW_OCEAN) {
-//            return switch (climateType) {
-//                case TAIGA, COLD_STEPPE -> this.deepOcean;
-//                case TUNDRA -> this.deepFrozenOcean;
-//                case DESERT, SAVANNA, TROPICAL_RAINFOREST -> this.deepLukewarmOcean;
-//                default -> this.deepOcean;
-//            };
-        	return type.deepOcean();
-        }
-
-        if (sample.continentNoise <= ContinentPoints.BEACH) {
-//            return switch (climateType) {
-//                case TAIGA, COLD_STEPPE -> this.coldOcean;
-//                case TUNDRA -> this.frozenOcean;
-//                case DESERT, SAVANNA, TROPICAL_RAINFOREST -> this.warmOcean;
-//                default -> this.ocean;
-//            };
-        	return type.ocean();
-        }
-
-        if (sample.continentNoise <= ContinentPoints.BEACH + this.beachSize) {
-//            return switch (climateType) {
-//                case TUNDRA -> this.snowyBeach;
-//                case COLD_STEPPE -> this.stonyBeach;
-//                default -> this.beach;
-//            };
-        	return type.beach();
-        }
-
-        if ((sample.terrainType.isRiver() || sample.terrainType.isLake()) && sample.riverNoise == 0) {
-//            return climateType == BiomeType.TUNDRA ? this.frozenRiver : this.river;
-            return type.river();
-        }
-
-        return input;
+        this.delegate = delegate;
     }
     
-    public record Climate(float temperature, float moisture, Holder<ClimateType> type) {
-    	public static final Codec<BiomeSampler.Climate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    		Codec.FLOAT.fieldOf("temperature").forGetter(Climate::temperature),
-    		Codec.FLOAT.fieldOf("moisture").forGetter(Climate::moisture),
-    		ClimateType.CODEC.fieldOf("biome").forGetter(Climate::type)
-    	).apply(instance, Climate::new));
-    	
-    	public float fitness(float temperature, float moisture) {
-    		return (this.temperature - temperature) * (this.temperature - temperature) + (this.moisture - moisture) * (this.moisture - moisture);
+    public BiomeSource getDelegate() {
+    	return this.delegate;
+    }
+
+    public Holder<Biome> sampleBiome(int seed, int x, int y, int z, Climate.Sampler sampler) {
+    	if(this.sampler == null) {
+    		this.sampler = this.initSampler(seed);
     	}
+    	
+    	return this.delegate.getNoiseBiome(x, y, z, this.sampler);
+    }
+    
+    private Climate.Sampler initSampler(int seed) {
+    	return new Climate.Sampler(
+    		new SampledDensityFunction(seed, (sample) -> sample.temperature),
+    		new SampledDensityFunction(seed, (sample) -> sample.moisture),
+    		new SampledDensityFunction(seed, (sample) -> sample.continentNoise),
+    		// river noise is weird, 1 means no river and 0 means river
+    		// we invert it to make it less confusing
+    		new SampledDensityFunction(seed, (sample) -> 1 - sample.riverNoise), 
+    		DensityFunctions.constant(1.0D), // TODO: depth noise
+    		new SampledDensityFunction(seed, (sample) -> sample.biomeNoise), // is this right?
+    		ImmutableList.of()
+    	);
+    }
+    
+    private class SampledDensityFunction implements DensityFunction {
+    	private int seed;
+    	private ToDoubleFunction<ClimateSample> getter;
+    	
+    	public SampledDensityFunction(int seed, ToDoubleFunction<ClimateSample> getter) {
+    		this.seed = seed;
+    		this.getter = getter;
+    	}
+    	
+		@Override
+		public double compute(FunctionContext ctx) {
+			ClimateSample sample = BiomeSampler.this.getSample(this.seed, ctx.blockX(), ctx.blockZ());
+			return this.getter.applyAsDouble(sample);
+		}
+
+		@Override
+		public void fillArray(double[] array, ContextProvider ctx) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public DensityFunction mapAll(Visitor vis) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public double minValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public double maxValue() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public KeyDispatchDataCodec<? extends DensityFunction> codec() {
+			throw new UnsupportedOperationException();
+		}
     }
 }
 

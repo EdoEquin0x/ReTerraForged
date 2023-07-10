@@ -1,3 +1,10 @@
 {
-	"generator.terraforged.terraforged": "TerraForged"
+	"generator.terraforged.terraforged": "TerraForged",
+	"createWorld.customize.terraforged.title": "Terraforged world customization",
+	"createWorld.customize.terraforged.world_preview.zoom": "Zoom: %d",
+	"createWorld.customize.terraforged.world_preview.layer": "Layer",
+	"createWorld.customize.terraforged.world_preview.layer.temperature": "Temperature",
+	"createWorld.customize.terraforged.world_preview.layer.moisture": "Moisture",
+	"createWorld.customize.terraforged.world_preview.layer.continent": "Continent",
+	"createWorld.customize.terraforged.world_preview.layer.water": "Water"
 }

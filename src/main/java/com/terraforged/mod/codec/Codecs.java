@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.data.codec;
+package com.terraforged.mod.codec;
 
 import java.util.Optional;
 import java.util.function.Function;

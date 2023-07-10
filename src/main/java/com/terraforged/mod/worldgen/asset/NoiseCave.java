@@ -26,7 +26,7 @@ package com.terraforged.mod.worldgen.asset;
 
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.data.codec.LazyCodec;
+import com.terraforged.mod.codec.LazyCodec;
 import com.terraforged.mod.worldgen.cave.CaveType;
 import com.terraforged.mod.worldgen.noise.NoiseCodec;
 import com.terraforged.noise.Module;
@@ -45,7 +45,7 @@ public class NoiseCave {
     	Codec.INT.optionalFieldOf("min_y", -32).forGetter(c -> c.minY),
     	Codec.INT.fieldOf("max_y").forGetter(c -> c.maxY)
     ).apply(instance, NoiseCave::new));
-    public static final Codec<Holder<NoiseCave>> CODEC = RegistryFileCodec.create(TerraForged.CAVES, DIRECT_CODEC);
+    public static final Codec<Holder<NoiseCave>> CODEC = RegistryFileCodec.create(TerraForged.CAVE, DIRECT_CODEC);
 
     private final CaveType type;
     private final Module elevation;

@@ -25,7 +25,7 @@
 package com.terraforged.mod.worldgen.biome.decorator;
 
 import com.terraforged.mod.util.MathUtil;
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 import com.terraforged.mod.worldgen.asset.VegetationConfig;
 import com.terraforged.mod.worldgen.biome.vegetation.VegetationFeatures;
 import com.terraforged.mod.worldgen.terrain.TerrainData;
@@ -50,7 +50,7 @@ public class PositionSampler {
                                        Holder<Biome> biome,
                                        ChunkAccess chunk,
                                        WorldGenLevel level,
-                                       Generator generator,
+                                       TFGenerator generator,
                                        WorldgenRandom random,
                                        CompletableFuture<TerrainData> terrain,
                                        FeatureDecorator decorator) {
@@ -64,7 +64,7 @@ public class PositionSampler {
                                          ChunkAccess chunk,
                                          WorldGenLevel level,
                                          CompletableFuture<TerrainData> terrain,
-                                         Generator generator,
+                                         TFGenerator generator,
                                          WorldgenRandom random,
                                          FeatureDecorator decorator) {
 
@@ -107,7 +107,7 @@ public class PositionSampler {
                                   BlockPos origin,
                                   Holder<Biome> biome,
                                   WorldGenLevel level,
-                                  Generator generator,
+                                  TFGenerator generator,
                                   WorldgenRandom random,
                                   FeatureDecorator decorator) {
 

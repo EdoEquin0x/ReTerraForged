@@ -26,8 +26,7 @@ package com.terraforged.mod.worldgen.asset;
 
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.data.codec.LazyCodec;
-import com.terraforged.mod.util.seed.ContextSeedable;
+import com.terraforged.mod.codec.LazyCodec;
 import com.terraforged.mod.worldgen.biome.viability.Viability;
 import com.terraforged.mod.worldgen.biome.viability.ViabilityCodec;
 
@@ -37,7 +36,7 @@ import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
-public class VegetationConfig implements ContextSeedable<VegetationConfig> {
+public class VegetationConfig {
     public static final VegetationConfig NONE = new VegetationConfig(0F, 0F, 0F, (TagKey<Biome>) null, Viability.NONE);
 
     public static final Codec<VegetationConfig> DIRECT_CODEC = LazyCodec.record(instance -> instance.group(
@@ -61,12 +60,6 @@ public class VegetationConfig implements ContextSeedable<VegetationConfig> {
         this.density = density;
         this.biomes = biomes;
         this.viability = viability;
-    }
-
-    @Override
-    public VegetationConfig withSeed(long seed) {
-        var viability = withSeed(seed, viability(), Viability.class);
-        return new VegetationConfig(frequency, jitter, density, biomes, viability);
     }
 
     public TagKey<Biome> biomes() {

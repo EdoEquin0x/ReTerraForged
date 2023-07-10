@@ -24,10 +24,18 @@
 
 package com.terraforged.mod.platform.forge;
 
-import com.terraforged.mod.lifecycle.ClientSetup;
+import com.terraforged.mod.client.gui.preview.WorldPreviewScreen;
 import com.terraforged.mod.lifecycle.Stage;
+import com.terraforged.mod.registry.data.TFPresets;
+import com.terraforged.mod.worldgen.TFGenerator;
+import com.terraforged.mod.worldgen.biome.BiomeSampler;
 
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class TFClient extends Stage {
@@ -35,10 +43,17 @@ public class TFClient extends Stage {
 
     @Override
     protected void doInit() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientInit);
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+    	modBus.addListener(this::onPresetEditorRegister);
     }
-
-    void onClientInit(FMLClientSetupEvent event) {
-        event.enqueueWork(ClientSetup.STAGE::run);
+    
+    void onPresetEditorRegister(RegisterPresetEditorsEvent event) {
+    	event.register(TFPresets.TERRAFORGED, (parent, ctx) -> {
+    		Registry<Biome> biomes = ctx.worldgenLoadContext().registryOrThrow(Registries.BIOME);
+    		LevelStem overworld = ctx.selectedDimensions().dimensions().getOrThrow(LevelStem.OVERWORLD);
+    		TFGenerator generator = (TFGenerator) overworld.generator(); //FIXME unsafe cast
+    		BiomeSampler sampler = generator.getBiomeSource().getBiomeSampler();
+    		return new WorldPreviewScreen(parent, biomes, sampler, (int) ctx.options().seed());
+    	});
     }
 }

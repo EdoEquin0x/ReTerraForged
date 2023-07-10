@@ -31,7 +31,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Suppliers;
-import com.terraforged.mod.worldgen.asset.ClimateType;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.mod.worldgen.asset.TerrainType;
@@ -41,8 +40,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
-//TODO FIXME Fix VegetationFeatures.create()
-//TODO should deserts only be on flat land? mountain deserts look really bad
+//	TODO FIXME Fix VegetationFeatures.create()
+//	TODO should deserts only be on flat land? mountain deserts look really bad
+//	TODO remove ClimateType and just use raw biomes instead
 public abstract class TerraForged implements CommonAPI {
 	public static final String MODID = "terraforged";
 	public static final String TITLE = "TerraForged";
@@ -52,9 +52,8 @@ public abstract class TerraForged implements CommonAPI {
 	public static final ResourceLocation WORLD_PRESET = location("normal");
 	public static final ResourceLocation DIMENSION_EFFECTS = location("overworld");
 
-	public static final ResourceKey<Registry<ClimateType>> CLIMATES = registryKey("worldgen/climate");
-	public static final ResourceKey<Registry<NoiseCave>> CAVES = registryKey("worldgen/cave");
-	public static final ResourceKey<Registry<TerrainType>> TERRAIN_TYPES = registryKey("worldgen/terrain_type");
+	public static final ResourceKey<Registry<NoiseCave>> CAVE = registryKey("worldgen/cave");
+	public static final ResourceKey<Registry<TerrainType>> TERRAIN_TYPE = registryKey("worldgen/terrain_type");
 	public static final ResourceKey<Registry<TerrainNoise>> TERRAIN = registryKey("worldgen/terrain_noise");
 	public static final ResourceKey<Registry<VegetationConfig>> VEGETATION = registryKey("worldgen/vegetation");
 

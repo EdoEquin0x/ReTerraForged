@@ -25,7 +25,7 @@
 package com.terraforged.mod.worldgen.cave;
 
 import com.terraforged.mod.util.MathUtil;
-import com.terraforged.mod.worldgen.Generator;
+import com.terraforged.mod.worldgen.TFGenerator;
 import com.terraforged.mod.worldgen.asset.NoiseCave;
 import com.terraforged.noise.util.NoiseUtil;
 import net.minecraft.core.BlockPos;
@@ -42,7 +42,7 @@ public class NoiseCaveCarver {
     public static void carve(int seed,
                              ChunkAccess chunk,
                              CarverChunk carver,
-                             Generator generator,
+                             TFGenerator generator,
                              NoiseCave config,
                              boolean carve) {
         var pos = new BlockPos.MutableBlockPos();
@@ -104,7 +104,7 @@ public class NoiseCaveCarver {
         }
     }
 
-    private static int getSurface(int seed, int x, int z, ChunkAccess chunk, Generator generator, CarverChunk carverChunk) {
+    private static int getSurface(int seed, int x, int z, ChunkAccess chunk, TFGenerator generator, CarverChunk carverChunk) {
         float mask = carverChunk.getCarvingMask(seed, x, z);
         int surface = chunk.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z) - 1;
         if (surface > generator.getSeaLevel() || surface < generator.getSeaLevel() - 16) {
