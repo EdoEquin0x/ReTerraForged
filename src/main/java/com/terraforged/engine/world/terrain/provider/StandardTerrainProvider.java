@@ -22,7 +22,6 @@ import com.terraforged.engine.world.terrain.LandForms;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.engine.world.terrain.TerrainType;
 import com.terraforged.engine.world.terrain.populator.TerrainPopulator;
-import com.terraforged.engine.world.terrain.special.VolcanoPopulator;
 import com.terraforged.noise.Module;
 import com.terraforged.noise.Source;
 
@@ -62,7 +61,6 @@ public class StandardTerrainProvider implements TerrainProvider {
         this.registerUnMixable(TerrainType.MOUNTAINS, this.landForms.getLandBase(), this.landForms.mountains(this.seed), this.settings.mountains);
         this.registerUnMixable(TerrainType.MOUNTAINS, this.landForms.getLandBase(), this.landForms.mountains2(this.seed), this.settings.mountains);
         this.registerUnMixable(TerrainType.MOUNTAINS, this.landForms.getLandBase(), this.landForms.mountains3(this.seed), this.settings.mountains);
-        this.registerUnMixable(new VolcanoPopulator(this.seed, this.config, this.levels, this.settings.volcano.weight));
     }
 
     @Override

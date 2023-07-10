@@ -23,7 +23,6 @@ import com.terraforged.engine.world.terrain.provider.TerrainProvider;
 import com.terraforged.engine.world.terrain.region.RegionLerper;
 import com.terraforged.engine.world.terrain.region.RegionModule;
 import com.terraforged.engine.world.terrain.region.RegionSelector;
-import com.terraforged.engine.world.terrain.special.VolcanoPopulator;
 import com.terraforged.noise.Module;
 import com.terraforged.noise.Source;
 import com.terraforged.noise.func.EdgeFunc;
@@ -96,7 +95,6 @@ public class Heightmap implements Populator {
 
     public void applyRivers(Cell cell, float x, float z, Rivermap rivermap) {
         rivermap.apply(cell, x, z);
-        VolcanoPopulator.modifyVolcanoType(cell, this.levels);
     }
 
     public void applyClimate(Cell cell, float x, float z) {
