@@ -24,7 +24,6 @@
 
 package com.terraforged.mod.level.levelgen.cave;
 
-import com.terraforged.mod.level.levelgen.Seeds;
 import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 

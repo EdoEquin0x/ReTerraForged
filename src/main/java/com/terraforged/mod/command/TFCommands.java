@@ -35,7 +35,7 @@ import com.terraforged.engine.util.pos.PosUtil;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.engine.world.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.TFChunkGenerator;
-import com.terraforged.mod.level.levelgen.TFRegenerator;
+import com.terraforged.mod.level.levelgen.TFChunkRegenerator;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -80,7 +80,7 @@ public class TFCommands {
             int radius = IntegerArgumentType.getInteger(context, "radius");
             var pos = context.getSource().getPosition();
             var chunk = new ChunkPos(((int) pos.x) >> 4, ((int) pos.z) >> 4);
-            TFRegenerator.regenerateChunks(chunk, radius, context.getSource().getLevel(), context.getSource());
+            TFChunkRegenerator.regenerateChunks(chunk, radius, context.getSource().getLevel(), context.getSource());
 
             return Command.SINGLE_SUCCESS;
         } catch (Throwable t) {

@@ -26,13 +26,9 @@
 package com.terraforged.noise.source;
 
 import com.terraforged.cereal.spec.DataSpec;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.util.N2DUtil;
 import com.terraforged.noise.util.Noise;
 import com.terraforged.noise.util.NoiseUtil;
 
-import java.awt.*;
 import java.util.Arrays;
 
 public class SimplexRidgeNoise extends NoiseSource {

@@ -96,7 +96,6 @@ public class Deserializer {
     private static boolean setObject(Object object, Field field, Reader reader) throws Throwable {
         if (reader.has(field.getName())) {
             Reader child = reader.getChild(field.getName());
-            @SuppressWarnings("deprecation")
             Object value = field.getType().newInstance();
             Deserializer.deserialize(child, value);
             field.set(object, value);
@@ -113,8 +112,7 @@ public class Deserializer {
             Reader child = reader.getChild(field.getName());
             for (String key : child.getKeys()) {
                 if (key.charAt(0) == '#') continue;
-                @SuppressWarnings("deprecation")
-				Object value = valueType.newInstance();
+                Object value = valueType.newInstance();
                 Deserializer.deserialize(child.getChild(key), value);
                 map.put(key, value);
             }
@@ -129,8 +127,7 @@ public class Deserializer {
             Reader child = reader.getChild(field.getName());
             Object array = Array.newInstance(type, child.getSize());
             for (int i = 0; i < child.getSize(); ++i) {
-                @SuppressWarnings("deprecation")
-				Object value = type.newInstance();
+                Object value = type.newInstance();
                 Deserializer.deserialize(child.getChild(i), value);
                 Array.set(array, i, value);
             }

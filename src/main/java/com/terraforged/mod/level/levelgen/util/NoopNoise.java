@@ -30,7 +30,7 @@ import net.minecraft.world.level.levelgen.DensityFunctions;
 import java.util.Arrays;
 
 public class NoopNoise {
-    public static final DensityFunctions.BeardifierOrMarker BEARDIFIER = new DensityFunctions.BeardifierOrMarker() {
+    public static final DensityFunctions.BeardifierOrMarker NOOP = new DensityFunctions.BeardifierOrMarker() {
         @Override
         public double compute(DensityFunction.FunctionContext ctx) {
             return 0.0D;

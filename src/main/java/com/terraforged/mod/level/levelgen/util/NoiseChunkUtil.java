@@ -48,7 +48,7 @@ public class NoiseChunkUtil {
         var noiseChunk = chunk.getOrCreateNoiseChunk(c -> {
             var fluidPicker = generator.getGlobalFluidPicker();
             var settings = generator.generatorSettings().value();
-            return NoiseChunk.forChunk(c, state, NoopNoise.BEARDIFIER, settings, fluidPicker, Blender.empty());
+            return NoiseChunk.forChunk(c, state, NoopNoise.NOOP, settings, fluidPicker, Blender.empty());
         });
 
         initChunk(chunk, noiseChunk, terrainData);

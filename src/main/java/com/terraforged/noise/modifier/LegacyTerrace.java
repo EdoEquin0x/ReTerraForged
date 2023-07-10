@@ -117,17 +117,7 @@ public class LegacyTerrace extends Modifier {
         result = 31 * result + upperCurve.hashCode();
         return result;
     }
-
-    private int getIndex(float value) {
-        int index = NoiseUtil.round(value * maxIndex);
-        if (index > maxIndex) {
-            return maxIndex;
-        } else if (index < 0) {
-            return 0;
-        }
-        return index;
-    }
-
+    
     private static class Step {
 
         private final float value;

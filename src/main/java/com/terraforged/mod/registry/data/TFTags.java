@@ -24,13 +24,26 @@
 
 package com.terraforged.mod.registry.data;
 
+import java.util.concurrent.CompletableFuture;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.terraforged.mod.TerraForged;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 public interface TFTags {
     TagKey<Biome> OVERWORLD = resolve(Registries.BIOME, "overworld");
@@ -44,7 +57,28 @@ public interface TFTags {
     TagKey<Biome> SPARSE = resolve(Registries.BIOME, "trees/sparse");
     TagKey<Biome> SPARSE_RAINFOREST = resolve(Registries.BIOME, "trees/sparse_rainforest");
     TagKey<Biome> TEMPERATE = resolve(Registries.BIOME, "trees/temperate");
+    TagKey<Block> ERODIBLE = resolve(Registries.BLOCK, "erodible");
+    	
+    static DataProvider biomes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+    	return new BiomeTagsProvider(output, lookupProvider, TerraForged.MODID, existingFileHelper) {
+			
+			@Override
+			protected void addTags(Provider provider) {
+				//TODO
+			}
+		};
+    }
     
+    static DataProvider blocks(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+    	return new BlockTagsProvider(output, lookupProvider, TerraForged.MODID, existingFileHelper) {
+			
+			@Override
+			protected void addTags(Provider provider) {
+				this.tag(ERODIBLE).addTag(BlockTags.DIRT);
+			}
+		};
+    }
+
     static <T> TagKey<T> resolve(ResourceKey<Registry<T>> registry, String path) {
     	return TagKey.create(registry, TerraForged.location(path));
     }

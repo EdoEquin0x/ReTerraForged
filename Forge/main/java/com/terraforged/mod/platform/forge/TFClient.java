@@ -24,15 +24,8 @@
 
 package com.terraforged.mod.platform.forge;
 
-import com.terraforged.mod.client.gui.preview.WorldPreviewScreen;
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.lifecycle.Stage;
-import com.terraforged.mod.registry.data.TFPresets;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -46,12 +39,13 @@ public class TFClient extends Stage {
     	modBus.addListener(this::onPresetEditorRegister);
     }
     
+    //TODO
     void onPresetEditorRegister(RegisterPresetEditorsEvent event) {
-    	event.register(TFPresets.TERRAFORGED, (parent, ctx) -> {
-    		Registry<Biome> biomes = ctx.worldgenLoadContext().registryOrThrow(Registries.BIOME);
-    		LevelStem overworld = ctx.selectedDimensions().dimensions().getOrThrow(LevelStem.OVERWORLD);
-    		TFChunkGenerator generator = (TFChunkGenerator) overworld.generator(); //FIXME unsafe cast
-    		return new WorldPreviewScreen(parent, biomes, generator);
-    	});
+//    	event.register(TFPresets.TERRAFORGED, (parent, ctx) -> {
+//    		Registry<Biome> biomes = ctx.worldgenLoadContext().registryOrThrow(Registries.BIOME);
+//    		LevelStem overworld = ctx.selectedDimensions().dimensions().getOrThrow(LevelStem.OVERWORLD);
+//    		TFChunkGenerator generator = (TFChunkGenerator) overworld.generator(); //FIXME unsafe cast
+//    		return new WorldPreviewScreen(parent, biomes, generator);
+//    	});
     }
 }

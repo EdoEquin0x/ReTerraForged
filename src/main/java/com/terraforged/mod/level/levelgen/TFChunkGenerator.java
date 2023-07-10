@@ -45,6 +45,7 @@ import com.terraforged.mod.level.levelgen.terrain.TerrainCache;
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.level.levelgen.util.ChunkUtil;
+import com.terraforged.mod.level.levelgen.util.NoopNoise;
 import com.terraforged.mod.level.levelgen.util.ThreadPool;
 import com.terraforged.mod.registry.data.TFBiomes;
 import com.terraforged.mod.util.storage.WeightMap;
@@ -332,10 +333,10 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGener
 	    		Blocks.STONE.defaultBlockState(), 
 	    		Blocks.WATER.defaultBlockState(), 
 	    		new NoiseRouter(
-	    			InvalidDensityFunction.INSTANCE,
-	    			InvalidDensityFunction.INSTANCE,
-	    			InvalidDensityFunction.INSTANCE,
-	    			InvalidDensityFunction.INSTANCE,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
 	        		new SampledDensityFunction(biomeSampler, (sample) -> sample.temperature),
 	    			new SampledDensityFunction(biomeSampler, (sample) -> sample.moisture), 
 	    			new SampledDensityFunction(biomeSampler, (sample) -> sample.continentNoise),
@@ -345,11 +346,11 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGener
 	    			new SampledDensityFunction(biomeSampler, (sample) -> 1 - sample.riverNoise), 
 	        		DensityFunctions.constant(1.0D), // TODO: depth noise
 	        		new SampledDensityFunction(biomeSampler, (sample) -> sample.biomeNoise), // is this right?
-	    			InvalidDensityFunction.INSTANCE,
-	    			InvalidDensityFunction.INSTANCE,
-	    			InvalidDensityFunction.INSTANCE,
-	    			InvalidDensityFunction.INSTANCE,
-	    			InvalidDensityFunction.INSTANCE
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP
 	    		), 
 	    		SurfaceRuleData.overworld(), 
 	    		new OverworldBiomeBuilder().spawnTarget(), 

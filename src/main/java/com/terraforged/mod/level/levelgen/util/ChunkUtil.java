@@ -178,7 +178,6 @@ public class ChunkUtil {
     }
 
     protected static ByteBuf createFullPalette() {
-        @SuppressWarnings("deprecation") // for we don't use GameRegistry for compatibility
 		var stateRegistry = Block.BLOCK_STATE_REGISTRY;
         var container = new PalettedContainer<>(stateRegistry, Blocks.STONE.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES);
 

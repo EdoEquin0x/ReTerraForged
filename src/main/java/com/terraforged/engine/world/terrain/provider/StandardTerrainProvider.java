@@ -35,15 +35,13 @@ public class StandardTerrainProvider implements TerrainProvider {
     private final LandForms landForms;
     private final RegionConfig config;
     private final TerrainSettings settings;
-    private final Populator defaultPopulator;
 
-    public StandardTerrainProvider(GeneratorContext context, RegionConfig config, Populator defaultPopulator) {
+    public StandardTerrainProvider(GeneratorContext context, RegionConfig config) {
         this.seed = context.seed.offset(context.settings.terrain.general.terrainSeedOffset);
         this.config = config;
         this.levels = context.levels;
         this.settings = context.settings.terrain;
         this.landForms = new LandForms(context.settings.terrain, context.levels, this.createGroundNoise(context));
-        this.defaultPopulator = defaultPopulator;
         this.init(context);
     }
 
@@ -101,21 +99,6 @@ public class StandardTerrainProvider implements TerrainProvider {
             return 0;
         }
         return list.size();
-    }
-
-    @Override
-    public Populator getPopulator(Terrain terrain, int variant) {
-        if (variant < 0) {
-            return this.defaultPopulator;
-        }
-        List<Populator> list = this.populators.get(terrain);
-        if (list == null) {
-            return this.defaultPopulator;
-        }
-        if (variant >= list.size()) {
-            variant = list.size() - 1;
-        }
-        return list.get(variant);
     }
 
     @Override

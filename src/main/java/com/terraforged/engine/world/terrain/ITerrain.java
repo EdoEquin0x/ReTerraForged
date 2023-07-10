@@ -60,8 +60,7 @@ public interface ITerrain {
         return false;
     }
 
-    public static interface Delegate
-    extends ITerrain {
+    public static interface Delegate extends ITerrain {
         public ITerrain getDelegate();
 
         @Override

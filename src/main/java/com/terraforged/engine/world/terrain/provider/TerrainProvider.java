@@ -3,14 +3,15 @@
  */
 package com.terraforged.engine.world.terrain.provider;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import com.terraforged.engine.cell.Populator;
 import com.terraforged.engine.settings.TerrainSettings;
 import com.terraforged.engine.world.terrain.LandForms;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.engine.world.terrain.populator.TerrainPopulator;
 import com.terraforged.noise.Module;
-import java.util.List;
-import java.util.function.Consumer;
 
 public interface TerrainProvider {
     public LandForms getLandforms();
@@ -18,12 +19,6 @@ public interface TerrainProvider {
     public List<Populator> getPopulators();
 
     public int getVariantCount(Terrain var1);
-
-    default public Populator getPopulator(Terrain terrain) {
-        return this.getPopulator(terrain, 0);
-    }
-
-    public Populator getPopulator(Terrain var1, int var2);
 
     default public void forEach(Consumer<TerrainPopulator> consumer) {
     }

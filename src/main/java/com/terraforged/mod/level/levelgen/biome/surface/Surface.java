@@ -25,13 +25,13 @@
 package com.terraforged.mod.level.levelgen.biome.surface;
 
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
+import com.terraforged.mod.registry.data.TFTags;
 import com.terraforged.noise.util.NoiseUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
@@ -41,7 +41,6 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 public class Surface {
-    protected static final TagKey<Block> ERODIBLE = BlockTags.DIRT;
 
     public static void apply(TerrainData terrainData, ChunkAccess chunk, ChunkGenerator generator) {
         float norm = 55 * (generator.getGenDepth() / 255F);
@@ -177,7 +176,7 @@ public class Surface {
     }
 
     public static boolean isErodible(BlockState state) {
-        return state.is(ERODIBLE) ||state.is(BlockTags.SNOW);
+        return state.is(TFTags.ERODIBLE) ||state.is(BlockTags.SNOW);
     }
 
     protected static boolean sameChunk(BlockPos pos, ChunkPos chunk) {

@@ -72,11 +72,7 @@ public class GeneratorContext {
     protected LazySupplier<WorldGeneratorFactory> createFactory(GeneratorContext context) {
         return LazySupplier.factory(context.copy(), WorldGeneratorFactory::new);
     }
-
-    public static GeneratorContext createNoCache(int seed, Settings settings) {
-        return new GeneratorContext(seed, settings, StandardTerrainProvider::new, s -> null);
-    }
-
+    
     protected static TileProvider createCache(WorldGeneratorFactory factory) {
         return TileGenerator.builder().pool(ThreadPools.createDefault()).factory(factory).size(3, 1).build().cached();
     }

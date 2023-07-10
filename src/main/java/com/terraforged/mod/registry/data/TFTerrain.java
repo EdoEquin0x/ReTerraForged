@@ -62,8 +62,7 @@ public interface TFTerrain {
 	
     static void register(BootstapContext<TerrainNoise> ctx) {
     	HolderGetter<com.terraforged.mod.level.levelgen.asset.TerrainType> holder = ctx.lookup(TerraForged.TERRAIN_TYPE);
-    	
-        var seed = Factory.createSeed();
+    	var seed = Factory.createSeed();
         ctx.register(STEPPE, Factory.create(holder, seed, TerrainType.FLATS, LandForms::steppe));
         ctx.register(PLAINS, Factory.create(holder, seed, TerrainType.FLATS, LandForms::plains));
         ctx.register(HILLS_1, Factory.create(holder, seed, TerrainType.HILLS, LandForms::hills1));

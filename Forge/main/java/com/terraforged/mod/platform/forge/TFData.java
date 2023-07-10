@@ -24,21 +24,26 @@
 
 package com.terraforged.mod.platform.forge;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.google.common.collect.ImmutableSet;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.lifecycle.Stage;
 import com.terraforged.mod.registry.data.TFBiomes;
 import com.terraforged.mod.registry.data.TFCaves;
 import com.terraforged.mod.registry.data.TFPresets;
+import com.terraforged.mod.registry.data.TFTags;
 import com.terraforged.mod.registry.data.TFTerrain;
 import com.terraforged.mod.registry.data.TFTerrainTypes;
 import com.terraforged.mod.registry.data.TFVegetation;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -59,8 +64,14 @@ public class TFData extends Stage {
     }
 
     void onGenerateData(GatherDataEvent event) {
+    	boolean includeServer = event.includeServer();
+    	CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+    	ExistingFileHelper fileHelper = event.getExistingFileHelper();
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput("resources");
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), BUILDER, ImmutableSet.of(TerraForged.MODID)));
+    	
+        generator.addProvider(includeServer, new DatapackBuiltinEntriesProvider(output, lookupProvider, BUILDER, ImmutableSet.of(TerraForged.MODID)));
+        generator.addProvider(includeServer, TFTags.biomes(output, lookupProvider, fileHelper));
+        generator.addProvider(includeServer, TFTags.blocks(output, lookupProvider, fileHelper));
     }
 }

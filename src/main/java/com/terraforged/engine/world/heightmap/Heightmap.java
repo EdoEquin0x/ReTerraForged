@@ -56,7 +56,7 @@ public class Heightmap implements Populator {
         Seed mountainSeed = context.seed.offset(context.settings.terrain.general.terrainSeedOffset);
         Module mountainShapeBase = Source.cellEdge(mountainSeed.next(), MOUNTAIN_SCALE, EdgeFunc.DISTANCE_2_ADD).warp(mountainSeed.next(), 333, 2, 250.0);
         Module mountainShape = mountainShapeBase.curve(Interpolation.CURVE3).clamp(0.0, 0.9).map(0.0, 1.0);
-        this.terrainProvider = context.terrainFactory.create(context, regionConfig, this);
+        this.terrainProvider = context.terrainFactory.create(context, regionConfig);
         RegionSelector terrainRegions = new RegionSelector(this.terrainProvider.getPopulators());
         TerrainPopulator terrainRegionBorders = TerrainPopulator.of(TerrainType.FLATS, this.terrainProvider.getLandforms().getLandBase(), this.terrainProvider.getLandforms().plains(context.seed), settings.terrain.steppe);
         RegionLerper terrain = new RegionLerper(terrainRegionBorders, terrainRegions);
@@ -113,10 +113,6 @@ public class Heightmap implements Populator {
 
     public Rivermap getRivermap(int x, int z) {
         return this.continentGenerator.getRivermap(x, z);
-    }
-
-    public Populator getPopulator(Terrain terrain, int id) {
-        return this.terrainProvider.getPopulator(terrain, id);
     }
 
     private void applyRivers(Cell cell, float x, float z) {

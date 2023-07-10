@@ -38,7 +38,7 @@ import java.lang.reflect.Field;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class TFRegenerator {
+public class TFChunkRegenerator {
     private static final Supplier<Field[]> CACHES = Suppliers.memoize(() -> getFields(ChunkMap.class, Long2ObjectLinkedOpenHashMap.class).toArray(Field[]::new));
 
     public static void regenerateChunks(ChunkPos pos, int radius, ServerLevel level, CommandSourceStack source) {
