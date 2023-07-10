@@ -58,13 +58,13 @@ public class ClimateModule {
         this.macroBiomeNoise = Source.cell(seed.next(), context.settings.climate.biomeShape.macroNoiseSize);
     }
 
-    public void apply(int seed, Cell cell, float x, float y) {
-        this.apply(seed, cell, x, y, true);
+    public void apply(Cell cell, float x, float y) {
+        this.apply(cell, x, y, true);
     }
 
-    public void apply(int seed, Cell cell, float x, float y, boolean mask) {
-        float ox = this.warpX.getValue(seed, x, y) * this.warpStrength;
-        float oz = this.warpZ.getValue(seed, x, y) * this.warpStrength;
+    public void apply(Cell cell, float x, float y, boolean mask) {
+        float ox = this.warpX.getValue(x, y) * this.warpStrength;
+        float oz = this.warpZ.getValue(x, y) * this.warpStrength;
         x += ox;
         y += oz;
         int xr = NoiseUtil.floor(x *= this.biomeFreq);
@@ -98,12 +98,12 @@ public class ClimateModule {
             }
         }
         cell.biomeRegionId = this.cellValue(this.seed, cellX, cellY);
-        cell.moisture = this.moisture.getValue(seed, centerX, centerY);
-        cell.temperature = this.temperature.getValue(seed, centerX, centerY);
-        cell.macroBiomeId = this.macroBiomeNoise.getValue(seed, centerX, centerY);
+        cell.moisture = this.moisture.getValue(centerX, centerY);
+        cell.temperature = this.temperature.getValue(centerX, centerY);
+        cell.macroBiomeId = this.macroBiomeNoise.getValue(centerX, centerY);
         int posX = NoiseUtil.floor(centerX / this.biomeFreq);
         int posZ = NoiseUtil.floor(centerY / this.biomeFreq);
-        float continentEdge = this.continent.getLandValue(seed, posX, posZ);
+        float continentEdge = this.continent.getLandValue(posX, posZ);
         if (mask) {
             cell.biomeRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
             this.modifyTerrain(cell, continentEdge);

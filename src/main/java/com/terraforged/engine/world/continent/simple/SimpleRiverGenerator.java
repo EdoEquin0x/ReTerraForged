@@ -22,7 +22,7 @@ public class SimpleRiverGenerator extends BaseRiverGenerator<SimpleContinent> {
     }
 
     @Override
-    public List<Network.Builder> generateRoots(int seed, int x, int z, Random random, GenWarp warp) {
+    public List<Network.Builder> generateRoots(int x, int z, Random random, GenWarp warp) {
         float start = random.nextFloat();
         float spacing = (float)Math.PI * 2 / (float)this.count;
         float spaceVar = spacing * 0.75f;
@@ -34,7 +34,7 @@ public class SimpleRiverGenerator extends BaseRiverGenerator<SimpleContinent> {
             float dx = NoiseUtil.sin(angle);
             float dz = NoiseUtil.cos(angle);
             float startMod = 0.05f + random.nextFloat() * 0.45f;
-            float length = ((SimpleContinent)this.continent).getDistanceToOcean(seed, x, z, dx, dz);
+            float length = ((SimpleContinent)this.continent).getDistanceToOcean(x, z, dx, dz);
             float startDist = Math.max(400.0f, startMod * length);
             float x1 = (float)x + dx * startDist;
             float z1 = (float)z + dz * startDist;

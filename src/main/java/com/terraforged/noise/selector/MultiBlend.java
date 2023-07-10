@@ -36,7 +36,7 @@ import com.terraforged.noise.util.NoiseUtil;
 import java.util.Arrays;
 
 /**
- * {@code @Author} <dags@dags.me>
+ * @Author <dags@dags.me>
  */
 public class MultiBlend extends Selector {
 
@@ -72,14 +72,14 @@ public class MultiBlend extends Selector {
     }
 
     @Override
-    public float selectValue(int seed, float x, float y, float selector) {
+    public float selectValue(float x, float y, float selector) {
         int index = NoiseUtil.round(selector * maxIndex);
 
         Node min = nodes[index];
         Node max = min;
 
         if (blendRange == 0) {
-            return min.source.getValue(seed, x, y);
+            return min.source.getValue(x, y);
         }
 
         if (selector > min.max) {
@@ -87,13 +87,13 @@ public class MultiBlend extends Selector {
         } else if (selector < min.min) {
             min = nodes[index - 1];
         } else {
-            return min.source.getValue(seed, x, y);
+            return min.source.getValue(x ,y);
         }
 
         float alpha = (selector - min.max) / blendRange;
         alpha = NoiseUtil.clamp(alpha, 0, 1);
 
-        return blendValues(min.source.getValue(seed, x, y), max.source.getValue(seed, x, y), alpha);
+        return blendValues(min.source.getValue(x, y), max.source.getValue(x, y), alpha);
     }
 
     private static class Node {

@@ -35,7 +35,7 @@ public class Network {
         return this.bounds.contains(x, z);
     }
 
-    public void carve(int seed, Cell cell, float x, float z, float nx, float nz) {
+    public void carve(Cell cell, float x, float z, float nx, float nz) {
         River river = this.riverCarver.river;
         RiverWarp warp = this.riverCarver.warp;
         float t = Line.distanceOnLine(x, z, river.x1, river.z1, river.x2, river.z2);
@@ -46,11 +46,11 @@ public class Network {
             long offset = warp.getOffset(x, z, pt, river);
             t = Line.distanceOnLine(x += PosUtil.unpackLeftf(offset), z += PosUtil.unpackRightf(offset), river.x1, river.z1, river.x2, river.z2);
         }
-        this.carveRiver(seed, cell, px, pz, pt, x, z, t);
-        this.carveWetlands(seed, cell, x, z, nx, nz);
-        this.carveLakes(seed, cell, x, z, nx, nz);
+        this.carveRiver(cell, px, pz, pt, x, z, t);
+        this.carveWetlands(cell, x, z, nx, nz);
+        this.carveLakes(cell, x, z, nx, nz);
         for (Network network : this.children) {
-            network.carve(seed, cell, x, z, nx, nz);
+            network.carve(cell, x, z, nx, nz);
         }
     }
 
@@ -58,21 +58,21 @@ public class Network {
         return Network.overlaps(river, this.riverCarver, extend) || Network.overlaps(river, this.children, extend);
     }
 
-    private void carveRiver(int seed, Cell cell, float px, float pz, float pt, float x, float z, float t) {
-        this.riverCarver.carve(seed, cell, px, pz, pt, x, z, t);
+    private void carveRiver(Cell cell, float px, float pz, float pt, float x, float z, float t) {
+        this.riverCarver.carve(cell, px, pz, pt, x, z, t);
     }
 
-    private void carveWetlands(int seed, Cell cell, float x, float z, float nx, float nz) {
+    private void carveWetlands(Cell cell, float x, float z, float nx, float nz) {
         for (Wetland wetland : this.wetlands) {
-            wetland.apply(seed, cell, x + nx, z + nz, x, z);
+            wetland.apply(cell, x + nx, z + nz, x, z);
         }
     }
 
-    private void carveLakes(int seed, Cell cell, float x, float z, float nx, float nz) {
+    private void carveLakes(Cell cell, float x, float z, float nx, float nz) {
         float lx = x + nx;
         float lz = z + nz;
         for (Lake lake : this.lakes) {
-            lake.apply(seed, cell, lx, lz);
+            lake.apply(cell, lx, lz);
         }
     }
 

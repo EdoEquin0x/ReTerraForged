@@ -48,7 +48,7 @@ public class SimplexNoise extends NoiseSource {
     }
 
     @Override
-    public float getSourceValue(int seed, float x, float y) {
+    public float getValue(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
 
@@ -81,9 +81,9 @@ public class SimplexNoise extends NoiseSource {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (min != 0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != 0.0f ? Float.floatToIntBits(max) : 0);
-        result = 31 * result + (range != 0.0f ? Float.floatToIntBits(range) : 0);
+        result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
+        result = 31 * result + (range != +0.0f ? Float.floatToIntBits(range) : 0);
         return result;
     }
 

@@ -29,11 +29,11 @@ import java.nio.file.Path;
 import com.terraforged.mod.CommonAPI;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.command.TFCommands;
+import com.terraforged.mod.level.levelgen.asset.NoiseCave;
+import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
+import com.terraforged.mod.level.levelgen.asset.TerrainType;
+import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.registry.TFChunkGenerators;
-import com.terraforged.mod.worldgen.asset.NoiseCave;
-import com.terraforged.mod.worldgen.asset.TerrainNoise;
-import com.terraforged.mod.worldgen.asset.TerrainType;
-import com.terraforged.mod.worldgen.asset.VegetationConfig;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraftforge.common.MinecraftForge;

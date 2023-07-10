@@ -62,19 +62,19 @@ public class AdvancedTerrace extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float value) {
+    public float modify(float x, float y, float value) {
         if (value <= blendMin) {
             return value;
         }
 
-        float mask = this.mask.getValue(seed, x, y);
+        float mask = this.mask.getValue(x, y);
         if (mask == 0) {
             return value;
         }
 
         float result = value;
-        float slope = this.slope.getValue(seed, x, y);
-        float modulation = this.modulation.getValue(seed, x, y);
+        float slope = this.slope.getValue(x, y);
+        float modulation = this.modulation.getValue(x, y);
         for (int i = 1; i <= octaves; i++) {
             result = getStepped(result, steps * i);
             result = getSloped(value, result, slope);
@@ -114,10 +114,10 @@ public class AdvancedTerrace extends Modifier {
         int result = super.hashCode();
         result = 31 * result + steps;
         result = 31 * result + octaves;
-        result = 31 * result + (modRange != 0.0f ? Float.floatToIntBits(modRange) : 0);
-        result = 31 * result + (blendMin != 0.0f ? Float.floatToIntBits(blendMin) : 0);
-        result = 31 * result + (blendMax != 0.0f ? Float.floatToIntBits(blendMax) : 0);
-        result = 31 * result + (blendRange != 0.0f ? Float.floatToIntBits(blendRange) : 0);
+        result = 31 * result + (modRange != +0.0f ? Float.floatToIntBits(modRange) : 0);
+        result = 31 * result + (blendMin != +0.0f ? Float.floatToIntBits(blendMin) : 0);
+        result = 31 * result + (blendMax != +0.0f ? Float.floatToIntBits(blendMax) : 0);
+        result = 31 * result + (blendRange != +0.0f ? Float.floatToIntBits(blendRange) : 0);
         result = 31 * result + slope.hashCode();
         result = 31 * result + mask.hashCode();
         result = 31 * result + modulation.hashCode();

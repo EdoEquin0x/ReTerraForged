@@ -8,24 +8,23 @@ import com.terraforged.engine.concurrent.task.LazyCallable;
 import com.terraforged.engine.tile.Tile;
 import com.terraforged.engine.tile.chunk.ChunkReader;
 
-public interface TileProvider
-extends Disposable.Listener<Tile> {
+public interface TileProvider extends Disposable.Listener<Tile> {
     public int chunkToRegion(int var1);
 
-    public void queueChunk(int seed, int var1, int var2);
+    public void queueChunk(int var1, int var2);
 
-    public void queueRegion(int seed, int var1, int var2);
+    public void queueRegion(int var1, int var2);
 
     public LazyCallable<Tile> get(long var1);
 
-    public LazyCallable<Tile> getOrCompute(int seed, long var1);
+    public LazyCallable<Tile> getOrCompute(long var1);
 
-    default public Tile getTile(int seed, long id) {
-        return this.getOrCompute(seed, id).get();
+    default public Tile getTile(long id) {
+        return this.getOrCompute(id).get();
     }
 
-    default public Tile getTile(int seed, int regionX, int regionZ) {
-        return this.getTile(seed, Tile.getRegionId(regionX, regionZ));
+    default public Tile getTile(int regionX, int regionZ) {
+        return this.getTile(Tile.getRegionId(regionX, regionZ));
     }
 
     default public Tile getTileIfPresent(long id) {

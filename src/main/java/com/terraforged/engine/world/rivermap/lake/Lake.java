@@ -42,7 +42,7 @@ public class Lake extends TerrainPopulator {
 	}
 
 	@Override
-	public void apply(int seed, Cell cell, float x, float z) {
+	public void apply(Cell cell, float x, float z) {
 		float distance2 = this.getDistance2(x, z);
 		if (distance2 > this.valley2) {
 			return;

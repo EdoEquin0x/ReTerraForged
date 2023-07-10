@@ -41,30 +41,30 @@ public class TileCache implements TileProvider {
         return this.cache.get(id);
     }
 
-    public CacheEntry<Tile> getOrCompute(int seed, long id) {
-        return this.cache.computeIfAbsent(id, (i) -> this.computeCacheEntry(seed, i));
+    public CacheEntry<Tile> getOrCompute(long id) {
+        return this.cache.computeIfAbsent(id, this::computeCacheEntry);
     }
 
     @Override
-    public void queueChunk(int seed, int chunkX, int chunkZ) {
+    public void queueChunk(int chunkX, int chunkZ) {
         if (!this.canQueue) {
             return;
         }
-        this.queueRegion(seed, this.chunkToRegion(chunkX), this.chunkToRegion(chunkZ));
+        this.queueRegion(this.chunkToRegion(chunkX), this.chunkToRegion(chunkZ));
     }
 
     @Override
-    public void queueRegion(int seed, int regionX, int regionZ) {
+    public void queueRegion(int regionX, int regionZ) {
         if (!this.canQueue) {
             return;
         }
-        this.getOrCompute(seed, Tile.getRegionId(regionX, regionZ));
+        this.getOrCompute(Tile.getRegionId(regionX, regionZ));
     }
 
-    protected CacheEntry<Tile> computeCacheEntry(int seed, long id) {
+    protected CacheEntry<Tile> computeCacheEntry(long id) {
         int regionX = Tile.getRegionX(id);
         int regionZ = Tile.getRegionZ(id);
-        LazyCallable<Tile> tile = this.generator.getTile(seed, regionX, regionZ);
+        LazyCallable<Tile> tile = this.generator.getTile(regionX, regionZ);
         return CacheEntry.computeAsync(tile, this.threadPool);
     }
 }

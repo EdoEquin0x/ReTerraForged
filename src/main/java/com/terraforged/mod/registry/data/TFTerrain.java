@@ -33,8 +33,8 @@ import com.terraforged.engine.world.terrain.LandForms;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.engine.world.terrain.TerrainType;
 import com.terraforged.mod.TerraForged;
+import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.util.seed.RandSeed;
-import com.terraforged.mod.worldgen.asset.TerrainNoise;
 import com.terraforged.noise.Module;
 import com.terraforged.noise.Source;
 import com.terraforged.noise.domain.Domain;
@@ -61,7 +61,7 @@ public interface TFTerrain {
 	ResourceKey<TerrainNoise> MOUNTAINS_RIDGE_2 = resolve("mountains_ridge_2");
 	
     static void register(BootstapContext<TerrainNoise> ctx) {
-    	HolderGetter<com.terraforged.mod.worldgen.asset.TerrainType> holder = ctx.lookup(TerraForged.TERRAIN_TYPE);
+    	HolderGetter<com.terraforged.mod.level.levelgen.asset.TerrainType> holder = ctx.lookup(TerraForged.TERRAIN_TYPE);
     	
         var seed = Factory.createSeed();
         ctx.register(STEPPE, Factory.create(holder, seed, TerrainType.FLATS, LandForms::steppe));
@@ -92,15 +92,15 @@ public interface TFTerrain {
             return new RandSeed(9712416L, 500_000);
         }
 
-        static TerrainNoise create(HolderGetter<com.terraforged.mod.worldgen.asset.TerrainType> getter, Seed seed, Terrain type, BiFunction<LandForms, Seed, Module> factory) {
+        static TerrainNoise create(HolderGetter<com.terraforged.mod.level.levelgen.asset.TerrainType> getter, Seed seed, Terrain type, BiFunction<LandForms, Seed, Module> factory) {
             return new TerrainNoise(getType(getter, type), factory.apply(LAND_FORMS, seed));
         }
 
-        static TerrainNoise createNF(HolderGetter<com.terraforged.mod.worldgen.asset.TerrainType> getter, Seed seed, Terrain type, BiFunction<LandForms, Seed, Module> factory) {
+        static TerrainNoise createNF(HolderGetter<com.terraforged.mod.level.levelgen.asset.TerrainType> getter, Seed seed, Terrain type, BiFunction<LandForms, Seed, Module> factory) {
             return new TerrainNoise(getType(getter, type), factory.apply(LAND_FORMS_NF, seed));
         }
 
-        static TerrainNoise createDolomite(HolderGetter<com.terraforged.mod.worldgen.asset.TerrainType> getter, Seed seed, Terrain type) {
+        static TerrainNoise createDolomite(HolderGetter<com.terraforged.mod.level.levelgen.asset.TerrainType> getter, Seed seed, Terrain type) {
             // Valley floor terrain
             var base = Source.simplex(seed.next(), 80, 4).scale(0.1);
 
@@ -125,7 +125,7 @@ public interface TFTerrain {
             return new TerrainNoise(getType(getter, type), noise);
         }
 
-        static Holder<com.terraforged.mod.worldgen.asset.TerrainType> getType(HolderGetter<com.terraforged.mod.worldgen.asset.TerrainType> getter, Terrain terrain) {
+        static Holder<com.terraforged.mod.level.levelgen.asset.TerrainType> getType(HolderGetter<com.terraforged.mod.level.levelgen.asset.TerrainType> getter, Terrain terrain) {
             return getter.getOrThrow(TerraForged.resolve(TerraForged.TERRAIN_TYPE, terrain.getName()));
         }
 

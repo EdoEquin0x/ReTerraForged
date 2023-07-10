@@ -38,8 +38,8 @@ public class MidPointCurve implements CurveFunc {
 
     @Override
     public int hashCode() {
-        int result = (mid != 0.0f ? Float.floatToIntBits(mid) : 0);
-        result = 31 * result + (steepness != 0.0f ? Float.floatToIntBits(steepness) : 0);
+        int result = (mid != +0.0f ? Float.floatToIntBits(mid) : 0);
+        result = 31 * result + (steepness != +0.0f ? Float.floatToIntBits(steepness) : 0);
         return result;
     }
 

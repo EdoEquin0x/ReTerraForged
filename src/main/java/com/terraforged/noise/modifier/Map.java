@@ -61,10 +61,10 @@ public class Map extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float value) {
+    public float modify(float x, float y, float value) {
         float alpha = (value - source.minValue()) / sourceRange;
-        float min = this.min.getValue(seed, x, y);
-        float max = this.max.getValue(seed, x, y);
+        float min = this.min.getValue(x, y);
+        float max = this.max.getValue(x, y);
         return min + (alpha * (max - min));
 
 //        if (source.maxValue() != source.minValue()) {
@@ -94,7 +94,7 @@ public class Map extends Modifier {
         int result = super.hashCode();
         result = 31 * result + min.hashCode();
         result = 31 * result + max.hashCode();
-        result = 31 * result + (sourceRange != 0.0f ? Float.floatToIntBits(sourceRange) : 0);
+        result = 31 * result + (sourceRange != +0.0f ? Float.floatToIntBits(sourceRange) : 0);
         return result;
     }
 

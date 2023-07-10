@@ -63,8 +63,8 @@ public class Bias extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
-        return noiseValue + bias.getValue(seed, x, y);
+    public float modify(float x, float y, float noiseValue) {
+        return noiseValue + bias.getValue(x, y);
     }
 
     @Override

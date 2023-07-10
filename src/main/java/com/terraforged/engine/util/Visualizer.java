@@ -19,7 +19,7 @@ public class Visualizer {
         BufferedImage image = new BufferedImage(size, size, 1);
         PosIterator iterator = PosIterator.area(0, 0, size, size);
         while (iterator.next()) {
-            float value = noise.getValue(125, iterator.x(), iterator.z());
+            float value = noise.getValue(iterator.x(), iterator.z());
             image.setRGB(iterator.x(), iterator.z(), Visualizer.getMaterial(value));
         }
         JFrame frame = new JFrame();

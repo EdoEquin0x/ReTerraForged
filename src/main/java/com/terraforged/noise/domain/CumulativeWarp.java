@@ -45,17 +45,17 @@ public class CumulativeWarp implements Domain {
     }
 
     @Override
-    public float getOffsetX(int seed, float x, float y) {
-        float ax = a.getX(seed, x, y);
-        float ay = a.getY(seed, x, y);
-        return b.getX(seed, ax, ay);
+    public float getOffsetX(float x, float y) {
+        float ax = a.getX(x, y);
+        float ay = a.getY(x, y);
+        return b.getX(ax, ay);
     }
 
     @Override
-    public float getOffsetY(int seed, float x, float y) {
-        float ax = a.getX(seed, x, y);
-        float ay = a.getY(seed, x, y);
-        return b.getY(seed, ax, ay);
+    public float getOffsetY(float x, float y) {
+        float ax = a.getX(x, y);
+        float ay = a.getY(x, y);
+        return b.getY(ax, ay);
     }
 
     @Override

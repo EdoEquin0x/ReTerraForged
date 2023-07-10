@@ -48,13 +48,13 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
     }
 
     @Override
-    public Rivermap generateRivers(int seed, int x, int z, long id) {
+    public Rivermap generateRivers(int x, int z, long id) {
         Random random = new Random(id + (long)this.seed);
         GenWarp warp = new GenWarp((int)id, this.continentScale);
-        List<Network.Builder> rivers = this.generateRoots(seed, x, z, random, warp);
+        List<Network.Builder> rivers = this.generateRoots(x, z, random, warp);
         Collections.shuffle(rivers, random);
         for (Network.Builder root : rivers) {
-            this.generateForks(seed, root, River.MAIN_SPACING, this.fork, random, warp, rivers, 0);
+            this.generateForks(root, River.MAIN_SPACING, this.fork, random, warp, rivers, 0);
         }
         for (Network.Builder river : rivers) {
             this.generateWetlands(river, random);
@@ -63,11 +63,11 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
         return new Rivermap(x, z, networks, warp);
     }
 
-    public List<Network.Builder> generateRoots(int seed, int x, int z, Random random, GenWarp warp) {
+    public List<Network.Builder> generateRoots(int x, int z, Random random, GenWarp warp) {
         return Collections.emptyList();
     }
 
-    public void generateForks(int seed, Network.Builder parent, Variance spacing, RiverConfig config, Random random, GenWarp warp, List<Network.Builder> rivers, int depth) {
+    public void generateForks(Network.Builder parent, Variance spacing, RiverConfig config, Random random, GenWarp warp, List<Network.Builder> rivers, int depth) {
         if (depth > 2) {
             return;
         }
@@ -90,7 +90,7 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
                 float dz = NoiseUtil.cos(angle);
                 long v1 = parent.carver.river.pos(offset);
                 float x1 = PosUtil.unpackLeftf(v1);
-                if (!(this.continent.getEdgeValue(seed, x1, z1 = PosUtil.unpackRightf(v1)) < this.minEdgeValue) && !(this.continent.getEdgeValue(seed, x2 = x1 - dx * length, z2 = z1 - dz * length) < this.minEdgeValue)) {
+                if (!(this.continent.getEdgeValue(x1, z1 = PosUtil.unpackRightf(v1)) < this.minEdgeValue) && !(this.continent.getEdgeValue(x2 = x1 - dx * length, z2 = z1 - dz * length) < this.minEdgeValue)) {
                     RiverConfig forkConfig = parent.carver.createForkConfig(offset, this.levels);
                     River river = new River(x2, z2, x1, z1);
                     if (!this.riverOverlaps(river, parent, rivers)) {
@@ -103,7 +103,7 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
                         RiverCarver fork = new RiverCarver(river, forkWarp, forkConfig, settings, this.levels);
                         Network.Builder builder = Network.builder(fork);
                         parent.children.add(builder);
-                        this.generateForks(seed, builder, River.FORK_SPACING, config, random, warp, rivers, depth + 1);
+                        this.generateForks(builder, River.FORK_SPACING, config, random, warp, rivers, depth + 1);
                     }
                 }
                 attempt = false;

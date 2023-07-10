@@ -12,7 +12,6 @@ import com.terraforged.engine.world.rivermap.Rivermap;
 
 public class ChunkBatchTask implements BatchTask {
     private static final String ERROR = "Failed to generate tile area: x=%s, z=%s, size=%sx%s";
-    private final int seed;
     private final int x;
     private final int z;
     private final int size;
@@ -20,8 +19,7 @@ public class ChunkBatchTask implements BatchTask {
     private final Heightmap heightmap;
     private BatchTask.Notifier notifier = BatchTask.NONE;
 
-    public ChunkBatchTask(int seed, int x, int z, int size, Tile tile, Heightmap heightmap) {
-    	this.seed = seed;
+    public ChunkBatchTask(int x, int z, int size, Tile tile, Heightmap heightmap) {
     	this.heightmap = heightmap;
         this.tile = tile;
         this.x = x;
@@ -53,51 +51,50 @@ public class ChunkBatchTask implements BatchTask {
         int maxZ = Math.min(this.tile.getChunkSize().total, this.z + this.size);
         for (int cz = this.z; cz < maxZ; ++cz) {
             for (int cx = this.x; cx < maxX; ++cx) {
-                this.driveOne(this.seed, this.tile.getChunkWriter(cx, cz), this.heightmap);
+                this.driveOne(this.tile.getChunkWriter(cx, cz), this.heightmap);
             }
         }
     }
 
-    protected void driveOne(int seed, ChunkWriter chunk, Heightmap heightmap) {
+    protected void driveOne(ChunkWriter chunk, Heightmap heightmap) {
         Rivermap rivers = null;
         for (int dz = 0; dz < 16; ++dz) {
             for (int dx = 0; dx < 16; ++dx) {
                 Cell cell = chunk.genCell(dx, dz);
                 float x = chunk.getBlockX() + dx;
                 float z = chunk.getBlockZ() + dz;
-                heightmap.applyBase(seed, cell, x, z);
-                rivers = Rivermap.get(seed, cell, rivers, heightmap);
-                heightmap.applyRivers(seed, cell, x, z, rivers);
-                heightmap.applyClimate(seed, cell, x, z);
+                heightmap.applyBase(cell, x, z);
+                rivers = Rivermap.get(cell, rivers, heightmap);
+                heightmap.applyRivers(cell, x, z, rivers);
+                heightmap.applyClimate(cell, x, z);
             }
         }
     }
 
-    public static class Zoom
-    extends ChunkBatchTask {
+    public static class Zoom extends ChunkBatchTask {
         private final float translateX;
         private final float translateZ;
         private final float zoom;
 
-        public Zoom(int seed, int x, int z, int size, Tile tile, Heightmap heightmap, float translateX, float translateZ, float zoom) {
-            super(seed, x, z, size, tile, heightmap);
+        public Zoom(int x, int z, int size, Tile tile, Heightmap heightmap, float translateX, float translateZ, float zoom) {
+            super(x, z, size, tile, heightmap);
             this.translateX = translateX;
             this.translateZ = translateZ;
             this.zoom = zoom;
         }
 
         @Override
-        protected void driveOne(int seed, ChunkWriter chunk, Heightmap heightmap) {
+        protected void driveOne(ChunkWriter chunk, Heightmap heightmap) {
             Rivermap rivers = null;
             for (int dz = 0; dz < 16; ++dz) {
                 for (int dx = 0; dx < 16; ++dx) {
                     Cell cell = chunk.genCell(dx, dz);
                     float x = (float)(chunk.getBlockX() + dx) * this.zoom + this.translateX;
                     float z = (float)(chunk.getBlockZ() + dz) * this.zoom + this.translateZ;
-                    heightmap.applyBase(seed, cell, x, z);
-                    rivers = Rivermap.get(seed, cell, rivers, heightmap);
-                    heightmap.applyRivers(seed, cell, x, z, rivers);
-                    heightmap.applyClimate(seed, cell, x, z);
+                    heightmap.applyBase(cell, x, z);
+                    rivers = Rivermap.get(cell, rivers, heightmap);
+                    heightmap.applyRivers(cell, x, z, rivers);
+                    heightmap.applyClimate(cell, x, z);
                 }
             }
         }

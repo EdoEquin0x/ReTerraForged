@@ -25,12 +25,12 @@
 
 package com.terraforged.noise.util;
 
-import java.util.Objects;
-
 import com.terraforged.cereal.spec.DataFactory;
 import com.terraforged.cereal.spec.DataSpec;
 import com.terraforged.cereal.spec.SpecName;
 import com.terraforged.cereal.value.DataValue;
+
+import java.util.Objects;
 
 public class Vec2f implements SpecName {
 

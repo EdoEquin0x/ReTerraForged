@@ -20,8 +20,8 @@ public class RegionSelector implements Populator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
-        this.get(cell.terrainRegionId).apply(seed, cell, x, y);
+    public void apply(Cell cell, float x, float y) {
+        this.get(cell.terrainRegionId).apply(cell, x, y);
     }
 
     public Populator get(float identity) {

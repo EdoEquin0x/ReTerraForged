@@ -13,20 +13,20 @@ public class TileGeneratorBatched extends TileGenerator {
     }
 
     @Override
-    public Tile generateRegion(int seed, int regionX, int regionZ) {
+    public Tile generateRegion(int regionX, int regionZ) {
         Tile tile = this.createEmptyRegion(regionX, regionZ);
         try (Resource<Batcher> batcher = this.threadPool.batcher();){
-            tile.generateArea(seed, this.generator.getHeightmap(), batcher.get(), this.batchSize);
+            tile.generateArea(this.generator.getHeightmap(), batcher.get(), this.batchSize);
         }
         this.postProcess(tile);
         return tile;
     }
 
     @Override
-    public Tile generateRegion(int seed, float centerX, float centerZ, float zoom, boolean filter) {
+    public Tile generateRegion(float centerX, float centerZ, float zoom, boolean filter) {
         Tile tile = this.createEmptyRegion(0, 0);
         try (Resource<Batcher> batcher = this.threadPool.batcher();){
-            tile.generateArea(seed, this.generator.getHeightmap(), batcher.get(), this.batchSize, centerX, centerZ, zoom);
+            tile.generateArea(this.generator.getHeightmap(), batcher.get(), this.batchSize, centerX, centerZ, zoom);
         }
         this.postProcess(tile, filter);
         return tile;

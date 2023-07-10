@@ -4,6 +4,6 @@
 package com.terraforged.engine.world.rivermap;
 
 public interface RiverGenerator {
-    public Rivermap generateRivers(int seed, int var1, int var2, long var3);
+    public Rivermap generateRivers(int var1, int var2, long var3);
 }
 

@@ -16,7 +16,7 @@ public class Temperature implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
+    public float getValue(float x, float y) {
         float sin = NoiseUtil.sin(y *= this.frequency);
         sin = NoiseUtil.clamp(sin, -1.0f, 1.0f);
         float value = NoiseUtil.pow(sin, this.power);

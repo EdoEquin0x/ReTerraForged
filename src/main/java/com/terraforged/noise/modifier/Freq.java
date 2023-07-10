@@ -21,14 +21,14 @@ public class Freq extends Modifier {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        float fx = this.x.getValue(seed, x, y);
-        float fy = this.y.getValue(seed, x, y);
-        return source.getValue(seed, x * fx, y * fy);
+    public float getValue(float x, float y) {
+        float fx = this.x.getValue(x, y);
+        float fy = this.y.getValue(x, y);
+        return source.getValue(x * fx, y * fy);
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
+    public float modify(float x, float y, float noiseValue) {
         return 0;
     }
 

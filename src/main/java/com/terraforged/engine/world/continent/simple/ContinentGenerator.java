@@ -53,21 +53,21 @@ public abstract class ContinentGenerator implements SimpleContinent {
     }
 
     @Override
-    public Rivermap getRivermap(int seed, int x, int y) {
-        return this.cache.getRivers(seed, x, y);
+    public Rivermap getRivermap(int x, int y) {
+        return this.cache.getRivers(x, y);
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
+    public float getValue(float x, float y) {
         Cell cell = new Cell();
-        this.apply(seed, cell, x, y);
+        this.apply(cell, x, y);
         return cell.continentEdge;
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
-        float ox = this.warp.getOffsetX(seed, x, y);
-        float oz = this.warp.getOffsetY(seed, x, y);
+    public void apply(Cell cell, float x, float y) {
+        float ox = this.warp.getOffsetX(x, y);
+        float oz = this.warp.getOffsetY(x, y);
         float px = x + ox;
         float py = y + oz;
         int xr = NoiseUtil.floor(px *= this.frequency);
@@ -103,13 +103,13 @@ public abstract class ContinentGenerator implements SimpleContinent {
         cell.continentEdge = this.cellEdgeValue(edgeDistance, edgeDistance2);
         cell.continentX = (int)(centerX / this.frequency);
         cell.continentZ = (int)(centerY / this.frequency);
-        cell.continentEdge *= this.getShape(seed, x, y, cell.continentEdge);
+        cell.continentEdge *= this.getShape(x, y, cell.continentEdge);
     }
 
     @Override
-    public final float getEdgeValue(int seed, float x, float y) {
-        float ox = this.warp.getOffsetX(seed, x, y);
-        float oz = this.warp.getOffsetY(seed, x, y);
+    public final float getEdgeValue(float x, float y) {
+        float ox = this.warp.getOffsetX(x, y);
+        float oz = this.warp.getOffsetY(x, y);
         float px = x + ox;
         float py = y + oz;
         int xr = NoiseUtil.floor(px *= this.frequency);
@@ -134,14 +134,14 @@ public abstract class ContinentGenerator implements SimpleContinent {
             }
         }
         float edgeValue = this.cellEdgeValue(edgeDistance, edgeDistance2);
-        float shapeNoise = this.getShape(seed, x, y, edgeValue);
+        float shapeNoise = this.getShape(x, y, edgeValue);
         return edgeValue * shapeNoise;
     }
 
     @Override
-    public long getNearestCenter(int seed, float x, float z) {
-        float ox = this.warp.getOffsetX(seed, x, z);
-        float oz = this.warp.getOffsetY(seed, x, z);
+    public long getNearestCenter(float x, float z) {
+        float ox = this.warp.getOffsetX(x, z);
+        float oz = this.warp.getOffsetY(x, z);
         float px = x + ox;
         float py = z + oz;
         float centerX = px *= this.frequency;
@@ -169,14 +169,14 @@ public abstract class ContinentGenerator implements SimpleContinent {
     }
 
     @Override
-    public float getDistanceToOcean(int seed, int cx, int cz, float dx, float dz) {
-        float high = this.getDistanceToEdge(seed, cx, cz, dx, dz);
+    public float getDistanceToOcean(int cx, int cz, float dx, float dz) {
+        float high = this.getDistanceToEdge(cx, cz, dx, dz);
         float low = 0.0f;
         for (int i = 0; i < 50; ++i) {
             float mid = (low + high) / 2.0f;
             float x = (float)cx + dx * mid;
             float z = (float)cz + dz * mid;
-            float edge = this.getEdgeValue(seed, x, z);
+            float edge = this.getEdgeValue(x, z);
             if (edge > this.controlPoints.shallowOcean) {
                 low = mid;
             } else {
@@ -188,12 +188,12 @@ public abstract class ContinentGenerator implements SimpleContinent {
     }
 
     @Override
-    public float getDistanceToEdge(int seed, int cx, int cz, float dx, float dz) {
+    public float getDistanceToEdge(int cx, int cz, float dx, float dz) {
         float distance = this.continentScale * 4;
         for (int i = 0; i < 10; ++i) {
             float x = (float)cx + dx * distance;
             float z = (float)cz + dz * distance;
-            long centerPos = this.getNearestCenter(seed, x, z);
+            long centerPos = this.getNearestCenter(x, z);
             int conX = PosUtil.unpackLeft(centerPos);
             int conZ = PosUtil.unpackRight(centerPos);
             distance += distance;
@@ -204,7 +204,7 @@ public abstract class ContinentGenerator implements SimpleContinent {
                 float mid = (low + high) / 2.0f;
                 float px = (float)cx + dx * mid;
                 float pz = (float)cz + dz * mid;
-                centerPos = this.getNearestCenter(seed, px, pz);
+                centerPos = this.getNearestCenter(px, pz);
                 conX = PosUtil.unpackLeft(centerPos);
                 conZ = PosUtil.unpackRight(centerPos);
                 if (conX == cx && conZ == cz) {
@@ -236,12 +236,12 @@ public abstract class ContinentGenerator implements SimpleContinent {
         return (value - this.clampMin) / this.clampRange;
     }
 
-    protected float getShape(int seed, float x, float z, float edgeValue) {
+    protected float getShape(float x, float z, float edgeValue) {
         if (edgeValue >= this.controlPoints.inland) {
             return 1.0f;
         }
         float alpha = edgeValue / this.controlPoints.inland;
-        return this.shape.getValue(seed, x, z) * alpha;
+        return this.shape.getValue(x, z) * alpha;
     }
 }
 

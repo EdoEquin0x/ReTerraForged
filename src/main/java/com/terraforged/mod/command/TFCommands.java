@@ -34,9 +34,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.terraforged.engine.util.pos.PosUtil;
 import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.engine.world.terrain.TerrainType;
-import com.terraforged.mod.worldgen.Seeds;
-import com.terraforged.mod.worldgen.TFGeneratorPreset;
-import com.terraforged.mod.worldgen.TFRegenerator;
+import com.terraforged.mod.level.levelgen.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.TFRegenerator;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -48,6 +47,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 public class TFCommands {
@@ -90,7 +90,7 @@ public class TFCommands {
     }
 
     private static int locate(CommandContext<CommandSourceStack> context, boolean withRadius) throws CommandSyntaxException {
-        var generator = TFGeneratorPreset.getGenerator(context.getSource().getLevel());
+        var generator = getGenerator(context.getSource().getLevel().getChunkSource().getGenerator());
         if (generator == null) return Command.SINGLE_SUCCESS;
 
         String name = StringArgumentType.getString(context, "terrain");
@@ -105,9 +105,8 @@ public class TFCommands {
         if (terrain == null) {
             result = text("Invalid terrain: " + name).withStyle(ChatFormatting.RED);
         } else {
-            int seed = Seeds.get(player.getLevel().getSeed());
             int maxRadius = Math.min(100, radius + 50);
-            long pos = generator.getNoiseGenerator().find(seed, at.getX(), at.getZ(), radius, maxRadius, terrain);
+            long pos = generator.getNoiseGenerator().find(at.getX(), at.getZ(), radius, maxRadius, terrain);
 
             if (pos == 0L) {
                 result = text("Unable to locate terrain: " + name).withStyle(ChatFormatting.RED);
@@ -146,5 +145,9 @@ public class TFCommands {
 
     private static MutableComponent text(String message) {
         return MutableComponent.create(new LiteralContents(message));
+    }
+    
+    private static TFChunkGenerator getGenerator(ChunkGenerator chunkGenerator) {
+        return chunkGenerator instanceof TFChunkGenerator generator ? generator : null;
     }
 }

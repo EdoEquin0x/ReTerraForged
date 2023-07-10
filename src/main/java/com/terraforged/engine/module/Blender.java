@@ -29,21 +29,21 @@ public class Blender extends Select implements Populator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
-        float select = this.getSelect(seed, cell, x, y);
+    public void apply(Cell cell, float x, float y) {
+        float select = this.getSelect(cell, x, y);
         if (select < this.blendLower) {
-            this.lower.apply(seed, cell, x, y);
+            this.lower.apply(cell, x, y);
             return;
         }
         if (select > this.blendUpper) {
-            this.upper.apply(seed, cell, x, y);
+            this.upper.apply(cell, x, y);
             return;
         }
         float alpha = Interpolation.LINEAR.apply((select - this.blendLower) / this.blendRange);
-        this.lower.apply(seed, cell, x, y);
+        this.lower.apply(cell, x, y);
         float lowerVal = cell.value;
         Terrain lowerType = cell.terrain;
-        this.upper.apply(seed, cell, x, y);
+        this.upper.apply(cell, x, y);
         float upperVal = cell.value;
         cell.value = NoiseUtil.lerp(lowerVal, upperVal, alpha);
         if (select < this.midpoint) {

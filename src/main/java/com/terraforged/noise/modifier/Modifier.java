@@ -45,9 +45,9 @@ public abstract class Modifier implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        float value = source.getValue(seed, x, y);
-        return modify(seed, x, y, value);
+    public float getValue(float x, float y) {
+        float value = source.getValue(x, y);
+        return modify(x, y, value);
     }
 
     @Override
@@ -82,7 +82,7 @@ public abstract class Modifier implements Module {
                 '}';
     }
 
-    public abstract float modify(int seed, float x, float y, float noiseValue);
+    public abstract float modify(float x, float y, float noiseValue);
 
     protected static <M extends Modifier> DataSpec.Builder<M> specBuilder(Class<M> type, DataFactory<M> factory) {
         return DataSpec.builder(type.getSimpleName(), type, factory);

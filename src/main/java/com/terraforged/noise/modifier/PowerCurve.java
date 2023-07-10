@@ -57,7 +57,7 @@ public class PowerCurve extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float value) {
+    public float modify(float x, float y, float value) {
         if (value >= mid) {
             float part = value - mid;
             value = mid + NoiseUtil.pow(part, power);
@@ -86,11 +86,11 @@ public class PowerCurve extends Modifier {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (min != 0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != 0.0f ? Float.floatToIntBits(max) : 0);
-        result = 31 * result + (mid != 0.0f ? Float.floatToIntBits(mid) : 0);
-        result = 31 * result + (range != 0.0f ? Float.floatToIntBits(range) : 0);
-        result = 31 * result + (power != 0.0f ? Float.floatToIntBits(power) : 0);
+        result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
+        result = 31 * result + (mid != +0.0f ? Float.floatToIntBits(mid) : 0);
+        result = 31 * result + (range != +0.0f ? Float.floatToIntBits(range) : 0);
+        result = 31 * result + (power != +0.0f ? Float.floatToIntBits(power) : 0);
         return result;
     }
 

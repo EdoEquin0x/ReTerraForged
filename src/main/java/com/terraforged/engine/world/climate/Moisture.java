@@ -21,8 +21,8 @@ public class Moisture implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        float noise = this.source.getValue(seed, x, y);
+    public float getValue(float x, float y) {
+        float noise = this.source.getValue(x, y);
         if (this.power < 2) {
             return noise;
         }

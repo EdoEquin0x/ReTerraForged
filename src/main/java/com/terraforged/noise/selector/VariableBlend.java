@@ -59,21 +59,21 @@ public class VariableBlend extends Selector {
     }
 
     @Override
-    protected float selectValue(int seed, float x, float y, float selector) {
-        float radius = minBlend + variator.getValue(seed, x, y) * maxBlend;
+    protected float selectValue(float x, float y, float selector) {
+        float radius = minBlend + variator.getValue(x, y) * maxBlend;
 
         float min = Math.max(0, midpoint - radius);
         if (selector < min) {
-            return source0.getValue(seed, x, y);
+            return source0.getValue(x, y);
         }
 
         float max = Math.min(1, midpoint + radius);
         if (selector > max) {
-            return source1.getValue(seed, x, y);
+            return source1.getValue(x, y);
         }
 
         float alpha = (selector - min) / (max - min);
-        return blendValues(source0.getValue(seed, x, y), source1.getValue(seed, x, y), alpha);
+        return blendValues(source0.getValue(x, y), source1.getValue(x, y), alpha);
     }
 
     private static final DataFactory<VariableBlend> factory = (data, spec, context) -> new VariableBlend(

@@ -33,7 +33,7 @@ import com.terraforged.noise.Module;
  */
 public class Cache extends Modifier {
 
-    private final ThreadLocal<Value> localValue = ThreadLocal.withInitial(Value::new);
+    private final Value value = new Value();
 
     public Cache(Module source) {
         super(source);
@@ -55,17 +55,17 @@ public class Cache extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
+    public float modify(float x, float y, float noiseValue) {
         return 0;
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        Value value = this.localValue.get();
+    public float getValue(float x, float y) {
+        Value value = this.value;
         if (value.matches(x, y)) {
             return value.value;
         }
-        return value.set(x, y, source.getValue(seed, x, y));
+        return value.set(x, y, source.getValue(x, y));
     }
 
     @Override
@@ -76,13 +76,13 @@ public class Cache extends Modifier {
 
         Cache cache = (Cache) o;
 
-        return localValue.equals(cache.localValue);
+        return value.equals(cache.value);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + localValue.hashCode();
+        result = 31 * result + value.hashCode();
         return result;
     }
 

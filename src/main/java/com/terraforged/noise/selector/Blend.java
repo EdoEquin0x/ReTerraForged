@@ -62,15 +62,15 @@ public class Blend extends Selector {
     }
 
     @Override
-    public float selectValue(int seed, float x, float y, float select) {
+    public float selectValue(float x, float y, float select) {
         if (select < blendLower) {
-            return source0.getValue(seed, x, y);
+            return source0.getValue(x, y);
         }
         if (select > blendUpper) {
-            return source1.getValue(seed, x, y);
+            return source1.getValue(x, y);
         }
         float alpha = (select - blendLower) / blendRange;
-        return blendValues(source0.getValue(seed, x, y), source1.getValue(seed, x, y), alpha);
+        return blendValues(source0.getValue(x, y), source1.getValue(x, y), alpha);
     }
 
     private static final DataFactory<Blend> factory = (data, spec, context) -> new Blend(

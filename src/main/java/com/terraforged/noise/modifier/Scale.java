@@ -61,8 +61,8 @@ public class Scale extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
-        return noiseValue * scale.getValue(seed, x, y);
+    public float modify(float x, float y, float noiseValue) {
+        return noiseValue * scale.getValue(x, y);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class Scale extends Modifier {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + scale.hashCode();
-        result = 31 * result + (min != 0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != 0.0f ? Float.floatToIntBits(max) : 0);
+        result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
         return result;
     }
 

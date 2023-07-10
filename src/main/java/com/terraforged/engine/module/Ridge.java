@@ -45,23 +45,23 @@ public class Ridge {
         return new Noise(this, source);
     }
 
-    public float getValue(int seed, float x, float y, Module source) {
-        return this.getValue(seed, x, y, source, new float[25]);
+    public float getValue(float x, float y, Module source) {
+        return this.getValue(x, y, source, new float[25]);
     }
 
-    public float getValue(int seed, float x, float y, Module source, float[] cache) {
-        float value = source.getValue(seed, x, y);
-        float erosion = this.getErosionValue(seed, x, y, source, cache);
+    public float getValue(float x, float y, Module source, float[] cache) {
+        float value = source.getValue(x, y);
+        float erosion = this.getErosionValue(x, y, source, cache);
         return NoiseUtil.lerp(erosion, value, this.blendMode.blend(value, erosion, this.strength));
     }
 
-    public float getErosionValue(int seed, float x, float y, Module source, float[] cache) {
+    public float getErosionValue(float x, float y, Module source, float[] cache) {
         float sum = 0.0f;
         float max = 0.0f;
         float gain = 1.0f;
         float distance = this.gridSize;
         for (int i = 0; i < this.octaves; ++i) {
-            float value = this.getSingleErosionValue(seed, x, y, distance, source, cache);
+            float value = this.getSingleErosionValue(x, y, distance, source, cache);
             sum += (value *= gain);
             max += gain;
             gain *= this.amplitude;
@@ -72,7 +72,7 @@ public class Ridge {
         return sum / max;
     }
 
-    public float getSingleErosionValue(int seed, float x, float y, float gridSize, Module source, float[] cache) {
+    public float getSingleErosionValue(float x, float y, float gridSize, Module source, float[] cache) {
         Arrays.fill(cache, -1.0f);
         int pix = NoiseUtil.floor(x / gridSize);
         int piy = NoiseUtil.floor(y / gridSize);
@@ -94,7 +94,7 @@ public class Ridge {
                         Vec2f vec2 = pbx == pax && pby == pay ? vec1 : NoiseUtil.cell(this.seed, pbx, pby);
                         float candidateX = ((float)pbx + vec2.x) * gridSize;
                         float candidateY = ((float)pby + vec2.y) * gridSize;
-                        float height = Ridge.getNoiseValue(seed, dx1 + dx2, dy1 + dy2, candidateX, candidateY, source, cache);
+                        float height = Ridge.getNoiseValue(dx1 + dx2, dy1 + dy2, candidateX, candidateY, source, cache);
                         if (!(height < lowestNeighbour)) continue;
                         lowestNeighbour = height;
                         bx = candidateX;
@@ -109,11 +109,11 @@ public class Ridge {
         return NoiseUtil.clamp(Ridge.sqrt(minHeight2) / gridSize, 0.0f, 1.0f);
     }
 
-    private static float getNoiseValue(int seed, int dx, int dy, float px, float py, Module module, float[] cache) {
+    private static float getNoiseValue(int dx, int dy, float px, float py, Module module, float[] cache) {
         int index = (dy + 2) * 5 + (dx + 2);
         float value = cache[index];
         if (value == -1.0f) {
-            cache[index] = value = module.getValue(seed, px, py);
+            cache[index] = value = module.getValue(px, py);
         }
         return value;
     }
@@ -178,8 +178,7 @@ public class Ridge {
         public abstract float blend(float var1, float var2, float var3);
     }
 
-    public static class Noise
-    implements Module {
+    public static class Noise  implements Module {
         private final Ridge ridge;
         private final Module source;
         private final ThreadLocal<float[]> cache = ThreadLocal.withInitial(() -> new float[25]);
@@ -195,8 +194,8 @@ public class Ridge {
         }
 
         @Override
-        public float getValue(int seed, float x, float y) {
-            return this.ridge.getValue(seed, x, y, this.source, this.cache.get());
+        public float getValue(float x, float y) {
+            return this.ridge.getValue(x, y, this.source, this.cache.get());
         }
     }
 }

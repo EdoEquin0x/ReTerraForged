@@ -46,7 +46,7 @@ public class Boost extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float value) {
+    public float modify(float x, float y, float value) {
         for (int i = 0; i < iterations; i++) {
             value = NoiseUtil.pow(value, 1 - value);
         }

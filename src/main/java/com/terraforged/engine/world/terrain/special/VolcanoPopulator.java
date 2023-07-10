@@ -46,11 +46,11 @@ public class VolcanoPopulator extends TerrainPopulator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float z) {
+    public void apply(Cell cell, float x, float z) {
         float limit;
         float maxHeight;
-        float value = this.cone.getValue(seed, x, z);
-        if (value > (maxHeight = (limit = this.height.getValue(seed, x, z)) * this.inversionPoint)) {
+        float value = this.cone.getValue(x, z);
+        if (value > (maxHeight = (limit = this.height.getValue(x, z)) * this.inversionPoint)) {
             float steepnessModifier = 1.0f;
             float delta = (value - maxHeight) * steepnessModifier;
             float range = limit - maxHeight;
@@ -60,11 +60,11 @@ public class VolcanoPopulator extends TerrainPopulator {
             }
             value = maxHeight - maxHeight / 5.0f * alpha;
         } else if (value < this.blendLower) {
-            value += this.lowlands.getValue(seed, x, z);
+            value += this.lowlands.getValue(x, z);
             cell.terrain = this.outer;
         } else if (value < this.blendUpper) {
             float alpha = 1.0f - (value - this.blendLower) / this.blendRange;
-            value += this.lowlands.getValue(seed, x, z) * alpha;
+            value += this.lowlands.getValue(x, z) * alpha;
             cell.terrain = this.outer;
         }
         cell.value = this.bias + value;

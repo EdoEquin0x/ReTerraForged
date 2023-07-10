@@ -29,7 +29,6 @@ import com.terraforged.cereal.spec.DataFactory;
 import com.terraforged.cereal.spec.DataSpec;
 import com.terraforged.noise.Module;
 import com.terraforged.noise.Source;
-import com.terraforged.noise.util.NoiseUtil;
 
 /**
  * @author dags <dags@dags.me>
@@ -65,10 +64,16 @@ public class Clamp extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
-        float min = this.min.getValue(seed, x, y);
-        float max = this.max.getValue(seed, x, y);
-        return NoiseUtil.clamp(noiseValue, min, max);
+    public float modify(float x, float y, float noiseValue) {
+        float min = this.min.getValue(x, y);
+        float max = this.max.getValue(x, y);
+        if (noiseValue < min) {
+            return min;
+        }
+        if (noiseValue > max) {
+            return max;
+        }
+        return noiseValue;
     }
 
     @Override

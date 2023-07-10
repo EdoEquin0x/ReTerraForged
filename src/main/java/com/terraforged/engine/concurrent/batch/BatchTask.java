@@ -3,8 +3,7 @@
  */
 package com.terraforged.engine.concurrent.batch;
 
-public interface BatchTask
-extends Runnable {
+public interface BatchTask extends Runnable {
     public static final Notifier NONE = () -> {};
 
     public void setNotifier(Notifier var1);

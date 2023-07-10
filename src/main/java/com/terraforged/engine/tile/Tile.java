@@ -172,7 +172,7 @@ SafeCloseable {
         }
     }
 
-    public void generate(int seed, Heightmap heightmap) {
+    public void generate(Heightmap heightmap) {
         Rivermap riverMap = null;
         for (int cz = 0; cz < this.chunkSize.total; ++cz) {
             for (int cx = 0; cx < this.chunkSize.total; ++cx) {
@@ -183,17 +183,17 @@ SafeCloseable {
                         float x = chunk.getBlockX() + dx;
                         float z = chunk.getBlockZ() + dz;
                         Cell cell = chunk.genCell(dx, dz);
-                        heightmap.applyBase(seed, cell, x, z);
-                        riverMap = Rivermap.get(seed, cell, riverMap, heightmap);
-                        heightmap.applyRivers(seed, cell, x, z, riverMap);
-                        heightmap.applyClimate(seed, cell, x, z);
+                        heightmap.applyBase(cell, x, z);
+                        riverMap = Rivermap.get(cell, riverMap, heightmap);
+                        heightmap.applyRivers(cell, x, z, riverMap);
+                        heightmap.applyClimate(cell, x, z);
                     }
                 }
             }
         }
     }
 
-    public void generate(int seed, HeightmapCache heightmap) {
+    public void generate(HeightmapCache heightmap) {
         Rivermap riverMap = null;
         for (int cz = 0; cz < this.chunkSize.total; ++cz) {
             for (int cx = 0; cx < this.chunkSize.total; ++cx) {
@@ -204,24 +204,24 @@ SafeCloseable {
                         int x = chunk.getBlockX() + dx;
                         int z = chunk.getBlockZ() + dz;
                         Cell cell = chunk.genCell(dx, dz);
-                        riverMap = heightmap.generate(seed, cell, x, z, riverMap);
+                        riverMap = heightmap.generate(cell, x, z, riverMap);
                     }
                 }
             }
         }
     }
 
-    public void generate(int seed, Heightmap heightmap, Batcher batcher) {
+    public void generate(Heightmap heightmap, Batcher batcher) {
         for (int cz = 0; cz < this.chunkSize.total; ++cz) {
             for (int cx = 0; cx < this.chunkSize.total; ++cx) {
                 int index = this.chunkSize.indexOf(cx, cz);
                 GenChunk chunk = this.computeChunk(index, cx, cz);
-                batcher.submit(new ChunkGenTask(seed, chunk, heightmap));
+                batcher.submit(new ChunkGenTask(chunk, heightmap));
             }
         }
     }
 
-    public void generate(int seed, Heightmap heightmap, float offsetX, float offsetZ, float zoom) {
+    public void generate(Heightmap heightmap, float offsetX, float offsetZ, float zoom) {
         Rivermap riverMap = null;
         float translateX = offsetX - (float)this.blockSize.size * zoom / 2.0f;
         float translateZ = offsetZ - (float)this.blockSize.size * zoom / 2.0f;
@@ -234,17 +234,17 @@ SafeCloseable {
                         float x = (float)(chunk.getBlockX() + dx) * zoom + translateX;
                         float z = (float)(chunk.getBlockZ() + dz) * zoom + translateZ;
                         Cell cell = chunk.genCell(dx, dz);
-                        heightmap.applyBase(seed, cell, x, z);
-                        riverMap = Rivermap.get(seed, cell, riverMap, heightmap);
-                        heightmap.applyRivers(seed, cell, x, z, riverMap);
-                        heightmap.applyClimate(seed, cell, x, z);
+                        heightmap.applyBase(cell, x, z);
+                        riverMap = Rivermap.get(cell, riverMap, heightmap);
+                        heightmap.applyRivers(cell, x, z, riverMap);
+                        heightmap.applyClimate(cell, x, z);
                     }
                 }
             }
         }
     }
 
-    public void generate(int seed, HeightmapCache heightmap, float offsetX, float offsetZ, float zoom) {
+    public void generate(HeightmapCache heightmap, float offsetX, float offsetZ, float zoom) {
         Rivermap riverMap = null;
         float translateX = offsetX - (float)this.blockSize.size * zoom / 2.0f;
         float translateZ = offsetZ - (float)this.blockSize.size * zoom / 2.0f;
@@ -259,14 +259,14 @@ SafeCloseable {
                         int px = NoiseUtil.floor(x);
                         int pz = NoiseUtil.floor(z);
                         Cell cell = chunk.genCell(dx, dz);
-                        riverMap = heightmap.generate(seed, cell, px, pz, riverMap);
+                        riverMap = heightmap.generate(cell, px, pz, riverMap);
                     }
                 }
             }
         }
     }
 
-    public void generate(int seed, Heightmap heightmap, Batcher batcher, float offsetX, float offsetZ, float zoom) {
+    public void generate(Heightmap heightmap, Batcher batcher, float offsetX, float offsetZ, float zoom) {
         float translateX = offsetX - (float)this.blockSize.size * zoom / 2.0f;
         float translateZ = offsetZ - (float)this.blockSize.size * zoom / 2.0f;
         batcher.size(this.chunkSize.total * this.chunkSize.total);
@@ -274,24 +274,24 @@ SafeCloseable {
             for (int cx = 0; cx < this.chunkSize.total; ++cx) {
                 int index = this.chunkSize.indexOf(cx, cz);
                 GenChunk chunk = this.computeChunk(index, cx, cz);
-                batcher.submit(new ChunkGenTask.Zoom(seed, chunk, heightmap, translateX, translateZ, zoom));
+                batcher.submit(new ChunkGenTask.Zoom(chunk, heightmap, translateX, translateZ, zoom));
             }
         }
     }
 
-    public void generateArea(int seed, Heightmap heightmap, Batcher batcher, int batchCount) {
+    public void generateArea(Heightmap heightmap, Batcher batcher, int batchCount) {
         batcher.size(batchCount * batchCount);
         int batchSize = Tile.getBatchSize(batchCount, this.chunkSize);
         for (int dz = 0; dz < batchCount; ++dz) {
             int cz = dz * batchSize;
             for (int dx = 0; dx < batchCount; ++dx) {
                 int cx = dx * batchSize;
-                batcher.submit(new ChunkBatchTask(seed, cx, cz, batchSize, this, heightmap));
+                batcher.submit(new ChunkBatchTask(cx, cz, batchSize, this, heightmap));
             }
         }
     }
 
-    public void generateArea(int seed, Heightmap heightmap, Batcher batcher, int batchCount, float offsetX, float offsetZ, float zoom) {
+    public void generateArea(Heightmap heightmap, Batcher batcher, int batchCount, float offsetX, float offsetZ, float zoom) {
         batcher.size(batchCount * batchCount);
         int batchSize = Tile.getBatchSize(batchCount, this.chunkSize);
         float translateX = offsetX - (float)this.blockSize.size * zoom / 2.0f;
@@ -300,23 +300,23 @@ SafeCloseable {
             int cz = dz * batchSize;
             for (int dx = 0; dx < batchCount; ++dx) {
                 int cx = dx * batchSize;
-                batcher.submit(new ChunkBatchTask.Zoom(seed, cx, cz, batchSize, this, heightmap, translateX, translateZ, zoom));
+                batcher.submit(new ChunkBatchTask.Zoom(cx, cz, batchSize, this, heightmap, translateX, translateZ, zoom));
             }
         }
     }
 
-    public void generateAreaStriped(int seed, Heightmap heightmap, Batcher batcher, int sections) {
+    public void generateAreaStriped(Heightmap heightmap, Batcher batcher, int sections) {
         batcher.size(this.chunkSize.total * sections);
         int sectionLength = Tile.getBatchSize(sections, this.chunkSize);
         for (int cz = 0; cz < this.chunkSize.total; ++cz) {
             for (int s = 0; s < sections; ++s) {
                 int cx = s * sectionLength;
-                batcher.submit(new ChunkStripeBatchTask(seed, cx, cz, sectionLength, this, heightmap));
+                batcher.submit(new ChunkStripeBatchTask(cx, cz, sectionLength, this, heightmap));
             }
         }
     }
 
-    public void generateAreaStriped(int seed, Heightmap heightmap, Batcher batcher, int sections, float offsetX, float offsetZ, float zoom) {
+    public void generateAreaStriped(Heightmap heightmap, Batcher batcher, int sections, float offsetX, float offsetZ, float zoom) {
         batcher.size(this.chunkSize.total * sections);
         int sectionLength = Tile.getBatchSize(sections, this.chunkSize);
         float translateX = offsetX - (float)this.blockSize.size * zoom / 2.0f;
@@ -324,7 +324,7 @@ SafeCloseable {
         for (int cz = 0; cz < this.chunkSize.total; ++cz) {
             for (int s = 0; s < sections; ++s) {
                 int cx = s * sectionLength;
-                batcher.submit(new ChunkStripeBatchTask.Zoom(seed, cx, cz, sectionLength, this, heightmap, translateX, translateZ, zoom));
+                batcher.submit(new ChunkStripeBatchTask.Zoom(cx, cz, sectionLength, this, heightmap, translateX, translateZ, zoom));
             }
         }
     }

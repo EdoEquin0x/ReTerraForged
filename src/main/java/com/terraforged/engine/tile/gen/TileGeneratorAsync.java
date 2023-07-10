@@ -29,13 +29,13 @@ public class TileGeneratorAsync implements TileFactory {
     }
 
     @Override
-    public LazyCallable<Tile> getTile(int seed, int regionX, int regionZ) {
-        return LazyCallable.callAsync(this.generator.getTile(seed, regionX, regionZ), this.threadPool);
+    public LazyCallable<Tile> getTile(int regionX, int regionZ) {
+        return LazyCallable.callAsync(this.generator.getTile(regionX, regionZ), this.threadPool);
     }
 
     @Override
-    public LazyCallable<Tile> getTile(int seed, float centerX, float centerZ, float zoom, boolean filter) {
-        return LazyCallable.callAsync(this.generator.getTile(seed, centerX, centerZ, zoom, filter), this.threadPool);
+    public LazyCallable<Tile> getTile(float centerX, float centerZ, float zoom, boolean filter) {
+        return LazyCallable.callAsync(this.generator.getTile(centerX, centerZ, zoom, filter), this.threadPool);
     }
 
     @Override

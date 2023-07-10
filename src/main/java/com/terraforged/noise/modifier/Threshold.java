@@ -44,8 +44,8 @@ public class Threshold extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
-        float limit = threshold.getValue(seed, x, y);
+    public float modify(float x, float y, float noiseValue) {
+        float limit = threshold.getValue(x, y);
         if (noiseValue < limit) {
             return 0F;
         }

@@ -38,8 +38,8 @@ public class SCurve implements CurveFunc {
 
     @Override
     public int hashCode() {
-        int result = (lower != 0.0f ? Float.floatToIntBits(lower) : 0);
-        result = 31 * result + (upper != 0.0f ? Float.floatToIntBits(upper) : 0);
+        int result = (lower != +0.0f ? Float.floatToIntBits(lower) : 0);
+        result = 31 * result + (upper != +0.0f ? Float.floatToIntBits(upper) : 0);
         return result;
     }
 

@@ -45,13 +45,13 @@ public class TileGenerator implements TileFactory {
     }
 
     @Override
-    public LazyCallable<Tile> getTile(int seed, int regionX, int regionZ) {
-        return new CallableTile(seed, regionX, regionZ, this);
+    public LazyCallable<Tile> getTile(int regionX, int regionZ) {
+        return new CallableTile(regionX, regionZ, this);
     }
 
     @Override
-    public LazyCallable<Tile> getTile(int seed, float centerX, float centerZ, float zoom, boolean filter) {
-        return new CallableZoomTile(seed, centerX, centerZ, zoom, filter, this);
+    public LazyCallable<Tile> getTile(float centerX, float centerZ, float zoom, boolean filter) {
+        return new CallableZoomTile(centerX, centerZ, zoom, filter, this);
     }
 
     @Override
@@ -64,16 +64,16 @@ public class TileGenerator implements TileFactory {
         return new TileCache(this, this.threadPool);
     }
 
-    public Tile generateRegion(int seed, int regionX, int regionZ) {
+    public Tile generateRegion(int regionX, int regionZ) {
         Tile tile = this.createEmptyRegion(regionX, regionZ);
-        tile.generate(seed, this.generator.getHeightmap());
+        tile.generate(this.generator.getHeightmap());
         this.postProcess(tile);
         return tile;
     }
 
-    public Tile generateRegion(int seed, float centerX, float centerZ, float zoom, boolean filter) {
+    public Tile generateRegion(float centerX, float centerZ, float zoom, boolean filter) {
         Tile tile = this.createEmptyRegion(0, 0);
-        tile.generate(seed, 	this.generator.getHeightmap(), centerX, centerZ, zoom);
+        tile.generate(this.generator.getHeightmap(), centerX, centerZ, zoom);
         this.postProcess(tile, filter);
         return tile;
     }

@@ -45,9 +45,9 @@ public abstract class Selector extends Combiner {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        float select = selector.getValue(seed, x, y);
-        return selectValue(seed, x, y, select);
+    public float getValue(float x, float y) {
+        float select = selector.getValue(x, y);
+        return selectValue(x, y, select);
     }
 
     @Override
@@ -70,5 +70,5 @@ public abstract class Selector extends Combiner {
         return NoiseUtil.lerp(lower, upper, alpha);
     }
 
-    protected abstract float selectValue(int seed, float x, float y, float selector);
+    protected abstract float selectValue(float x, float y, float selector);
 }

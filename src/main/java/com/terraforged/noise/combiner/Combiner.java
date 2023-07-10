@@ -64,13 +64,13 @@ public abstract class Combiner implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
+    public float getValue(float x, float y) {
         float result = 0F;
         if (sources.length > 0) {
-            result = sources[0].getValue(seed, x, y);
+            result = sources[0].getValue(x, y);
             for (int i = 1; i < sources.length; i++) {
                 Module module = sources[i];
-                float value = module.getValue(seed, x, y);
+                float value = module.getValue(x, y);
                 result = combine(result, value);
             }
         }
@@ -102,8 +102,8 @@ public abstract class Combiner implements Module {
 
     @Override
     public int hashCode() {
-        int result = (min != 0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != 0.0f ? Float.floatToIntBits(max) : 0);
+        int result = (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
         result = 31 * result + Arrays.hashCode(sources);
         return result;
     }

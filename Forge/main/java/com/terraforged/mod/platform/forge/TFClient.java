@@ -25,10 +25,9 @@
 package com.terraforged.mod.platform.forge;
 
 import com.terraforged.mod.client.gui.preview.WorldPreviewScreen;
+import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.lifecycle.Stage;
 import com.terraforged.mod.registry.data.TFPresets;
-import com.terraforged.mod.worldgen.TFGenerator;
-import com.terraforged.mod.worldgen.biome.BiomeSampler;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -51,9 +50,8 @@ public class TFClient extends Stage {
     	event.register(TFPresets.TERRAFORGED, (parent, ctx) -> {
     		Registry<Biome> biomes = ctx.worldgenLoadContext().registryOrThrow(Registries.BIOME);
     		LevelStem overworld = ctx.selectedDimensions().dimensions().getOrThrow(LevelStem.OVERWORLD);
-    		TFGenerator generator = (TFGenerator) overworld.generator(); //FIXME unsafe cast
-    		BiomeSampler sampler = generator.getBiomeSource().getBiomeSampler();
-    		return new WorldPreviewScreen(parent, biomes, sampler, (int) ctx.options().seed());
+    		TFChunkGenerator generator = (TFChunkGenerator) overworld.generator(); //FIXME unsafe cast
+    		return new WorldPreviewScreen(parent, biomes, generator);
     	});
     }
 }

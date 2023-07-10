@@ -48,13 +48,13 @@ public class DomainWarp implements Domain {
     }
 
     @Override
-    public float getOffsetX(int seed, float x, float y) {
-        return this.x.getValue(seed, x, y) * this.distance.getValue(seed, x, y);
+    public float getOffsetX(float x, float y) {
+        return this.x.getValue(x, y) * this.distance.getValue(x, y);
     }
 
     @Override
-    public float getOffsetY(int seed, float x, float y) {
-        return this.y.getValue(seed, x, y) * this.distance.getValue(seed, x, y);
+    public float getOffsetY(float x, float y) {
+        return this.y.getValue(x, y) * this.distance.getValue(x, y);
     }
 
     @Override

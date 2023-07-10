@@ -23,8 +23,8 @@ public class Stratum<T> {
         return this.value;
     }
 
-    public float getDepth(int seed, float x, float z) {
-        return this.depth.getValue(seed, x, z);
+    public float getDepth(float x, float z) {
+        return this.depth.getValue(x, z);
     }
 
     public static <T> Stratum<T> of(T t, double depth) {

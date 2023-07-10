@@ -50,7 +50,7 @@ public class CellEdgeNoise extends NoiseSource {
     }
 
     @Override
-    public float getSourceValue(int seed, float x, float y) {
+    public float getValue(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
         float value = Noise.cellEdge(x, y, seed, distance, edgeFunc, distFunc);
@@ -75,7 +75,7 @@ public class CellEdgeNoise extends NoiseSource {
         int result = super.hashCode();
         result = 31 * result + edgeFunc.hashCode();
         result = 31 * result + distFunc.hashCode();
-        result = 31 * result + (distance != 0.0f ? Float.floatToIntBits(distance) : 0);
+        result = 31 * result + (distance != +0.0f ? Float.floatToIntBits(distance) : 0);
         return result;
     }
 

@@ -33,9 +33,9 @@ public class RegionModule implements Populator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
-        float ox = this.warp.getOffsetX(seed, x, y);
-        float oz = this.warp.getOffsetY(seed, x, y);
+    public void apply(Cell cell, float x, float y) {
+        float ox = this.warp.getOffsetX(x, y);
+        float oz = this.warp.getOffsetY(x, y);
         float px = x + ox;
         float py = y + oz;
         int cellX = 0;

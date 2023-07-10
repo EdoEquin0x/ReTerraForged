@@ -72,39 +72,39 @@ public class Select extends Selector {
     }
 
     @Override
-    public float selectValue(int seed, float x, float y, float value) {
+    public float selectValue(float x, float y, float value) {
         if (edgeFalloff == 0) {
             if (value < lowerCurveMax) {
-                return source0.getValue(seed, x, y);
+                return source0.getValue(x, y);
             }
 
             if (value > upperCurveMin) {
-                return source1.getValue(seed, x, y);
+                return source1.getValue(x, y);
             }
 
-            return source0.getValue(seed, x, y);
+            return source0.getValue(x, y);
         }
 
         if (value < lowerCurveMin) {
-            return source0.getValue(seed, x, y);
+            return source0.getValue(x, y);
         }
 
         // curve
         if (value < lowerCurveMax) {
             float alpha = (value - lowerCurveMin) / lowerCurveRange;
-            return blendValues(source0.getValue(seed, x, y), source1.getValue(seed, x, y), alpha);
+            return blendValues(source0.getValue(x, y), source1.getValue(x, y), alpha);
         }
 
         if (value < upperCurveMin) {
-            return source1.getValue(seed, x, y);
+            return source1.getValue(x, y);
         }
 
         if (value < upperCurveMax) {
             float alpha = (value - upperCurveMin) / upperCurveRange;
-            return blendValues(source1.getValue(seed, x, y), source0.getValue(seed, x, y), alpha);
+            return blendValues(source1.getValue(x, y), source0.getValue(x, y), alpha);
         }
 
-        return source0.getValue(seed, x, y);
+        return source0.getValue(x, y);
     }
 
     private static final DataFactory<Select> factory = (data, spec, context) -> new Select(

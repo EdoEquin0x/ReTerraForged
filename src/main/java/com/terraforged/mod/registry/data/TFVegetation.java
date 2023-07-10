@@ -26,14 +26,14 @@ package com.terraforged.mod.registry.data;
 
 import com.terraforged.engine.Seed;
 import com.terraforged.mod.TerraForged;
+import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
+import com.terraforged.mod.level.levelgen.biome.viability.BiomeEdgeViability;
+import com.terraforged.mod.level.levelgen.biome.viability.HeightViability;
+import com.terraforged.mod.level.levelgen.biome.viability.NoiseViability;
+import com.terraforged.mod.level.levelgen.biome.viability.SaturationViability;
+import com.terraforged.mod.level.levelgen.biome.viability.SlopeViability;
+import com.terraforged.mod.level.levelgen.biome.viability.SumViability;
 import com.terraforged.mod.util.seed.RandSeed;
-import com.terraforged.mod.worldgen.asset.VegetationConfig;
-import com.terraforged.mod.worldgen.biome.viability.BiomeEdgeViability;
-import com.terraforged.mod.worldgen.biome.viability.HeightViability;
-import com.terraforged.mod.worldgen.biome.viability.NoiseViability;
-import com.terraforged.mod.worldgen.biome.viability.SaturationViability;
-import com.terraforged.mod.worldgen.biome.viability.SlopeViability;
-import com.terraforged.mod.worldgen.biome.viability.SumViability;
 import com.terraforged.noise.Source;
 
 import net.minecraft.data.worldgen.BootstapContext;

@@ -12,9 +12,9 @@ public interface TileFactory {
 
     public void setListener(Disposable.Listener<Tile> var1);
 
-    public LazyCallable<Tile> getTile(int seed, int var1, int var2);
+    public LazyCallable<Tile> getTile(int var1, int var2);
 
-    public LazyCallable<Tile> getTile(int seed, float var1, float var2, float var3, boolean var4);
+    public LazyCallable<Tile> getTile(float var1, float var2, float var3, boolean var4);
 
     public TileFactory async();
 

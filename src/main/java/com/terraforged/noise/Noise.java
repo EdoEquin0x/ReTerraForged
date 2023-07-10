@@ -26,7 +26,8 @@
 package com.terraforged.noise;
 
 public interface Noise {
-    float getValue(int seed, float x, float y);
+
+    float getValue(float x, float y);
 
     default float maxValue() {
         return 1;

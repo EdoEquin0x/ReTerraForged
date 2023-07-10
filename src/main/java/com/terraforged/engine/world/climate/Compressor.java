@@ -37,8 +37,8 @@ public class Compressor implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        float value = this.module.getValue(seed, x, y);
+    public float getValue(float x, float y) {
+        float value = this.module.getValue(x, y);
         if (value <= this.lowerStart) {
             float alpha = value / this.lowerRange;
             return alpha * this.lowerExpandRange;

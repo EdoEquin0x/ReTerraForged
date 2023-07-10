@@ -7,12 +7,12 @@ import java.util.List;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import com.terraforged.mod.TerraForged;
+import com.terraforged.mod.level.levelgen.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.asset.NoiseCave;
+import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
+import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
+import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.util.storage.WeightMap;
-import com.terraforged.mod.worldgen.TFGeneratorPreset;
-import com.terraforged.mod.worldgen.asset.NoiseCave;
-import com.terraforged.mod.worldgen.asset.TerrainNoise;
-import com.terraforged.mod.worldgen.asset.VegetationConfig;
-import com.terraforged.mod.worldgen.terrain.TerrainLevels;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -65,7 +65,7 @@ public interface TFPresets {
 			.put(LevelStem.OVERWORLD, 
 				new LevelStem(
 					dimensions.getOrThrow(BuiltinDimensionTypes.OVERWORLD),
-					TFGeneratorPreset.build(
+					TFChunkGenerator.create(
 						TerrainLevels.DEFAULT,
 						new WeightMap.Builder<>()
 							.entry(1.75F, terrain.getOrThrow(TFTerrain.BADLANDS))
@@ -101,8 +101,7 @@ public interface TFPresets {
 							caves.getOrThrow(TFCaves.SYNAPSE_MID)
 						}, 
 						MultiNoiseBiomeSource.createFromList(createBiomes(biomes)),
-						biomes,
-						noiseSettings
+						biomes
 					)
 				)
 			)

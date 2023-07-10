@@ -33,8 +33,8 @@ import com.terraforged.noise.func.Interpolation;
 
 /**
  * Derived from FastNoise_Java
- * <a href="https://github.com/Auburns/FastNoise_Java">...</a>
- * <a href="https://github.com/Auburn/FastNoise_Java/blob/master/LICENSE">...</a>
+ * https://github.com/Auburns/FastNoise_Java
+ * https://github.com/Auburn/FastNoise_Java/blob/master/LICENSE
  *
  * MIT License
  *
@@ -218,7 +218,7 @@ public class Noise {
             }
         }
 
-        return cellFunc.apply(seed, cellX, cellY, nearest, vec2f, lookup);
+        return cellFunc.apply(cellX, cellY, nearest, seed, vec2f, lookup);
     }
 
     public static float cellEdge(float x, float y, int seed, float distance, EdgeFunc edgeFunc, DistanceFunc distanceFunc) {

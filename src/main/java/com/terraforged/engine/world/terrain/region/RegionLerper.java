@@ -17,19 +17,19 @@ public class RegionLerper implements Populator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
+    public void apply(Cell cell, float x, float y) {
         float alpha = cell.terrainRegionEdge;
         if (alpha == 0.0f) {
-            this.lower.apply(seed, cell, x, y);
+            this.lower.apply(cell, x, y);
             return;
         }
         if (alpha == 1.0f) {
-            this.upper.apply(seed, cell, x, y);
+            this.upper.apply(cell, x, y);
             return;
         }
-        this.lower.apply(seed, cell, x, y);
+        this.lower.apply(cell, x, y);
         float lowerValue = cell.value;
-        this.upper.apply(seed, cell, x, y);
+        this.upper.apply(cell, x, y);
         float upperValue = cell.value;
         cell.value = NoiseUtil.lerp(lowerValue, upperValue, alpha);
     }

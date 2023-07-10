@@ -22,22 +22,22 @@ public class DomainRotate implements Domain {
     }
 
     @Override
-    public float getX(int seed, float x, float y) {
-        return this.getOffsetX(seed, x, y);
+    public float getX(float x, float y) {
+        return this.getOffsetX(x, y);
     }
 
     @Override
-    public float getY(int seed, float x, float y) {
-        return this.getOffsetY(seed, x, y);
+    public float getY(float x, float y) {
+        return this.getOffsetY(x, y);
     }
 
     @Override
-    public float getOffsetX(int seed, float x, float y) {
+    public float getOffsetX(float x, float y) {
         return x * this.cos - y * this.sin;
     }
 
     @Override
-    public float getOffsetY(int seed, float x, float y) {
+    public float getOffsetY(float x, float y) {
         return x * this.sin + y * this.cos;
     }
 }

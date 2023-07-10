@@ -37,7 +37,7 @@ public class Poisson {
         return this.radius;
     }
 
-    public Visitor visit(int seed, int chunkX, int chunkZ, PoissonContext context, Visitor visitor) {
+    public Visitor visit(int chunkX, int chunkZ, PoissonContext context, Visitor visitor) {
         try (Resource<Vec2f[][]> grid = this.pool.get();){
             Poisson.clear(grid.get());
             context.startX = chunkX << 4;
@@ -51,25 +51,25 @@ public class Poisson {
             context.random.setSeed(NoiseUtil.hash2D(context.seed, regionX, regionZ));
             int x = context.random.nextInt(this.regionSize);
             int z = context.random.nextInt(this.regionSize);
-            this.visit(seed, x, z, grid.get(), SAMPLES, context, visitor);
+            this.visit(x, z, grid.get(), SAMPLES, context, visitor);
             Visitor visitor2 = visitor;
             return visitor2;
         }
     }
 
-    private void visit(int seed, float px, float pz, Vec2f[][] grid, int samples, PoissonContext context, Visitor visitor) {
+    private void visit(float px, float pz, Vec2f[][] grid, int samples, PoissonContext context, Visitor visitor) {
         for (int i = 0; i < samples; ++i) {
             float angle = context.random.nextFloat() * ((float)Math.PI * 2);
             float distance = (float)this.radius + context.random.nextFloat() * (float)this.maxDistance;
             float x = this.halfRadius + px + NoiseUtil.sin(angle) * distance;
             float z = this.halfRadius + pz + NoiseUtil.cos(angle) * distance;
-            if (!this.valid(seed, x, z, grid, context)) continue;
+            if (!this.valid(x, z, grid, context)) continue;
             Vec2f vec = new Vec2f(x, z);
             this.visit(vec, context, visitor);
             int cellX = (int)(x / this.cellSize);
             int cellZ = (int)(z / this.cellSize);
             grid[cellZ][cellX] = vec;
-            this.visit(seed, vec.x, vec.y, grid, samples, context, visitor);
+            this.visit(vec.x, vec.y, grid, samples, context, visitor);
         }
     }
 
@@ -81,7 +81,7 @@ public class Poisson {
         }
     }
 
-    private boolean valid(int seed, float x, float z, Vec2f[][] grid, PoissonContext context) {
+    private boolean valid(float x, float z, Vec2f[][] grid, PoissonContext context) {
         if (x < 0.0f || x >= (float)this.regionSize || z < 0.0f || z >= (float)this.regionSize) {
             return false;
         }
@@ -90,7 +90,7 @@ public class Poisson {
         if (grid[cellZ][cellX] != null) {
             return false;
         }
-        float noise = context.density.getValue(seed, (float)context.offsetX + x, (float)context.offsetZ + z);
+        float noise = context.density.getValue((float)context.offsetX + x, (float)context.offsetZ + z);
         float radius2 = noise * (float)this.radius2;
         int searchRadius = 2;
         int minX = Math.max(0, cellX - searchRadius);

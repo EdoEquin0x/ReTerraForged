@@ -45,13 +45,13 @@ public class AddWarp implements Domain {
     }
 
     @Override
-    public float getOffsetX(int seed, float x, float y) {
-        return a.getOffsetX(seed, x, y) + b.getOffsetX(seed, x, y);
+    public float getOffsetX(float x, float y) {
+        return a.getOffsetX(x, y) + b.getOffsetX(x, y);
     }
 
     @Override
-    public float getOffsetY(int seed, float x, float y) {
-        return a.getOffsetY(seed, x, y) + b.getOffsetY(seed, x, y);
+    public float getOffsetY(float x, float y) {
+        return a.getOffsetY(x, y) + b.getOffsetY(x, y);
     }
 
     @Override

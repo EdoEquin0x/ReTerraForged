@@ -50,7 +50,7 @@ public class Curve extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
+    public float modify(float x, float y, float noiseValue) {
         return func.apply(noiseValue);
     }
 

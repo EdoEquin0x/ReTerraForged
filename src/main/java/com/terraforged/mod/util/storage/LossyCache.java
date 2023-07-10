@@ -50,14 +50,14 @@ public class LossyCache<T> implements LongCache<T> {
     }
 
     @Override
-    public T computeIfAbsent(int seed, long key, SeededKeyFunction<T> function) {
+    public T computeIfAbsent(long key, KeyFunction<T> function) {
         int hash = hash(key);
         int index = hash & mask;
         T value = values[index];
 
         if (keys[index] == key && value != null) return value;
 
-        T newValue = function.apply(seed, key);
+        T newValue = function.apply(key);
         keys[index] = key;
         values[index] = newValue;
 
@@ -104,7 +104,7 @@ public class LossyCache<T> implements LongCache<T> {
         }
 
         @Override
-        public T computeIfAbsent(int seed, long key, SeededKeyFunction<T> function) {
+        public T computeIfAbsent(long key, KeyFunction<T> function) {
             final int index = hash(key) & mask;
 
             // Try reading without locking
@@ -135,7 +135,7 @@ public class LossyCache<T> implements LongCache<T> {
                     }
                 }
 
-                T newValue = function.apply(seed, key);
+                T newValue = function.apply(key);
                 keys[index] = key;
                 values[index] = newValue;
 
@@ -168,8 +168,8 @@ public class LossyCache<T> implements LongCache<T> {
         }
 
         @Override
-        public T computeIfAbsent(int seed, long key, SeededKeyFunction<T> function) {
-            return buckets[index(key)].computeIfAbsent(seed, key, function);
+        public T computeIfAbsent(long key, KeyFunction<T> function) {
+            return buckets[index(key)].computeIfAbsent(key, function);
         }
 
         protected int index(long key) {

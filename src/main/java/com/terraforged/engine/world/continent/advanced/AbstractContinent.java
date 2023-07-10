@@ -36,14 +36,14 @@ public abstract class AbstractContinent implements SimpleContinent {
     }
 
     @Override
-    public float getDistanceToOcean(int seed, int cx, int cz, float dx, float dz) {
-        float high = this.getDistanceToEdge(seed, cx, cz, dx, dz);
+    public float getDistanceToOcean(int cx, int cz, float dx, float dz) {
+        float high = this.getDistanceToEdge(cx, cz, dx, dz);
         float low = 0.0f;
         for (int i = 0; i < 50; ++i) {
             float mid = (low + high) / 2.0f;
             float x = (float)cx + dx * mid;
             float z = (float)cz + dz * mid;
-            float edge = this.getEdgeValue(seed, x, z);
+            float edge = this.getEdgeValue(x, z);
             if (edge > this.controlPoints.shallowOcean) {
                 low = mid;
             } else {
@@ -55,12 +55,12 @@ public abstract class AbstractContinent implements SimpleContinent {
     }
 
     @Override
-    public float getDistanceToEdge(int seed, int cx, int cz, float dx, float dz) {
+    public float getDistanceToEdge(int cx, int cz, float dx, float dz) {
         float distance = this.continentScale * 4;
         for (int i = 0; i < 10; ++i) {
             float x = (float)cx + dx * distance;
             float z = (float)cz + dz * distance;
-            long centerPos = this.getNearestCenter(seed, x, z);
+            long centerPos = this.getNearestCenter(x, z);
             int conX = PosUtil.unpackLeft(centerPos);
             int conZ = PosUtil.unpackRight(centerPos);
             distance += distance;
@@ -71,7 +71,7 @@ public abstract class AbstractContinent implements SimpleContinent {
                 float mid = (low + high) / 2.0f;
                 float px = (float)cx + dx * mid;
                 float pz = (float)cz + dz * mid;
-                centerPos = this.getNearestCenter(seed, px, pz);
+                centerPos = this.getNearestCenter(px, pz);
                 conX = PosUtil.unpackLeft(centerPos);
                 conZ = PosUtil.unpackRight(centerPos);
                 if (conX == cx && conZ == cz) {

@@ -13,8 +13,8 @@ public class Select {
         this.control = control;
     }
 
-    public float getSelect(int seed, Cell cell, float x, float y) {
-        return this.control.getValue(seed, x, y);
+    public float getSelect(Cell cell, float x, float y) {
+        return this.control.getValue(x, y);
     }
 }
 

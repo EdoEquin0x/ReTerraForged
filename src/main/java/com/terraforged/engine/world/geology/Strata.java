@@ -20,16 +20,16 @@ public class Strata<T> {
         this.strata = strata;
     }
 
-    public <Context> boolean downwards(int seed, int x, int y, int z, Context context, Stratum.Visitor<T, Context> visitor) {
+    public <Context> boolean downwards(int x, int y, int z, Context context, Stratum.Visitor<T, Context> visitor) {
         try (Resource<DepthBuffer> buffer = DepthBuffer.get();){
-            this.initBuffer(seed, buffer.get(), x, z);
-            boolean bl = this.downwards(seed, x, y, z, buffer.get(), context, visitor);
+            this.initBuffer(buffer.get(), x, z);
+            boolean bl = this.downwards(x, y, z, buffer.get(), context, visitor);
             return bl;
         }
     }
 
-    public <Context> boolean downwards(int seed, int x, int y, int z, DepthBuffer depthBuffer, Context ctx, Stratum.Visitor<T, Context> visitor) {
-        this.initBuffer(seed, depthBuffer, x, z);
+    public <Context> boolean downwards(int x, int y, int z, DepthBuffer depthBuffer, Context ctx, Stratum.Visitor<T, Context> visitor) {
+        this.initBuffer(depthBuffer, x, z);
         int py = y;
         T last = null;
         for (int i = 0; i < this.strata.size(); ++i) {
@@ -54,10 +54,10 @@ public class Strata<T> {
         return true;
     }
 
-    private void initBuffer(int seed, DepthBuffer buffer, int x, int z) {
+    private void initBuffer(DepthBuffer buffer, int x, int z) {
         buffer.init(this.strata.size());
         for (int i = 0; i < this.strata.size(); ++i) {
-            float depth = this.strata.get(i).getDepth(seed, x, z);
+            float depth = this.strata.get(i).getDepth(x, z);
             buffer.set(i, depth);
         }
     }

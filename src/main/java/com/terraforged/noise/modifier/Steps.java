@@ -55,10 +55,10 @@ public class Steps extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
-        float min = this.slopeMin.getValue(seed, x, y);
-        float max = this.slopeMax.getValue(seed, x, y);
-        float stepCount = this.steps.getValue(seed, x, y);
+    public float modify(float x, float y, float noiseValue) {
+        float min = this.slopeMin.getValue(x, y);
+        float max = this.slopeMax.getValue(x, y);
+        float stepCount = this.steps.getValue(x, y);
 
         float range = max - min;
         if (range <= 0.0F) {

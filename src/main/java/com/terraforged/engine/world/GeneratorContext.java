@@ -23,17 +23,17 @@ public class GeneratorContext {
     public final TerrainProviderFactory terrainFactory;
     public final LazySupplier<WorldGeneratorFactory> worldGenerator;
 
-    public GeneratorContext(Settings settings) {
-        this(settings, StandardTerrainProvider::new, GeneratorContext::createCache);
+    public GeneratorContext(int seed, Settings settings) {
+        this(seed, settings, StandardTerrainProvider::new, GeneratorContext::createCache);
     }
 
     public <V> LazySupplier<V> then(Function<GeneratorContext, V> function) {
         return LazySupplier.factory(this.copy(), function);
     }
 
-    public <T extends Settings> GeneratorContext(T settings, TerrainProviderFactory terrainFactory, Function<WorldGeneratorFactory, TileProvider> cache) {
+    public <T extends Settings> GeneratorContext(int seed, T settings, TerrainProviderFactory terrainFactory, Function<WorldGeneratorFactory, TileProvider> cache) {
         this.settings = settings;
-        this.seed = new Seed(settings.world.seed);
+        this.seed = new Seed(seed);
         this.levels = new Levels(settings.world);
         this.terrainFactory = terrainFactory;
         this.worldGenerator = this.createFactory(this);
@@ -73,8 +73,8 @@ public class GeneratorContext {
         return LazySupplier.factory(context.copy(), WorldGeneratorFactory::new);
     }
 
-    public static GeneratorContext createNoCache(Settings settings) {
-        return new GeneratorContext(settings, StandardTerrainProvider::new, s -> null);
+    public static GeneratorContext createNoCache(int seed, Settings settings) {
+        return new GeneratorContext(seed, settings, StandardTerrainProvider::new, s -> null);
     }
 
     protected static TileProvider createCache(WorldGeneratorFactory factory) {

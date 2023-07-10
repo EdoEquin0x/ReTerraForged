@@ -47,15 +47,15 @@ public class DirectionWarp implements Domain {
     }
 
     @Override
-    public float getOffsetX(int seed, float x, float y) {
-        float angle = direction.getValue(seed, x, y) * NoiseUtil.PI2;
-        return NoiseUtil.sin(angle) * strength.getValue(seed, x, y);
+    public float getOffsetX(float x, float y) {
+        float angle = direction.getValue(x, y) * NoiseUtil.PI2;
+        return NoiseUtil.sin(angle) * strength.getValue(x, y);
     }
 
     @Override
-    public float getOffsetY(int seed, float x, float y) {
-        float angle = direction.getValue(seed, x, y) * NoiseUtil.PI2;
-        return NoiseUtil.cos(angle) * strength.getValue(seed, x, y);
+    public float getOffsetY(float x, float y) {
+        float angle = direction.getValue(x, y) * NoiseUtil.PI2;
+        return NoiseUtil.cos(angle) * strength.getValue(x, y);
     }
 
     @Override

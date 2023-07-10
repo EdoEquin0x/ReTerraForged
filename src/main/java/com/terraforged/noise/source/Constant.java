@@ -48,7 +48,7 @@ public class Constant implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
+    public float getValue(float x, float y) {
         return value;
     }
 
@@ -74,7 +74,7 @@ public class Constant implements Module {
 
     @Override
     public int hashCode() {
-        return (value != 0.0f ? Float.floatToIntBits(value) : 0);
+        return (value != +0.0f ? Float.floatToIntBits(value) : 0);
     }
 
     private static final DataFactory<Constant> factory = (data, spec, context) -> new Constant(

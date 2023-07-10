@@ -26,9 +26,13 @@
 package com.terraforged.noise.source;
 
 import com.terraforged.cereal.spec.DataSpec;
+import com.terraforged.noise.Module;
+import com.terraforged.noise.Source;
+import com.terraforged.noise.util.N2DUtil;
 import com.terraforged.noise.util.Noise;
 import com.terraforged.noise.util.NoiseUtil;
 
+import java.awt.*;
 import java.util.Arrays;
 
 public class SimplexRidgeNoise extends NoiseSource {
@@ -62,7 +66,7 @@ public class SimplexRidgeNoise extends NoiseSource {
     }
 
     @Override
-    public float getSourceValue(int seed, float x, float y) {
+    public float getValue(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
 
@@ -109,9 +113,9 @@ public class SimplexRidgeNoise extends NoiseSource {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + Arrays.hashCode(spectralWeights);
-        result = 31 * result + (min != 0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != 0.0f ? Float.floatToIntBits(max) : 0);
-        result = 31 * result + (range != 0.0f ? Float.floatToIntBits(range) : 0);
+        result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
+        result = 31 * result + (range != +0.0f ? Float.floatToIntBits(range) : 0);
         return result;
     }
 

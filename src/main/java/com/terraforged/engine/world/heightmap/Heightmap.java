@@ -81,26 +81,26 @@ public class Heightmap implements Populator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float z) {
-        this.applyBase(seed, cell, x, z);
-        this.applyRivers(seed, cell, x, z);
-        this.applyClimate(seed, cell, x, z);
+    public void apply(Cell cell, float x, float z) {
+        this.applyBase(cell, x, z);
+        this.applyRivers(cell, x, z);
+        this.applyClimate(cell, x, z);
     }
 
-    public void applyBase(int seed, Cell cell, float x, float z) {
+    public void applyBase(Cell cell, float x, float z) {
         cell.terrain = TerrainType.FLATS;
-        this.continentGenerator.apply(seed, cell, x, z);
-        this.regionModule.apply(seed, cell, x, z);
-        this.root.apply(seed, cell, x *= this.terrainFrequency, z *= this.terrainFrequency);
+        this.continentGenerator.apply(cell, x, z);
+        this.regionModule.apply(cell, x, z);
+        this.root.apply(cell, x *= this.terrainFrequency, z *= this.terrainFrequency);
     }
 
-    public void applyRivers(int seed, Cell cell, float x, float z, Rivermap rivermap) {
-        rivermap.apply(seed, cell, x, z);
+    public void applyRivers(Cell cell, float x, float z, Rivermap rivermap) {
+        rivermap.apply(cell, x, z);
         VolcanoPopulator.modifyVolcanoType(cell, this.levels);
     }
 
-    public void applyClimate(int seed, Cell cell, float x, float z) {
-        this.climate.apply(seed, cell, x, z);
+    public void applyClimate(Cell cell, float x, float z) {
+        this.climate.apply(cell, x, z);
     }
 
     public Climate getClimate() {
@@ -111,16 +111,16 @@ public class Heightmap implements Populator {
         return this.continentGenerator;
     }
 
-    public Rivermap getRivermap(int seed, int x, int z) {
-        return this.continentGenerator.getRivermap(seed, x, z);
+    public Rivermap getRivermap(int x, int z) {
+        return this.continentGenerator.getRivermap(x, z);
     }
 
     public Populator getPopulator(Terrain terrain, int id) {
         return this.terrainProvider.getPopulator(terrain, id);
     }
 
-    private void applyRivers(int seed, Cell cell, float x, float z) {
-        this.applyRivers(seed, cell, x, z, this.continentGenerator.getRivermap(seed, cell));
+    private void applyRivers(Cell cell, float x, float z) {
+        this.applyRivers(cell, x, z, this.continentGenerator.getRivermap(cell));
     }
 
     private TerrainPopulator register(Terrain terrain, Module variance) {

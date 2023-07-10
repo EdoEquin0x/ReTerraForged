@@ -25,7 +25,7 @@ public class FancyContinent implements Module, RiverGenerator {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
+    public float getValue(float x, float y) {
         float value = 0.0f;
         for (Island island : this.islands) {
             float v = island.getEdgeValue(x, y);
@@ -86,8 +86,8 @@ public class FancyContinent implements Module, RiverGenerator {
     }
 
     @Override
-    public Rivermap generateRivers(int seed, int x, int z, long id) {
-        return this.riverGenerator.generateRivers(seed, x, z, id);
+    public Rivermap generateRivers(int x, int z, long id) {
+        return this.riverGenerator.generateRivers(x, z, id);
     }
 
     private static float process(float value) {

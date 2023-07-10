@@ -36,9 +36,9 @@ public class TerrainPopulator implements Populator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float z) {
-        float base = this.base.getValue(seed, x, z);
-        float variance = this.variance.getValue(seed, x, z);
+    public void apply(Cell cell, float x, float z) {
+        float base = this.base.getValue(x, z);
+        float variance = this.variance.getValue(x, z);
         cell.value = base + variance;
         if (cell.value < 0.0f) {
             cell.value = 0.0f;

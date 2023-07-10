@@ -12,13 +12,13 @@ public class LegacyRiverCache extends RiverCache {
     }
 
     @Override
-    public Rivermap getRivers(int seed, Cell cell) {
-        return this.getRivers(seed, cell.continentX, cell.continentZ);
+    public Rivermap getRivers(Cell cell) {
+        return this.getRivers(cell.continentX, cell.continentZ);
     }
 
     @Override
-    public Rivermap getRivers(int seed, int x, int z) {
-        return this.cache.computeIfAbsent(NoiseUtil.seed(x, z), id -> this.generator.generateRivers(seed, x, z, id));
+    public Rivermap getRivers(int x, int z) {
+        return this.cache.computeIfAbsent(NoiseUtil.seed(x, z), id -> this.generator.generateRivers(x, z, id));
     }
 }
 

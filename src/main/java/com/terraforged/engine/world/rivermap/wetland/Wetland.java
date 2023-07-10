@@ -48,11 +48,11 @@ public class Wetland extends TerrainPopulator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float z) {
-        this.apply(seed, cell, x, z, x, z);
+    public void apply(Cell cell, float x, float z) {
+        this.apply(cell, x, z, x, z);
     }
 
-    public void apply(int seed, Cell cell, float rx, float rz, float x, float z) {
+    public void apply(Cell cell, float rx, float rz, float x, float z) {
         if (cell.value < this.bed) {
             return;
         }
@@ -76,12 +76,12 @@ public class Wetland extends TerrainPopulator {
         if (poolsAlpha >= 1.0f) {
             cell.erosionMask = true;
         }
-        if (dist > 0.65f && poolsAlpha > this.terrainEdge.getValue(seed, x, z)) {
+        if (dist > 0.65f && poolsAlpha > this.terrainEdge.getValue(x, z)) {
             cell.terrain = this.getType();
         }
         if (cell.value >= this.bed && cell.value < this.moundMax) {
-            float shapeAlpha = this.moundShape.getValue(seed, x, z) * poolsAlpha;
-            float mounds = this.moundMin + this.moundHeight.getValue(seed, x, z) * this.moundVariance;
+            float shapeAlpha = this.moundShape.getValue(x, z) * poolsAlpha;
+            float mounds = this.moundMin + this.moundHeight.getValue(x, z) * this.moundVariance;
             cell.value = NoiseUtil.lerp(cell.value, mounds, shapeAlpha);
         }
         cell.riverMask = Math.min(cell.riverMask, 1.0f - valleyAlpha);

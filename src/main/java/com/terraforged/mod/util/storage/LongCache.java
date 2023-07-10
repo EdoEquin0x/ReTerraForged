@@ -25,9 +25,9 @@
 package com.terraforged.mod.util.storage;
 
 public interface LongCache<T> {
-    T computeIfAbsent(int seed, long key, SeededKeyFunction<T> function);
+    T computeIfAbsent(long key, KeyFunction<T> function);
 
-    interface SeededKeyFunction<T> {
-        T apply(int seed, long key);
+    interface KeyFunction<T> {
+        T apply(long key);
     }
 }

@@ -48,12 +48,12 @@ public class Warp extends Modifier {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        return source.getValue(seed, domain.getX(seed, x, y), domain.getY(seed, x, y));
+    public float getValue(float x, float y) {
+        return source.getValue(domain.getX(x, y), domain.getY(x, y));
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
+    public float modify(float x, float y, float noiseValue) {
         // not used
         return 0;
     }

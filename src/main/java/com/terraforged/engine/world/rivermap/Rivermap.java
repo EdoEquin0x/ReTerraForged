@@ -26,14 +26,14 @@ public class Rivermap implements ExpiringEntry {
         this.riverWarp = warp.river;
     }
 
-    public void apply(int seed, Cell cell, float x, float z) {
-        float rx = this.riverWarp.getX(seed, x, z);
-        float rz = this.riverWarp.getY(seed, x, z);
-        float lx = this.lakeWarp.getOffsetX(seed, rx, rz);
-        float lz = this.lakeWarp.getOffsetY(seed, rx, rz);
+    public void apply(Cell cell, float x, float z) {
+        float rx = this.riverWarp.getX(x, z);
+        float rz = this.riverWarp.getY(x, z);
+        float lx = this.lakeWarp.getOffsetX(rx, rz);
+        float lz = this.lakeWarp.getOffsetY(rx, rz);
         for (Network network : this.networks) {
             if (!network.contains(rx, rz)) continue;
-            network.carve(seed, cell, rx, rz, lx, lz);
+            network.carve(cell, rx, rz, lx, lz);
         }
     }
 
@@ -50,15 +50,15 @@ public class Rivermap implements ExpiringEntry {
         return this.z;
     }
 
-    public static Rivermap get(int seed, Cell cell, Rivermap instance, Heightmap heightmap) {
-        return Rivermap.get(seed, cell.continentX, cell.continentZ, instance, heightmap);
+    public static Rivermap get(Cell cell, Rivermap instance, Heightmap heightmap) {
+        return Rivermap.get(cell.continentX, cell.continentZ, instance, heightmap);
     }
 
-    public static Rivermap get(int seed, int x, int z, Rivermap instance, Heightmap heightmap) {
+    public static Rivermap get(int x, int z, Rivermap instance, Heightmap heightmap) {
         if (instance != null && x == instance.getX() && z == instance.getZ()) {
             return instance;
         }
-        return heightmap.getContinent().getRivermap(seed, x, z);
+        return heightmap.getContinent().getRivermap(x, z);
     }
 }
 

@@ -18,9 +18,9 @@ public class ScaledPopulator extends TerrainPopulator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float z) {
-        float base = this.base.getValue(seed, x, z) * this.baseScale;
-        float variance = this.variance.getValue(seed, x, z) * this.varianceScale;
+    public void apply(Cell cell, float x, float z) {
+        float base = this.base.getValue(x, z) * this.baseScale;
+        float variance = this.variance.getValue(x, z) * this.varianceScale;
         cell.value = base + variance;
         if (cell.value < 0.0f) {
             cell.value = 0.0f;

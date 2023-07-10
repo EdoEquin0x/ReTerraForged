@@ -39,16 +39,16 @@ public class Climate {
         return this.rand;
     }
 
-    public float getOffsetX(int seed, float x, float z, float distance) {
-        return this.offsetX.getValue(seed, x, z) * distance;
+    public float getOffsetX(float x, float z, float distance) {
+        return this.offsetX.getValue(x, z) * distance;
     }
 
-    public float getOffsetZ(int seed, float x, float z, float distance) {
-        return this.offsetY.getValue(seed, x, z) * distance;
+    public float getOffsetZ(float x, float z, float distance) {
+        return this.offsetY.getValue(x, z) * distance;
     }
 
-    public void apply(int seed, Cell cell, float x, float z) {
-        this.biomeNoise.apply(seed, cell, x, z, true);
+    public void apply(Cell cell, float x, float z) {
+        this.biomeNoise.apply(cell, x, z, true);
         float edgeBlend = 0.4f;
         if (cell.value <= this.levels.water) {
             if (cell.terrain == TerrainType.COAST) {
@@ -57,9 +57,9 @@ public class Climate {
         } else if (cell.biomeRegionEdge < edgeBlend || cell.terrain == TerrainType.MOUNTAIN_CHAIN) {
             float modifier = 1.0f - NoiseUtil.map(cell.biomeRegionEdge, 0.0f, edgeBlend, edgeBlend);
             float distance = (float)this.offsetDistance * modifier;
-            float dx = this.getOffsetX(seed, x, z, distance);
-            float dz = this.getOffsetZ(seed, x, z, distance);
-            this.biomeNoise.apply(seed, cell, x += dx, z += dz, false);
+            float dx = this.getOffsetX(x, z, distance);
+            float dz = this.getOffsetZ(x, z, distance);
+            this.biomeNoise.apply(cell, x += dx, z += dz, false);
         }
         this.modifyTemp(cell, x, z);
     }

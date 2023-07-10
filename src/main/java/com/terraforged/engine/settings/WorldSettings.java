@@ -16,7 +16,6 @@ import com.terraforged.noise.func.DistanceFunc;
 @Serializable
 public class WorldSettings {
     public static final int DEFAULT_CONTINENT_SCALE = 3000;
-    public transient long seed = 0L;
     public Continent continent = new Continent();
     public ControlPoints controlPoints = new ControlPoints();
     public Properties properties = new Properties();

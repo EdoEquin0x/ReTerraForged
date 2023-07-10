@@ -40,9 +40,9 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
-        float wx = this.warp.getX(seed, x, y);
-        float wy = this.warp.getY(seed, x, y);
+    public void apply(Cell cell, float x, float y) {
+        float wx = this.warp.getX(x, y);
+        float wy = this.warp.getY(x, y);
         x = wx * this.frequency;
         y = wy * this.frequency;
         int xi = NoiseUtil.floor(x);
@@ -86,34 +86,34 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
             return;
         }
         cell.continentId = AdvancedContinentGenerator.getCellValue(this.seed, cellX, cellY);
-        cell.continentEdge = this.getDistanceValue(seed, x, y, cellX, cellY, nearest);
+        cell.continentEdge = this.getDistanceValue(x, y, cellX, cellY, nearest);
         cell.continentX = this.getCorrectedContinentCentre(cellPointX, sumX / 8.0f);
         cell.continentZ = this.getCorrectedContinentCentre(cellPointY, sumY / 8.0f);
     }
 
     @Override
-    public float getEdgeValue(int seed, float x, float z) {
+    public float getEdgeValue(float x, float z) {
         try (Resource<Cell> resource = Cell.getResource();){
             Cell cell = resource.get();
-            this.apply(seed, cell, x, z);
+            this.apply(cell, x, z);
             float f = cell.continentEdge;
             return f;
         }
     }
 
     @Override
-    public long getNearestCenter(int seed, float x, float z) {
+    public long getNearestCenter(float x, float z) {
         try (Resource<Cell> resource = Cell.getResource();){
             Cell cell = resource.get();
-            this.apply(seed, cell, x, z);
+            this.apply(cell, x, z);
             long l = PosUtil.pack(cell.continentX, cell.continentZ);
             return l;
         }
     }
 
     @Override
-    public Rivermap getRivermap(int seed, int x, int z) {
-        return this.riverCache.getRivers(seed, x, z);
+    public Rivermap getRivermap(int x, int z) {
+        return this.riverCache.getRivers(x, z);
     }
 
     protected Domain createWarp(Seed seed, int tectonicScale, WorldSettings.Continent continent) {
@@ -122,12 +122,12 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
         return Domain.warp(Source.build(seed.next(), warpScale, continent.continentNoiseOctaves).gain(continent.continentNoiseGain).lacunarity(continent.continentNoiseLacunarity).build(Source.PERLIN2), Source.build(seed.next(), warpScale, continent.continentNoiseOctaves).gain(continent.continentNoiseGain).lacunarity(continent.continentNoiseLacunarity).build(Source.PERLIN2), Source.constant(strength));
     }
 
-    protected float getDistanceValue(int seed, float x, float y, int cellX, int cellY, float distance) {
+    protected float getDistanceValue(float x, float y, int cellX, int cellY, float distance) {
         distance = this.getVariedDistanceValue(cellX, cellY, distance);
         distance = NoiseUtil.sqrt(distance);
         distance = NoiseUtil.map(distance, 0.05f, 0.25f, 0.2f);
-        if ((distance = this.getCoastalDistanceValue(seed, x, y, distance)) < this.controlPoints.inland && distance >= this.controlPoints.shallowOcean) {
-            distance = this.getCoastalDistanceValue(seed, x, y, distance);
+        if ((distance = this.getCoastalDistanceValue(x, y, distance)) < this.controlPoints.inland && distance >= this.controlPoints.shallowOcean) {
+            distance = this.getCoastalDistanceValue(x, y, distance);
         }
         return distance;
     }
@@ -141,12 +141,12 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
         return distance;
     }
 
-    protected float getCoastalDistanceValue(int seed, float x, float y, float distance) {
+    protected float getCoastalDistanceValue(float x, float y, float distance) {
         if (distance > this.controlPoints.shallowOcean && distance < this.controlPoints.inland) {
             float alpha = distance / this.controlPoints.inland;
-            float cliff = this.cliffNoise.getValue(seed, x, y);
+            float cliff = this.cliffNoise.getValue(x, y);
             if ((distance = NoiseUtil.lerp(distance * cliff, distance, alpha)) < this.controlPoints.shallowOcean) {
-                distance = this.controlPoints.shallowOcean * this.bayNoise.getValue(seed, x, y);
+                distance = this.controlPoints.shallowOcean * this.bayNoise.getValue(x, y);
             }
         }
         return distance;

@@ -48,11 +48,11 @@ public class Rand implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
+    public float getValue(float x, float y) {
         x *= frequency;
         y *= frequency;
         // -1 to 1
-        float value = Noise.white(x, y, this.seed + seed);
+        float value = Noise.white(x, y, seed);
         return Math.abs(value);
     }
 
@@ -70,7 +70,7 @@ public class Rand implements Module {
     @Override
     public int hashCode() {
         int result = seed;
-        result = 31 * result + (frequency != 0.0f ? Float.floatToIntBits(frequency) : 0);
+        result = 31 * result + (frequency != +0.0f ? Float.floatToIntBits(frequency) : 0);
         return result;
     }
 
@@ -78,8 +78,8 @@ public class Rand implements Module {
         return Noise.white(x, y, NoiseUtil.hash(seed, childSeed));
     }
 
-    public int nextInt(int seed, float x, float y, int range) {
-        float noise = getValue(seed, x, y);
+    public int nextInt(float x, float y, int range) {
+        float noise = getValue(x, y);
         return NoiseUtil.round((range * noise) / (range + range));
     }
 

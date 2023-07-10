@@ -58,8 +58,8 @@ public abstract class NoiseSource implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        return getSourceValue(this.seed + seed, x, y);
+    public float getValue(float x, float y) {
+        return getValue(x, y, seed);
     }
 
     @Override
@@ -81,14 +81,14 @@ public abstract class NoiseSource implements Module {
     public int hashCode() {
         int result = seed;
         result = 31 * result + octaves;
-        result = 31 * result + (gain != 0.0f ? Float.floatToIntBits(gain) : 0);
-        result = 31 * result + (frequency != 0.0f ? Float.floatToIntBits(frequency) : 0);
-        result = 31 * result + (lacunarity != 0.0f ? Float.floatToIntBits(lacunarity) : 0);
+        result = 31 * result + (gain != +0.0f ? Float.floatToIntBits(gain) : 0);
+        result = 31 * result + (frequency != +0.0f ? Float.floatToIntBits(frequency) : 0);
+        result = 31 * result + (lacunarity != +0.0f ? Float.floatToIntBits(lacunarity) : 0);
         result = 31 * result + interpolation.hashCode();
         return result;
     }
 
-    public abstract float getSourceValue(int seed, float x, float y);
+    public abstract float getValue(float x, float y, int seed);
 
     public static Builder readData(DataObject data, DataSpec<?> spec, Context context) {
         Builder builder = new Builder();

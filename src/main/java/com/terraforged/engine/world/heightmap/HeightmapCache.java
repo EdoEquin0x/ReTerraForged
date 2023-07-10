@@ -29,21 +29,21 @@ public class HeightmapCache {
         this.cache = new LoadBalanceLongMap<Cell>(Runtime.getRuntime().availableProcessors(), size);
     }
 
-    public Cell get(int seed, int x, int z) {
+    public Cell get(int x, int z) {
         long index = PosUtil.pack(x, z);
-        return this.cache.computeIfAbsent(index, (i) -> this.compute(seed, index));
+        return this.cache.computeIfAbsent(index, this::compute);
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public Rivermap generate(int seed, Cell cell, int x, int z, Rivermap rivermap) {
+    public Rivermap generate(Cell cell, int x, int z, Rivermap rivermap) {
         CachedContext context = this.contextLocal.get();
         try {
             context.cell = cell;
             context.rivermap = rivermap;
             long index = PosUtil.pack(x, z);
-            Cell value = this.cache.computeIfAbsent(index, (i) -> this.contextCompute(seed, i));
+            Cell value = this.cache.computeIfAbsent(index, (i) -> this.contextCompute(i));
             if (value != cell) {
                 cell.copyFrom(value);
             }
@@ -55,25 +55,25 @@ public class HeightmapCache {
         }
     }
 
-    private Cell compute(int seed, long index) {
+    private Cell compute(long index) {
         int x = PosUtil.unpackLeft(index);
         int z = PosUtil.unpackRight(index);
         Cell cell = new Cell();
-        this.heightmap.apply(seed, cell, x, z);
+        this.heightmap.apply(cell, x, z);
         if (cell.terrain == TerrainType.COAST && cell.value > this.waterLevel && cell.value <= this.beachLevel) {
             cell.terrain = TerrainType.BEACH;
         }
         return cell;
     }
 
-    private Cell contextCompute(int seed, long index) {
+    private Cell contextCompute(long index) {
         CachedContext context = this.contextLocal.get();
         int x = PosUtil.unpackLeft(index);
         int z = PosUtil.unpackRight(index);
-        this.heightmap.applyBase(seed, context.cell, x, z);
-        context.rivermap = Rivermap.get(seed, context.cell, context.rivermap, this.heightmap);
-        this.heightmap.applyRivers(seed, context.cell, x, z, context.rivermap);
-        this.heightmap.applyClimate(seed, context.cell, x, z);
+        this.heightmap.applyBase(context.cell, x, z);
+        context.rivermap = Rivermap.get(context.cell, context.rivermap, this.heightmap);
+        this.heightmap.applyRivers(context.cell, x, z, context.rivermap);
+        this.heightmap.applyClimate(context.cell, x, z);
         return context.cell;
     }
 

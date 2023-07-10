@@ -36,27 +36,27 @@ public class ContinentLerper3 implements Populator {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
+    public void apply(Cell cell, float x, float y) {
         float select = cell.continentEdge;
         if (select < this.blendLower) {
-            this.lower.apply(seed, cell, x, y);
+            this.lower.apply(cell, x, y);
             return;
         }
         if (select > this.blendUpper) {
-            this.upper.apply(seed, cell, x, y);
+            this.upper.apply(cell, x, y);
             return;
         }
         if (select < this.midpoint) {
             float alpha = this.interpolation.apply((select - this.blendLower) / this.lowerRange);
-            this.lower.apply(seed, cell, x, y);
+            this.lower.apply(cell, x, y);
             float lowerVal = cell.value;
-            this.middle.apply(seed, cell, x, y);
+            this.middle.apply(cell, x, y);
             cell.value = NoiseUtil.lerp(lowerVal, cell.value, alpha);
         } else {
             float alpha = this.interpolation.apply((select - this.midpoint) / this.upperRange);
-            this.middle.apply(seed, cell, x, y);
+            this.middle.apply(cell, x, y);
             float lowerVal = cell.value;
-            this.upper.apply(seed, cell, x, y);
+            this.upper.apply(cell, x, y);
             cell.value = NoiseUtil.lerp(lowerVal, cell.value, alpha);
         }
     }

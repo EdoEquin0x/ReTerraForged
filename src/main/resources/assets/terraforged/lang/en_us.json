@@ -1,6 +1,6 @@
 {
 	"generator.terraforged.terraforged": "TerraForged",
-	"createWorld.customize.terraforged.title": "Terraforged world customization",
+	"createWorld.customize.terraforged.title": "Terraforged world customization (NOT FINISHED YET)",
 	"createWorld.customize.terraforged.world_preview.zoom": "Zoom: %d",
 	"createWorld.customize.terraforged.world_preview.layer": "Layer",
 	"createWorld.customize.terraforged.world_preview.layer.temperature": "Temperature",

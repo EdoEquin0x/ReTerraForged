@@ -58,7 +58,7 @@ public class CellNoise extends NoiseSource {
     }
 
     @Override
-    public float getSourceValue(int seed, float x, float y) {
+    public float getValue(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
         float value = Noise.cell(x, y, seed, distance, cellFunc, distFunc, lookup);
@@ -88,10 +88,10 @@ public class CellNoise extends NoiseSource {
         result = 31 * result + lookup.hashCode();
         result = 31 * result + cellFunc.hashCode();
         result = 31 * result + distFunc.hashCode();
-        result = 31 * result + (min != 0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != 0.0f ? Float.floatToIntBits(max) : 0);
-        result = 31 * result + (range != 0.0f ? Float.floatToIntBits(range) : 0);
-        result = 31 * result + (distance != 0.0f ? Float.floatToIntBits(distance) : 0);
+        result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
+        result = 31 * result + (range != +0.0f ? Float.floatToIntBits(range) : 0);
+        result = 31 * result + (distance != +0.0f ? Float.floatToIntBits(distance) : 0);
         return result;
     }
 

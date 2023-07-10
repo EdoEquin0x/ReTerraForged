@@ -47,9 +47,27 @@ public class PerlinNoise extends NoiseSource {
     public String getSpecName() {
         return "Perlin";
     }
-  
+
     @Override
-    public float getSourceValue(int seed, float x, float y) {
+    public float getValue(float x, float y) {
+        x *= frequency;
+        y *= frequency;
+
+        float sum = 0;
+        float amp = gain;
+
+        for (int i = 0; i < octaves; i++) {
+            sum += Noise.singlePerlin(x, y, seed + i, interpolation) * amp;
+            x *= lacunarity;
+            y *= lacunarity;
+            amp *= gain;
+        }
+
+        return NoiseUtil.map(sum, min, max, range);
+    }
+
+    @Override
+    public float getValue(float x, float y, int seed) {
         x *= frequency;
         y *= frequency;
 
@@ -82,9 +100,9 @@ public class PerlinNoise extends NoiseSource {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (min != 0.0f ? Float.floatToIntBits(min) : 0);
-        result = 31 * result + (max != 0.0f ? Float.floatToIntBits(max) : 0);
-        result = 31 * result + (range != 0.0f ? Float.floatToIntBits(range) : 0);
+        result = 31 * result + (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
+        result = 31 * result + (range != +0.0f ? Float.floatToIntBits(range) : 0);
         return result;
     }
 

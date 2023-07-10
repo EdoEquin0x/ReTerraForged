@@ -47,14 +47,14 @@ public class Terrace extends Modifier {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        float value = source.getValue(seed, x, y);
+    public float getValue(float x, float y) {
+        float value = source.getValue(x, y);
         value = NoiseUtil.clamp(value, MIN_NOISE_VALUE, MAX_NOISE_VALUE);
-        return modify(seed, x, y, value);
+        return modify(x, y, value);
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
+    public float modify(float x, float y, float noiseValue) {
         int index = NoiseUtil.floor(noiseValue * steps.length);
         Step step = steps[index];
 
@@ -71,8 +71,8 @@ public class Terrace extends Modifier {
             return next.value;
         }
 
-        float ramp = 1F - (this.ramp.getValue(seed, x, y) * 0.5F);
-        float cliff = 1F - (this.cliff.getValue(seed, x, y) * 0.5F);
+        float ramp = 1F - (this.ramp.getValue(x, y) * 0.5F);
+        float cliff = 1F - (this.cliff.getValue(x, y) * 0.5F);
         float alpha = (noiseValue - step.lowerBound) / (step.upperBound - step.lowerBound);
 
         float value = step.value;
@@ -80,7 +80,7 @@ public class Terrace extends Modifier {
             Step next = steps[index + 1];
             float rampSize = 1 - ramp;
             float rampAlpha = (alpha - ramp) / rampSize;
-            float rampHeight = this.rampHeight.getValue(seed, x, y);
+            float rampHeight = this.rampHeight.getValue(x, y);
             value += (next.value - value) * rampAlpha * rampHeight;
         }
 
@@ -114,8 +114,8 @@ public class Terrace extends Modifier {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (blend != 0.0f ? Float.floatToIntBits(blend) : 0);
-        result = 31 * result + (length != 0.0f ? Float.floatToIntBits(length) : 0);
+        result = 31 * result + (blend != +0.0f ? Float.floatToIntBits(blend) : 0);
+        result = 31 * result + (length != +0.0f ? Float.floatToIntBits(length) : 0);
         result = 31 * result + maxIndex;
         result = 31 * result + Arrays.hashCode(steps);
         result = 31 * result + ramp.hashCode();

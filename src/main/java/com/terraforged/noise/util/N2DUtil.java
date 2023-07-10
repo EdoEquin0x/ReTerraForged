@@ -23,9 +23,7 @@ public class N2DUtil {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         JLabel label = new JLabel(new ImageIcon(image)) {
-			private static final long serialVersionUID = 1172921476303677651L;
-
-			@Override
+            @Override
             public void paint(Graphics g) {
                 iterate(width, height, image, visitor);
                 super.paint(g);

@@ -76,9 +76,9 @@ public class Line implements Module {
     }
 
     @Override
-    public float getValue(int seed, float x, float y) {
-        float widthMod = getWidthModifier(seed, x, y);
-        return getValue(seed, x, y, widthMod);
+    public float getValue(float x, float y) {
+        float widthMod = getWidthModifier(x, y);
+        return getValue(x, y, widthMod);
     }
 
     @Override
@@ -108,32 +108,32 @@ public class Line implements Module {
 
     @Override
     public int hashCode() {
-        int result = (x1 != 0.0f ? Float.floatToIntBits(x1) : 0);
-        result = 31 * result + (y1 != 0.0f ? Float.floatToIntBits(y1) : 0);
-        result = 31 * result + (x2 != 0.0f ? Float.floatToIntBits(x2) : 0);
-        result = 31 * result + (y2 != 0.0f ? Float.floatToIntBits(y2) : 0);
-        result = 31 * result + (dx != 0.0f ? Float.floatToIntBits(dx) : 0);
-        result = 31 * result + (dy != 0.0f ? Float.floatToIntBits(dy) : 0);
-        result = 31 * result + (orthX1 != 0.0f ? Float.floatToIntBits(orthX1) : 0);
-        result = 31 * result + (orthY1 != 0.0f ? Float.floatToIntBits(orthY1) : 0);
-        result = 31 * result + (orthX2 != 0.0f ? Float.floatToIntBits(orthX2) : 0);
-        result = 31 * result + (orthY2 != 0.0f ? Float.floatToIntBits(orthY2) : 0);
-        result = 31 * result + (length2 != 0.0f ? Float.floatToIntBits(length2) : 0);
-        result = 31 * result + (featherBias != 0.0f ? Float.floatToIntBits(featherBias) : 0);
-        result = 31 * result + (featherScale != 0.0f ? Float.floatToIntBits(featherScale) : 0);
+        int result = (x1 != +0.0f ? Float.floatToIntBits(x1) : 0);
+        result = 31 * result + (y1 != +0.0f ? Float.floatToIntBits(y1) : 0);
+        result = 31 * result + (x2 != +0.0f ? Float.floatToIntBits(x2) : 0);
+        result = 31 * result + (y2 != +0.0f ? Float.floatToIntBits(y2) : 0);
+        result = 31 * result + (dx != +0.0f ? Float.floatToIntBits(dx) : 0);
+        result = 31 * result + (dy != +0.0f ? Float.floatToIntBits(dy) : 0);
+        result = 31 * result + (orthX1 != +0.0f ? Float.floatToIntBits(orthX1) : 0);
+        result = 31 * result + (orthY1 != +0.0f ? Float.floatToIntBits(orthY1) : 0);
+        result = 31 * result + (orthX2 != +0.0f ? Float.floatToIntBits(orthX2) : 0);
+        result = 31 * result + (orthY2 != +0.0f ? Float.floatToIntBits(orthY2) : 0);
+        result = 31 * result + (length2 != +0.0f ? Float.floatToIntBits(length2) : 0);
+        result = 31 * result + (featherBias != +0.0f ? Float.floatToIntBits(featherBias) : 0);
+        result = 31 * result + (featherScale != +0.0f ? Float.floatToIntBits(featherScale) : 0);
         result = 31 * result + fadeIn.hashCode();
         result = 31 * result + fadeOut.hashCode();
         result = 31 * result + radius.hashCode();
         return result;
     }
 
-    public float getValue(int seed, float x, float y, float widthModifier) {
-        return getValue(seed, x, y, 0, widthModifier);
+    public float getValue(float x, float y, float widthModifier) {
+        return getValue(x, y, 0, widthModifier);
     }
 
-    public float getValue(int seed, float x, float y, float minWidth2, float widthModifier) {
+    public float getValue(float x, float y, float minWidth2, float widthModifier) {
         float dist2 = getDistance2(x, y);
-        float radius2 = minWidth2 + radius.getValue(seed, x, y) * widthModifier;
+        float radius2 = minWidth2 + radius.getValue(x, y) * widthModifier;
         if (dist2 > radius2) {
             return 0;
         }
@@ -159,7 +159,7 @@ public class Line implements Module {
         return sign(x, y, x2, y2, orthX2, orthY2) < 0;
     }
 
-    public float getWidthModifier(int seed, float x, float y) {
+    public float getWidthModifier(float x, float y) {
         float d1 = dist2(x, y, x1, y1);
         if (d1 == 0) {
             return 0;
@@ -171,8 +171,8 @@ public class Line implements Module {
         }
 
         float fade = 1F;
-        float in = fadeIn.getValue(seed, x, y);
-        float out = fadeOut.getValue(seed, x, y);
+        float in = fadeIn.getValue(x, y);
+        float out = fadeOut.getValue(x, y);
         if (in > 0) {
             float dist = in * length2;
             if (d1 < dist) {

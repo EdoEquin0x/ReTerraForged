@@ -5,10 +5,11 @@ import java.util.concurrent.CompletableFuture;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.terraforged.mod.level.levelgen.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.biome.IClimateSampler;
+import com.terraforged.mod.level.levelgen.noise.climate.ClimateSample;
 import com.terraforged.mod.util.ColorUtil;
 import com.terraforged.mod.util.MathUtil;
-import com.terraforged.mod.worldgen.biome.BiomeSampler;
-import com.terraforged.mod.worldgen.noise.climate.ClimateSample;
 
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractSliderButton;
@@ -32,19 +33,19 @@ public class WorldPreviewScreen extends Screen {
 	private final CreateWorldScreen parent;
 	private DynamicTexture framebuffer;
 	private final Registry<Biome> biomes;
-	private final BiomeSampler sampler;
+	private final TFChunkGenerator generator;
 	private Layer layer;
-	private final int seed;
 	private int scale;
 	
-	public WorldPreviewScreen(CreateWorldScreen parent, Registry<Biome> biomes, BiomeSampler sampler, int seed) {
+	public WorldPreviewScreen(CreateWorldScreen parent, Registry<Biome> biomes, TFChunkGenerator generator) {
 		super(Component.translatable("createWorld.customize.terraforged.title"));
 		this.parent = parent;
+		this.framebuffer = new DynamicTexture(256, 256, false);
 		this.biomes = biomes;
-		this.sampler = sampler;
-		this.layer = Layer.CONTINENT; //TODO default to biomes instead once implemented
-		this.seed = seed;
+		this.generator = generator;
 		this.scale = 15;
+		
+		this.setLayer(Layer.CONTINENT);
 	}
 
 	@Override
@@ -61,10 +62,6 @@ public class WorldPreviewScreen extends Screen {
 	}
 	
 	private void rebuildFramebuffer() {
-		if(WorldPreviewScreen.this.framebuffer == null) {
-			WorldPreviewScreen.this.framebuffer = new DynamicTexture(256, 256, false);
-	   	}
-		
 		final int cellCount = 16;
 		NativeImage pixels = this.framebuffer.getPixels();
 		int cellWidth = pixels.getWidth() / cellCount;
@@ -81,7 +78,7 @@ public class WorldPreviewScreen extends Screen {
 							int tx = cx + lx;
 							int ty = cy + ly;
 							
-							ClimateSample sample = this.sampler.getSample(this.seed, tx * this.scale, ty * this.scale);
+							ClimateSample sample = this.generator.getClimateSampler().getSample(tx * this.scale, ty * this.scale);
 				            pixels.setPixelRGBA(tx, ty, this.layer.getColor(this.layer.getValue(sample)));
 						}
 					}
@@ -100,7 +97,6 @@ public class WorldPreviewScreen extends Screen {
 		this.addRenderableWidget(new AbstractSliderButton(this.width / 2 - 128 + 16, this.height - 256 + 64 + 7, 100, 20, CommonComponents.EMPTY, (float) this.scale / MAX_SCALE) {
 	         {
 	            this.updateMessage();
-	            this.applyValue();
 	         }
 
 	         @Override
@@ -121,9 +117,7 @@ public class WorldPreviewScreen extends Screen {
 				.withValues(Layer.TEMPERATURE, Layer.MOISTURE, Layer.CONTINENT, Layer.WATER)
 				.withInitialValue(this.layer)
 				.create(this.width / 2 + 12, this.height - 256 + 64 + 7, 100, 20, Component.translatable("createWorld.customize.terraforged.world_preview.layer"), (button, layer) -> {
-					this.layer = layer;
-					
-					this.rebuildFramebuffer();
+					this.setLayer(layer);
 				})
 		);
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> {
@@ -242,12 +236,12 @@ public class WorldPreviewScreen extends Screen {
 			blit(stack, x, y, 0, 0.0F, 0.0F, this.width, this.height, this.width, this.height);
 			
 			if(this.isMouseOver(mouseX, mouseY)) {
-//TODO
-//				int relativeMouseX = (mouseX - this.getX()) * WorldPreviewScreen.this.scale;
-//				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
-//				
-//				ClimateSample sample = WorldPreviewScreen.this.sampler.getSample(WorldPreviewScreen.this.seed, relativeMouseX, relativeMouseY);
-//				Biome biome = WorldPreviewScreen.this.sampler.sampleBiome(sample).value();
+				int relativeMouseX = (mouseX - this.getX()) * WorldPreviewScreen.this.scale;
+				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
+				
+//				IClimateSampler sampler = WorldPreviewScreen.this.generator.getClimateSampler();
+//				ClimateSample sample = sampler.getSample(relativeMouseX, relativeMouseY);
+//				Biome biome = sampler.sampleBiome(sample).value();
 //				String biomeKey = WorldPreviewScreen.this.biomes.getKey(biome).toString();
 //				drawString(stack, WorldPreviewScreen.this.font, "biome: " + biomeKey, x + 8, y + this.getHeight() - 16, 16777215);
 //				

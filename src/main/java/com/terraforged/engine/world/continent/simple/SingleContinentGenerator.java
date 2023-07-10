@@ -14,15 +14,15 @@ public class SingleContinentGenerator extends ContinentGenerator {
 
     public SingleContinentGenerator(Seed seed, GeneratorContext context) {
         super(seed, context);
-        long center = this.getNearestCenter(seed.get(), 0.0f, 0.0f);
+        long center = this.getNearestCenter(0.0f, 0.0f);
         int cx = PosUtil.unpackLeft(center);
         int cz = PosUtil.unpackRight(center);
         this.center = new Vec2i(cx, cz);
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
-        super.apply(seed, cell, x, y);
+    public void apply(Cell cell, float x, float y) {
+        super.apply(cell, x, y);
         if (cell.continentX != this.center.x || cell.continentZ != this.center.y) {
             cell.continentId = 0.0f;
             cell.continentEdge = 0.0f;

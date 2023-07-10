@@ -36,27 +36,27 @@ public class FancyContinentGenerator implements Continent {
     }
 
     @Override
-    public Rivermap getRivermap(int seed, int x, int y) {
-        return this.riverCache.getRivers(seed, x, y);
+    public Rivermap getRivermap(int x, int y) {
+        return this.riverCache.getRivers(x, y);
     }
 
     @Override
-    public float getEdgeValue(int seed, float x, float y) {
-        float px = this.warp.getX(seed, x, y);
-        float py = this.warp.getY(seed, x, y);
-        return this.source.getValue(seed, px *= this.frequency, py *= this.frequency);
+    public float getEdgeValue(float x, float y) {
+        float px = this.warp.getX(x, y);
+        float py = this.warp.getY(x, y);
+        return this.source.getValue(px *= this.frequency, py *= this.frequency);
     }
 
     @Override
-    public float getLandValue(int seed, float x, float y) {
-        float px = this.warp.getX(seed, x, y);
-        float py = this.warp.getY(seed, x, y);
+    public float getLandValue(float x, float y) {
+        float px = this.warp.getX(x, y);
+        float py = this.warp.getY(x, y);
         float value = this.source.getLandValue(px *= this.frequency, py *= this.frequency);
         return NoiseUtil.map(value, 0.2f, 0.4f, 0.2f);
     }
 
     @Override
-    public long getNearestCenter(int seed, float x, float z) {
+    public long getNearestCenter(float x, float z) {
         long min = this.source.getMin();
         long max = this.source.getMax();
         float width = PosUtil.unpackLeftf(max) - PosUtil.unpackLeftf(min);
@@ -69,11 +69,11 @@ public class FancyContinentGenerator implements Continent {
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float y) {
+    public void apply(Cell cell, float x, float y) {
         cell.continentX = 0;
         cell.continentZ = 0;
         cell.continentId = 0.0f;
-        cell.continentEdge = this.getEdgeValue(seed, x, y);
+        cell.continentEdge = this.getEdgeValue(x, y);
     }
 }
 

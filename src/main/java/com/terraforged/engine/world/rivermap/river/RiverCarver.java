@@ -50,7 +50,7 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
     }
 
     @Override
-    public void apply(int seed, Cell cell, float x, float z) {
+    public void apply(Cell cell, float x, float z) {
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
         return Integer.compare(this.config.order, o.config.order);
     }
 
-    public void carve(int seed, Cell cell, float px, float pz, float pt, float x, float z, float t) {
+    public void carve(Cell cell, float px, float pz, float pt, float x, float z, float t) {
         float bedAlpha;
         float d2 = this.getDistance2(x, z, t);
         float pd2 = this.getDistance2(px, pz, pt);

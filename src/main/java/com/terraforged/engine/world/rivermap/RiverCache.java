@@ -18,12 +18,12 @@ public class RiverCache {
         this.generator = generator;
     }
 
-    public Rivermap getRivers(int seed, Cell cell) {
-        return this.getRivers(seed, cell.continentX, cell.continentZ);
+    public Rivermap getRivers(Cell cell) {
+        return this.getRivers(cell.continentX, cell.continentZ);
     }
 
-    public Rivermap getRivers(int seed, int x, int z) {
-        return this.cache.computeIfAbsent(PosUtil.pack(x, z), id -> this.generator.generateRivers(seed, PosUtil.unpackLeft(id), PosUtil.unpackRight(id), id));
+    public Rivermap getRivers(int x, int z) {
+        return this.cache.computeIfAbsent(PosUtil.pack(x, z), id -> this.generator.generateRivers(PosUtil.unpackLeft(id), PosUtil.unpackRight(id), id));
     }
 }
 

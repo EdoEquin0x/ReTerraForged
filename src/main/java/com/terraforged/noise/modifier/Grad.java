@@ -49,14 +49,14 @@ public class Grad extends Modifier {
     }
 
     @Override
-    public float modify(int seed, float x, float y, float noiseValue) {
-        float upperBound = upper.getValue(seed, x, y);
+    public float modify(float x, float y, float noiseValue) {
+        float upperBound = upper.getValue(x, y);
         if (noiseValue > upperBound) {
             return noiseValue;
         }
 
-        float amount = strength.getValue(seed, x, y);
-        float lowerBound = lower.getValue(seed, x, y);
+        float amount = strength.getValue(x, y);
+        float lowerBound = lower.getValue(x, y);
         if (noiseValue < lowerBound) {
             return NoiseUtil.pow(noiseValue, 1 - amount);
         }
@@ -88,7 +88,7 @@ public class Grad extends Modifier {
         return result;
     }
 
-    private static final DataFactory<Grad> factory = (data, spec, context) -> new Grad(
+    private static DataFactory<Grad> factory = (data, spec, context) -> new Grad(
             spec.get("source", data, Module.class, context),
             spec.get("lower", data, Module.class, context),
             spec.get("upper", data, Module.class, context),

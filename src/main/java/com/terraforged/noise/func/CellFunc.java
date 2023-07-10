@@ -35,14 +35,14 @@ import com.terraforged.noise.util.Vec2f;
 public enum CellFunc {
     CELL_VALUE {
         @Override
-        public float apply(int seed, int xc, int yc, float distance, Vec2f vec2f, Module lookup) {
+        public float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Module lookup) {
             return NoiseUtil.valCoord2D(seed, xc, yc);
         }
     },
     NOISE_LOOKUP {
         @Override
-        public float apply(int seed, int xc, int yc, float distance, Vec2f vec2f, Module lookup) {
-            return lookup.getValue(seed, xc + vec2f.x, yc + vec2f.y);
+        public float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Module lookup) {
+            return lookup.getValue(xc + vec2f.x, yc + vec2f.y);
         }
 
         @Override
@@ -52,7 +52,7 @@ public enum CellFunc {
     },
     DISTANCE {
         @Override
-        public float apply(int seed, int xc, int yc, float distance, Vec2f vec2f, Module lookup) {
+        public float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Module lookup) {
             return distance - 1;
         }
 
@@ -63,7 +63,7 @@ public enum CellFunc {
     },
     ;
 
-    public abstract float apply(int seed, int xc, int yc, float distance, Vec2f vec2f, Module lookup);
+    public abstract float apply(int xc, int yc, float distance, int seed, Vec2f vec2f, Module lookup);
 
     public float mapValue(float value, float min, float max, float range) {
         return NoiseUtil.map(value, min, max, range);

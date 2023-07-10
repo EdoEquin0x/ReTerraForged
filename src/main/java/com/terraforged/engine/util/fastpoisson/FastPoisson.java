@@ -65,7 +65,7 @@ public class FastPoisson {
             long point = chunk.getLong(i);
             int px = PosUtil.unpackLeft(point);
             int pz = PosUtil.unpackRight(point);
-            if (!region.contains(point) || !FastPoisson.checkNeighbours(startX, startZ, point, px, pz, halfRadius, radius2 * context.density.getValue(seed, px, pz), region)) continue;
+            if (!region.contains(point) || !FastPoisson.checkNeighbours(startX, startZ, point, px, pz, halfRadius, radius2 * context.density.getValue(px, pz), region)) continue;
             visitor.visit(px, pz, ctx);
         }
     }

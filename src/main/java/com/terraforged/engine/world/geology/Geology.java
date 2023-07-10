@@ -26,8 +26,8 @@ public class Geology<T> {
         return this;
     }
 
-    public Strata<T> getStrata(int seed, float x, int y) {
-        float noise = this.selector.getValue(seed, x, y);
+    public Strata<T> getStrata(float x, int y) {
+        float noise = this.selector.getValue(x, y);
         return this.getStrata(noise);
     }
 

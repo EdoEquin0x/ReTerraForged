@@ -46,8 +46,8 @@ public class Sin extends NoiseSource {
     }
 
     @Override
-    public float getSourceValue(int seed, float x, float y) {
-        float a = alpha.getValue(seed, x, y);
+    public float getValue(float x, float y, int seed) {
+        float a = alpha.getValue(x, y);
         x *= frequency;
         y *= frequency;
 

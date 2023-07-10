@@ -38,26 +38,30 @@ public interface Domain extends SpecName {
         }
 
         @Override
-        public float getOffsetX(int seed, float x, float y) {
+        public float getOffsetX(float x, float y) {
             return 0;
         }
 
         @Override
-        public float getOffsetY(int seed, float x, float y) {
+        public float getOffsetY(float x, float y) {
             return 0;
         }
     };
 
-    float getOffsetX(int seed, float x, float y);
+    float getOffsetX(float x, float y);
 
-    float getOffsetY(int seed, float x, float y);
+    float getOffsetY(float x, float y);
 
-    default float getX(int seed, float x, float y) {
-        return x + getOffsetX(seed, x, y);
+    default float getX(float x, float y) {
+        return x + getOffsetX(x, y);
     }
 
-    default float getY(int seed, float x, float y) {
-        return y + getOffsetY(seed, x, y);
+    default float getY(float x, float y) {
+        return y + getOffsetY(x, y);
+    }
+
+    default Domain cache() {
+        return new CacheWarp(this);
     }
 
     default Domain add(Domain next) {
