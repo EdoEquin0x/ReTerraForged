@@ -24,25 +24,17 @@
 
 package com.terraforged.mod.level.levelgen.biome.viability;
 
-import com.terraforged.cereal.spec.DataSpec;
-import com.terraforged.cereal.value.DataValue;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record HeightViability(float minOffset, float midOffset, float maxOffset) implements Viability {
-    public static final DataSpec<HeightViability> SPEC = DataSpec.builder(
-                    "Height",
-                    HeightViability.class,
-                    (data, spec, context) -> new HeightViability(
-                            spec.get("min", data, DataValue::asFloat),
-                            spec.get("mid", data, DataValue::asFloat),
-                            spec.get("max", data, DataValue::asFloat)
-                    )
-            )
-            .add("min", 0.0F, HeightViability::minOffset)
-            .add("mid", 0.5F, HeightViability::midOffset)
-            .add("max", 1.0F, HeightViability::maxOffset)
-            .build();
+	public static final Codec<HeightViability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.FLOAT.optionalFieldOf("min", 0.0F).forGetter(HeightViability::minOffset),
+		Codec.FLOAT.optionalFieldOf("mid", 0.5F).forGetter(HeightViability::midOffset),
+		Codec.FLOAT.optionalFieldOf("max", 1.0F).forGetter(HeightViability::maxOffset)		
+	).apply(instance, HeightViability::new));
 
-    @Override
+	@Override
     public float getFitness(int x, int z, Context context) {
         int base = context.getTerrain().getBaseHeight(x, z);
         int height = context.getTerrain().getHeight(x, z);
@@ -62,4 +54,9 @@ public record HeightViability(float minOffset, float midOffset, float maxOffset)
 
         return (height - mid) / (max - mid);
     }
+	
+	@Override
+	public Codec<HeightViability> codec() {
+		return CODEC;
+	}
 }

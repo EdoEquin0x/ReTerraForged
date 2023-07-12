@@ -34,6 +34,11 @@ import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.level.levelgen.asset.TerrainType;
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.registry.TFChunkGenerators;
+import com.terraforged.mod.registry.TFCurves;
+import com.terraforged.mod.registry.TFDomains;
+import com.terraforged.mod.registry.TFModules;
+import com.terraforged.mod.registry.TFRegistries;
+import com.terraforged.mod.registry.TFViabilities;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,6 +49,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.DataPackRegistryEvent;
+import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 
 @Mod(TerraForged.MODID)
@@ -53,6 +59,7 @@ public class TFForge extends TerraForged implements CommonAPI {
         super(TFForge::getRootPath);
 
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addListener(this::onCreateRegistries);
         modBus.addListener(this::onCreateDataPackRegistries);
         modBus.addListener(this::onRegister);
         
@@ -68,6 +75,10 @@ public class TFForge extends TerraForged implements CommonAPI {
         TFCommands.register(event.getDispatcher());
     }
     
+    void onCreateRegistries(NewRegistryEvent event) {
+    	TFRegistries.register(event::create);
+    }
+    
     void onCreateDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
     	event.dataPackRegistry(TerraForged.CAVE, NoiseCave.DIRECT_CODEC);
     	event.dataPackRegistry(TerraForged.TERRAIN, TerrainNoise.DIRECT_CODEC);
@@ -78,6 +89,26 @@ public class TFForge extends TerraForged implements CommonAPI {
     void onRegister(RegisterEvent event) {
     	event.register(Registries.CHUNK_GENERATOR, (helper) -> {
     		TFChunkGenerators.register(helper::register);
+    		TerraForged.LOG.info("Registered chunk generators");
+    	});
+    	event.register(TerraForged.MODULE, (helper) -> {
+    		TFModules.register(helper::register);
+    		TerraForged.LOG.info("Registered modules");
+    	});
+    	event.register(TerraForged.DOMAIN, (helper) -> {
+    		TFDomains.register(helper::register);
+    		TerraForged.LOG.info("Registered domains");
+    	});
+    	event.register(TerraForged.CURVE, (helper) -> {
+    		TFCurves.register(helper::register);
+    		TerraForged.LOG.info("Registered curves");
+    	});
+    	event.register(TerraForged.POPULATOR, (helper) -> {
+    		//TODO
+    	});
+    	event.register(TerraForged.VIABILITY, (helper) -> {
+    		TFViabilities.register(helper::register);
+    		TerraForged.LOG.info("Registered viabilities");
     	});
     }
     

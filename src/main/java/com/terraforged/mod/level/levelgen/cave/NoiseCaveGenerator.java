@@ -29,9 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.util.storage.ObjectPool;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.Source;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.ChunkPos;

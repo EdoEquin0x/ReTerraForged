@@ -41,14 +41,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public interface TFTags {
-    TagKey<Biome> OVERWORLD = resolve(Registries.BIOME, "overworld");
-
-    // Trees
     TagKey<Biome> COPSES = resolve(Registries.BIOME, "trees/copses");
     TagKey<Biome> HARDY = resolve(Registries.BIOME, "trees/hardy");
     TagKey<Biome> HARDY_SLOPES = resolve(Registries.BIOME, "trees/hardy_slopes");
@@ -57,6 +55,7 @@ public interface TFTags {
     TagKey<Biome> SPARSE = resolve(Registries.BIOME, "trees/sparse");
     TagKey<Biome> SPARSE_RAINFOREST = resolve(Registries.BIOME, "trees/sparse_rainforest");
     TagKey<Biome> TEMPERATE = resolve(Registries.BIOME, "trees/temperate");
+    
     TagKey<Block> ERODIBLE = resolve(Registries.BLOCK, "erodible");
     	
     static DataProvider biomes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
@@ -64,7 +63,13 @@ public interface TFTags {
 			
 			@Override
 			protected void addTags(Provider provider) {
-				//TODO
+				this.tag(COPSES).add(Biomes.PLAINS);
+				this.tag(HARDY).add(Biomes.FOREST);
+				this.tag(HARDY_SLOPES).add(Biomes.FOREST);
+				this.tag(PATCHY).add(Biomes.PLAINS);
+				this.tag(RAINFOREST).add(Biomes.JUNGLE);
+				this.tag(SPARSE_RAINFOREST).add(Biomes.SPARSE_JUNGLE);
+				this.tag(TEMPERATE).add(Biomes.FOREST);
 			}
 		};
     }

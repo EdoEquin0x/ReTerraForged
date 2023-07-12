@@ -24,21 +24,15 @@
 
 package com.terraforged.mod.level.levelgen.biome.viability;
 
-import com.terraforged.cereal.spec.DataSpec;
-import com.terraforged.cereal.value.DataValue;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record SaturationViability(float min, float max) implements Viability {
-    public static final DataSpec<SaturationViability> SPEC = DataSpec.builder(
-                    "Saturation",
-                    SaturationViability.class,
-                    (data, spec, context) -> new SaturationViability(
-                            spec.get("min", data, DataValue::asFloat),
-                            spec.get("max", data, DataValue::asFloat))
-            )
-            .add("min", 0F, SaturationViability::min)
-            .add("max", 1F, SaturationViability::max)
-            .build();
-
+    public static final Codec<SaturationViability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    	Codec.FLOAT.optionalFieldOf("min", 0.0F).forGetter(SaturationViability::min),
+    	Codec.FLOAT.optionalFieldOf("max", 1.0F).forGetter(SaturationViability::max)
+    ).apply(instance, SaturationViability::new));
+	
     public SaturationViability(float max) {
         this(0, max);
     }
@@ -48,9 +42,14 @@ public record SaturationViability(float min, float max) implements Viability {
         // Water mask represents distance from river/lake so invert to get saturation
         float saturation = 1f - context.getTerrain().getRiver().get(x, z);
 
-        if (saturation < min) return 0F;
-        if (saturation > max) return 1F;
+        if (saturation < this.min) return 0F;
+        if (saturation > this.max) return 1F;
 
-        return (saturation - min) / (max - min);
+        return (saturation - this.min) / (this.max - this.min);
     }
+
+	@Override
+	public Codec<SaturationViability> codec() {
+		return CODEC;
+	}
 }

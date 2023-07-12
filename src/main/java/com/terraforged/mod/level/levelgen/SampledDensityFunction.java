@@ -2,17 +2,17 @@ package com.terraforged.mod.level.levelgen;
 
 import java.util.function.ToDoubleFunction;
 
-import com.terraforged.mod.level.levelgen.biome.IClimateSampler;
+import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
 import com.terraforged.mod.level.levelgen.noise.climate.ClimateSample;
 
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
 public class SampledDensityFunction implements DensityFunction {
-	private IClimateSampler sampler;
+	private ClimateSampler sampler;
 	private ToDoubleFunction<ClimateSample> getter;
 	
-	public SampledDensityFunction(IClimateSampler sampler, ToDoubleFunction<ClimateSample> getter) {
+	public SampledDensityFunction(ClimateSampler sampler, ToDoubleFunction<ClimateSample> getter) {
 		this.sampler = sampler;
 		this.getter = getter;
 	}

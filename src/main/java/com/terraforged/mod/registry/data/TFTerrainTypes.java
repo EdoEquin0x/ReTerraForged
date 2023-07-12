@@ -24,19 +24,19 @@
 
 package com.terraforged.mod.registry.data;
 
-import com.terraforged.engine.world.terrain.Terrain;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.asset.TerrainType;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
 
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
 public interface TFTerrainTypes {
-    Terrain TORRIDONIAN = com.terraforged.engine.world.terrain.TerrainType.getOrCreate("torridonian", com.terraforged.engine.world.terrain.TerrainType.HILLS);
-    Terrain DOLOMITES = com.terraforged.engine.world.terrain.TerrainType.getOrCreate("dolomites", com.terraforged.engine.world.terrain.TerrainType.MOUNTAINS);
+    Terrain TORRIDONIAN = com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.getOrCreate("torridonian", com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.HILLS);
+    Terrain DOLOMITES = com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.getOrCreate("dolomites", com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.MOUNTAINS);
 
     static void register(BootstapContext<TerrainType> ctx) {
-        com.terraforged.engine.world.terrain.TerrainType.forEach(terrain -> {
+        com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.forEach(terrain -> {
             var type = TerrainType.of(terrain);
             
             ctx.register(resolve(terrain.getName()), type);

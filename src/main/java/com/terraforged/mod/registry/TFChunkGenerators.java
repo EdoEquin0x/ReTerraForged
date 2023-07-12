@@ -13,11 +13,11 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 public interface TFChunkGenerators {
 	ResourceKey<Codec<? extends ChunkGenerator>> TERRAFORGED = resolve("terraforged");
 	
-	public static void register(BiConsumer<ResourceKey<Codec<? extends ChunkGenerator>>, Codec<? extends ChunkGenerator>> register) {
+	static void register(BiConsumer<ResourceKey<Codec<? extends ChunkGenerator>>, Codec<? extends ChunkGenerator>> register) {
     	register.accept(TERRAFORGED, TFChunkGenerator.CODEC);
 	}
 	
-	 private static ResourceKey<Codec<? extends ChunkGenerator>> resolve(String path) {
-		 return TerraForged.resolve(Registries.CHUNK_GENERATOR, path);
-	 }
+	private static ResourceKey<Codec<? extends ChunkGenerator>> resolve(String path) {
+		return TerraForged.resolve(Registries.CHUNK_GENERATOR, path);
+	}
 }

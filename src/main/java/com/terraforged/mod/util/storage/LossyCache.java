@@ -24,8 +24,6 @@
 
 package com.terraforged.mod.util.storage;
 
-import com.terraforged.mod.Environment;
-import com.terraforged.noise.util.NoiseUtil;
 import it.unimi.dsi.fastutil.HashCommon;
 import net.minecraft.util.Mth;
 
@@ -33,6 +31,9 @@ import java.util.Arrays;
 import java.util.concurrent.locks.StampedLock;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+
+import com.terraforged.mod.Environment;
+import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class LossyCache<T> implements LongCache<T> {
     protected final long[] keys;

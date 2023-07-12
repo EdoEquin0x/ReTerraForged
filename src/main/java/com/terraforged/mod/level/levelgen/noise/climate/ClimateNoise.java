@@ -24,17 +24,17 @@
 
 package com.terraforged.mod.level.levelgen.noise.climate;
 
-import com.terraforged.engine.Seed;
-import com.terraforged.engine.settings.Settings;
-import com.terraforged.engine.world.GeneratorContext;
-import com.terraforged.engine.world.climate.Moisture;
-import com.terraforged.engine.world.climate.Temperature;
+import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
+import com.terraforged.mod.level.levelgen.generator.climate.Moisture;
+import com.terraforged.mod.level.levelgen.generator.climate.Temperature;
 import com.terraforged.mod.level.levelgen.noise.continent.cell.CellShape;
+import com.terraforged.mod.level.levelgen.seed.Seed;
+import com.terraforged.mod.level.levelgen.settings.Settings;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.noise.domain.Domain;
+import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.MathUtil;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.domain.Domain;
-import com.terraforged.noise.util.NoiseUtil;
 
 public class ClimateNoise {
     private static final float MOISTURE_SIZE = 2.5F;
@@ -57,28 +57,28 @@ public class ClimateNoise {
     public ClimateNoise(Seed seed, Settings settings) {
     	this.seed = seed.get();
     	
-    	int biomeSize = settings.climate.biomeShape.biomeSize;
-        float tempScaler = settings.climate.temperature.scale;
-        float moistScaler = settings.climate.moisture.scale * MOISTURE_SIZE;
+    	int biomeSize = settings.climate().biomeShape().biomeSize();
+        float tempScaler = settings.climate().temperature().scale();
+        float moistScaler = settings.climate().moisture().scale() * MOISTURE_SIZE;
 
         float biomeFreq = 1F / biomeSize;
         float moistureSize = moistScaler * biomeSize;
         float temperatureSize = tempScaler * biomeSize;
         int moistScale = NoiseUtil.round(moistureSize * biomeFreq);
         int tempScale = NoiseUtil.round(temperatureSize * biomeFreq);
-        int warpScale = settings.climate.biomeShape.biomeWarpScale;
+        int warpScale = settings.climate().biomeShape().biomeWarpScale();
 
         this.frequency = 1F / biomeSize;
 
-        Seed moistureSeed = seed.offset(settings.climate.moisture.seedOffset);
-        Module moisture = new Moisture(moistureSeed.next(), moistScale, settings.climate.moisture.falloff);
-        this.moisture = settings.climate.moisture.apply(moisture)
+        Seed moistureSeed = seed.offset(settings.climate().moisture().seedOffset());
+        Module moisture = new Moisture(moistureSeed.next(), moistScale, settings.climate().moisture().falloff());
+        this.moisture = settings.climate().moisture().apply(moisture)
                 .warp(moistureSeed.next(), Math.max(1, moistScale / 2), 1, moistScale / 4D)
                 .warp(moistureSeed.next(), Math.max(1, moistScale / 6), 2, moistScale / 12D);
 
-        Seed tempSeed = seed.offset(settings.climate.temperature.seedOffset);
-        Module temperature = new Temperature(1F / tempScale, settings.climate.temperature.falloff);
-        this.temperature = settings.climate.temperature.apply(temperature)
+        Seed tempSeed = seed.offset(settings.climate().temperature().seedOffset());
+        Module temperature = new Temperature(1F / tempScale, settings.climate().temperature().falloff());
+        this.temperature = settings.climate().temperature().apply(temperature)
                 .warp(tempSeed.next(), tempScale * 4, 2, tempScale * 4)
                 .warp(tempSeed.next(), tempScale, 1, tempScale);
 
@@ -86,7 +86,7 @@ public class ClimateNoise {
         this.warp = Domain.warp(
                 Source.build(seed.next(), warpScale, 3).lacunarity(2.4).gain(0.3).simplex2(),
                 Source.build(seed.next(), warpScale, 3).lacunarity(2.4).gain(0.3).simplex2(),
-                Source.constant(settings.climate.biomeShape.biomeWarpStrength * 0.75)
+                Source.constant(settings.climate().biomeShape().biomeWarpStrength() * 0.75)
         );
     }
 
@@ -120,7 +120,7 @@ public class ClimateNoise {
         int nearestHash = 0;
         float distance = Float.MAX_VALUE;
         float distance2 = Float.MAX_VALUE;
-
+        
         for (int cy = minY; cy <= maxY; cy++) {
             for (int cx = minX; cx <= maxX; cx++) {
                 int hash = MathUtil.hash(this.seed, cx, cy);
@@ -139,7 +139,6 @@ public class ClimateNoise {
                 }
             }
         }
-
         sample.biomeNoise = MathUtil.rand(nearestHash, 1236785);
         sample.biomeEdgeNoise = 1f - NoiseUtil.sqrt(distance / distance2);
         sample.moisture = this.moisture.getValue(nearestX, nearestY);

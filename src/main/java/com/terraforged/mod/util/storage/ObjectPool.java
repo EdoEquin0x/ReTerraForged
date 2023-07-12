@@ -24,15 +24,15 @@
 
 package com.terraforged.mod.util.storage;
 
-import com.terraforged.mod.Environment;
-import com.terraforged.noise.util.NoiseUtil;
-
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
+
+import com.terraforged.mod.Environment;
+import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class ObjectPool<T> implements Consumer<T> {
     protected final int capacity;

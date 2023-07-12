@@ -24,8 +24,8 @@
 
 package com.terraforged.mod.level.levelgen.noise;
 
-import com.terraforged.engine.world.GeneratorContext;
-import com.terraforged.engine.world.heightmap.ControlPoints;
+import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
+import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 
 public interface IContinentNoise {
     GeneratorContext getContext();

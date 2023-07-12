@@ -26,6 +26,7 @@ package com.terraforged.mod.level.levelgen.biome.vegetation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
@@ -68,7 +69,7 @@ public class VegetationFeatures {
         return other;
     }
 
-    public static VegetationFeatures create(Biome biome, VegetationConfig config) {
+    public static VegetationFeatures create(Biome biome, Optional<VegetationConfig> config) {
         var trees = new ArrayList<PlacedFeature>();
         var grass = new ArrayList<PlacedFeature>();
         var other = new ArrayList<PlacedFeature>();

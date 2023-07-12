@@ -26,24 +26,24 @@ package com.terraforged.mod.level.levelgen.noise;
 
 import java.util.function.Consumer;
 
-import com.terraforged.engine.settings.Settings;
-import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.engine.world.GeneratorContext;
-import com.terraforged.engine.world.heightmap.ControlPoints;
-import com.terraforged.engine.world.terrain.Terrain;
-import com.terraforged.engine.world.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.noise.continent.ContinentGenerator;
+import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
+import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.noise.continent.ContinentNoise;
 import com.terraforged.mod.level.levelgen.noise.continent.ContinentPoints;
 import com.terraforged.mod.level.levelgen.noise.erosion.ErodedNoiseGenerator;
 import com.terraforged.mod.level.levelgen.noise.erosion.NoiseTileSize;
+import com.terraforged.mod.level.levelgen.seed.Seed;
+import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.terrain.TerrainBlender;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.WeightMap;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.util.NoiseUtil;
 
 import net.minecraft.core.Holder;
 
@@ -62,12 +62,12 @@ public class NoiseGenerator implements INoiseGenerator {
     protected final ThreadLocal<NoiseData> localChunk = ThreadLocal.withInitial(NoiseData::new);
     protected final ThreadLocal<NoiseSample> localSample = ThreadLocal.withInitial(NoiseSample::new);
 
-    public NoiseGenerator(int seed, TerrainLevels levels, WeightMap<Holder<TerrainNoise>> terrains) {
+    public NoiseGenerator(int seed, Settings settings, TerrainLevels levels, WeightMap<Holder<TerrainNoise>> terrains) {
     	this.seed = seed;
     	this.levels = levels;
         this.ocean = createOceanTerrain(seed);
         this.land = createLandTerrain(seed, terrains);
-        this.continent = createContinentNoise(seed, levels);
+        this.continent = createContinentNoise(seed, settings, levels);
         this.controlPoints = continent.getControlPoints();
     }
 
@@ -270,24 +270,23 @@ public class NoiseGenerator implements INoiseGenerator {
         return new TerrainBlender(seed + TERRAIN_OFFSET, 800, 0.8F, 0.4F, terrains);
     }
 
-    protected static IContinentNoise createContinentNoise(int seed, TerrainLevels levels) {
-        var settings = new Settings();
-        settings.world.properties.seaLevel = levels.seaLevel;
-        settings.world.properties.worldHeight = levels.maxY;
-
-        settings.climate.biomeShape.biomeSize = 220;
-        settings.climate.temperature.falloff = 2;
-        settings.climate.temperature.bias = 0.1f;
-        settings.climate.moisture.falloff = 1;
-        settings.climate.moisture.bias = -0.05f;
-
-        var context = new GeneratorContext(seed, settings);
-        settings.world.continent.continentScale = ContinentGenerator.CONTINENT_SAMPLE_SCALE;
-        settings.world.controlPoints.deepOcean = 0.05f;
-        settings.world.controlPoints.shallowOcean = 0.3f;
-        settings.world.controlPoints.beach = 0.45f;
-        settings.world.controlPoints.coast = 0.75f;
-        settings.world.controlPoints.inland = 0.80f;
-        return new ContinentNoise(seed + CONTINENT_OFFSET, levels, context);
+    protected static IContinentNoise createContinentNoise(int seed, Settings settings, TerrainLevels levels) {
+//        settings.world.properties.seaLevel = levels.seaLevel;
+//        settings.world.properties.worldHeight = levels.maxY;
+//
+//        settings.climate.biomeShape.biomeSize = 220;
+//        settings.climate.temperature.falloff = 2;
+//        settings.climate.temperature.bias = 0.1f;
+//        settings.climate.moisture.falloff = 1;
+//        settings.climate.moisture.bias = -0.05f;
+//
+//        var context = new GeneratorContext(new Seed(seed), settings);
+//        settings.world.continent.continentScale = ContinentGenerator.CONTINENT_SAMPLE_SCALE;
+//        settings.world.controlPoints.deepOcean = 0.05f;
+//        settings.world.controlPoints.shallowOcean = 0.3f;
+//        settings.world.controlPoints.beach = 0.45f;
+//        settings.world.controlPoints.coast = 0.75f;
+//        settings.world.controlPoints.inland = 0.80f;
+        return new ContinentNoise(seed + CONTINENT_OFFSET, levels, new GeneratorContext(new Seed(seed), settings));
     }
 }

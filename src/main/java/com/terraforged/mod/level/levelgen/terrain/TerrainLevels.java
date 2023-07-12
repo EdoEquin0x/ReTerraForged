@@ -25,18 +25,18 @@
 package com.terraforged.mod.level.levelgen.terrain;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.codec.Codecs;
-import com.terraforged.mod.codec.LazyCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
+import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.MathUtil;
-import com.terraforged.noise.util.NoiseUtil;
 
 import net.minecraft.world.level.dimension.DimensionType;
 
 public class TerrainLevels {
-    public static final Codec<TerrainLevels> CODEC = LazyCodec.record(instance -> instance.group(
-    	Codecs.opt("auto_scale", true, Codec.BOOL).forGetter(l -> l.noiseLevels.auto),
-    	Codecs.opt("horizontal_scale", 1F, Codec.floatRange(0F, 10F)).forGetter(l -> l.noiseLevels.scale),
+    public static final Codec<TerrainLevels> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    	TFCodecs.opt("auto_scale", true, Codec.BOOL).forGetter(l -> l.noiseLevels.auto),
+    	TFCodecs.opt("horizontal_scale", 1F, Codec.floatRange(0F, 10F)).forGetter(l -> l.noiseLevels.scale),
     	Codec.intRange(Limits.MIN_MIN_Y, Limits.MAX_MIN_Y).fieldOf("min_y").forGetter(l -> l.minY),
     	Codec.intRange(Limits.MIN_MAX_Y, Limits.MAX_MAX_Y).fieldOf("max_y").forGetter(l -> l.maxY),
     	Codec.intRange(Limits.MAX_MIN_Y, Limits.MAX_MAX_Y).fieldOf("base_height").forGetter(l -> l.baseHeight),

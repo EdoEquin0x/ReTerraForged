@@ -24,19 +24,22 @@
 
 package com.terraforged.mod.level.levelgen.biome.viability;
 
-import com.terraforged.cereal.spec.DataSpec;
-import com.terraforged.noise.Module;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.terraforged.mod.noise.Module;
 
 public record NoiseViability(Module noise) implements Viability {
-    public static final DataSpec<NoiseViability> SPEC = DataSpec.builder(
-                    "Noise",
-            NoiseViability.class,
-            (data, spec, context) -> new NoiseViability(spec.get("noise", data, Module.class, context)))
-            .addObj("noise", NoiseViability::noise)
-            .build();
-
+	public static final Codec<NoiseViability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Module.CODEC.fieldOf("noise").forGetter(NoiseViability::noise)
+	).apply(instance, NoiseViability::new));
+	
     @Override
     public float getFitness(int x, int z, Context context) {
         return noise.getValue(x, z);
     }
+
+	@Override
+	public Codec<NoiseViability> codec() {
+		return CODEC;
+	}
 }

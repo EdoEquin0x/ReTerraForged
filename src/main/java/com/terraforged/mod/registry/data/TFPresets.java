@@ -11,6 +11,7 @@ import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
+import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.util.storage.WeightMap;
 
@@ -66,6 +67,7 @@ public interface TFPresets {
 				new LevelStem(
 					dimensions.getOrThrow(BuiltinDimensionTypes.OVERWORLD),
 					TFChunkGenerator.create(
+						Settings.DEFAULT,
 						TerrainLevels.DEFAULT,
 						new WeightMap.Builder<>()
 							.entry(1.75F, terrain.getOrThrow(TFTerrain.BADLANDS))

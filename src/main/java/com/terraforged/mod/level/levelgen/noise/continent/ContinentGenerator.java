@@ -24,8 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent;
 
-import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.engine.world.heightmap.ControlPoints;
+import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
 import com.terraforged.mod.level.levelgen.noise.continent.cell.CellPoint;
 import com.terraforged.mod.level.levelgen.noise.continent.cell.CellShape;
@@ -33,13 +32,14 @@ import com.terraforged.mod.level.levelgen.noise.continent.cell.CellSource;
 import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig;
 import com.terraforged.mod.level.levelgen.noise.continent.river.RiverGenerator;
 import com.terraforged.mod.level.levelgen.noise.continent.shape.ShapeGenerator;
+import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.MathUtil;
 import com.terraforged.mod.util.SpiralIterator;
+import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
 import com.terraforged.mod.util.storage.ObjectPool;
-import com.terraforged.noise.util.NoiseUtil;
-import com.terraforged.noise.util.Vec2f;
 
 public class ContinentGenerator {
     public static final int CONTINENT_SAMPLE_SCALE = 400;

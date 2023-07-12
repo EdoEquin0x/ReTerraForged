@@ -26,14 +26,14 @@ package com.terraforged.mod.level.levelgen.biome.viability;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.terraforged.mod.level.levelgen.biome.IClimateSampler;
+import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 
 public class ViabilityContext implements Viability.Context {
     public int seed;
     public CompletableFuture<TerrainData> terrainData;
-    public IClimateSampler climateSampler;
+    public ClimateSampler climateSampler;
 
     @Override
     public int seed() {
@@ -56,7 +56,7 @@ public class ViabilityContext implements Viability.Context {
     }
 
     @Override
-    public IClimateSampler getClimateSampler() {
+    public ClimateSampler getClimateSampler() {
         return climateSampler;
     }
 }

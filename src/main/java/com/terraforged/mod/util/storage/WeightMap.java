@@ -10,9 +10,9 @@ import java.util.function.Predicate;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.mod.codec.Codecs;
+import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.util.MathUtil;
+import com.terraforged.mod.util.pos.PosUtil;
 
 public class WeightMap<T> implements Iterable<T> {
     protected final Object[] values;
@@ -108,7 +108,7 @@ public class WeightMap<T> implements Iterable<T> {
 
     @SuppressWarnings("unchecked")
 	public static <T> Codec<WeightMap<T>> codec(Codec<T> valueCodec, IntFunction<T[]> generator) {
-    	return Codecs.forArray(Entry.codec(valueCodec), (size) -> {
+    	return TFCodecs.forArray(Entry.codec(valueCodec), (size) -> {
     		return (Entry<T>[]) new Entry[size];
     	}).xmap((entries) -> {
     		return new WeightMap<>(getWeights(entries), getValues(entries));

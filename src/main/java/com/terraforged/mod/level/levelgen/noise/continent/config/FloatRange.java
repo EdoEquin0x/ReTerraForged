@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.config;
 
-import com.terraforged.noise.util.NoiseUtil;
+import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class FloatRange {
     public float min, max;

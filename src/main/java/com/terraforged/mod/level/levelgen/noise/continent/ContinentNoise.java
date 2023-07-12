@@ -24,15 +24,15 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent;
 
-import com.terraforged.engine.world.GeneratorContext;
-import com.terraforged.engine.world.heightmap.ControlPoints;
+import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
+import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.noise.IContinentNoise;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.domain.Domain;
+import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.noise.domain.Domain;
 
 public class ContinentNoise implements IContinentNoise {
     protected final TerrainLevels levels;
@@ -46,10 +46,10 @@ public class ContinentNoise implements IContinentNoise {
     public ContinentNoise(int levelSeed, TerrainLevels levels, GeneratorContext context) {
         this.levels = levels;
         this.context = context;
-        this.controlPoints = new ControlPoints(context.settings.world.controlPoints);
+        this.controlPoints = new ControlPoints(context.settings.world().controlPoints());
         this.generator = createContinent(levelSeed, context, controlPoints, levels.noiseLevels);
 
-        this.frequency = 1F / context.settings.world.continent.continentScale;
+        this.frequency = 1F / context.settings.world().continent().scale();
 
         double strength = 0.2;
 
@@ -110,7 +110,7 @@ public class ContinentNoise implements IContinentNoise {
 
     protected static ContinentGenerator createContinent(int levelSeed, GeneratorContext context, ControlPoints controlPoints, NoiseLevels levels) {
         var config = new ContinentConfig();
-        config.shape.scale = context.settings.world.continent.continentScale;
+        config.shape.scale = context.settings.world().continent().scale();
         config.shape.seed0 = context.seed.next();
         config.shape.seed1 = context.seed.next();
         return new ContinentGenerator(levelSeed, config, levels, controlPoints);

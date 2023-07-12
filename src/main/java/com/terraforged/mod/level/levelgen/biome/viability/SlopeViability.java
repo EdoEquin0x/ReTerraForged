@@ -24,27 +24,27 @@
 
 package com.terraforged.mod.level.levelgen.biome.viability;
 
-import com.terraforged.cereal.spec.DataSpec;
-import com.terraforged.cereal.value.DataValue;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record SlopeViability(float normalize, float max) implements Viability {
-    public static final DataSpec<SlopeViability> SPEC = DataSpec.builder(
-                    "Slope",
-            SlopeViability.class,
-            (data, spec, context) -> new SlopeViability(
-                    spec.get("normalize", data, DataValue::asFloat),
-                    spec.get("max", data, DataValue::asFloat)))
-            .add("normalize", 1F, SlopeViability::normalize)
-                    .add("max", 1F, SlopeViability::max)
-            .build();
+    public static final Codec<SlopeViability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    	Codec.FLOAT.optionalFieldOf("normalize", 1.0F).forGetter(SlopeViability::normalize),
+    	Codec.FLOAT.optionalFieldOf("max", 1.0F).forGetter(SlopeViability::max)
+    ).apply(instance, SlopeViability::new));
 
     @Override
     public float getFitness(int x, int z, Context context) {
-        float norm = normalize * getScaler(context.getLevels());
+        float norm = this.normalize * getScaler(context.getLevels());
         float gradient = context.getTerrain().getGradient(x, z, norm);
 
-        if (gradient >= max) return 1F;
+        if (gradient >= this.max) return 1F;
 
-        return gradient / max;
+        return gradient / this.max;
     }
+
+	@Override
+	public Codec<SlopeViability> codec() {
+		return CODEC;
+	}
 }

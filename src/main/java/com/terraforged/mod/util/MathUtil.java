@@ -24,11 +24,11 @@
 
 package com.terraforged.mod.util;
 
-import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.noise.source.Line;
-import com.terraforged.noise.util.NoiseUtil;
-
 import java.awt.geom.Line2D;
+
+import com.terraforged.mod.noise.source.Line;
+import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.util.pos.PosUtil;
 
 public class MathUtil {
     public static final float EPSILON = 0.99999F;

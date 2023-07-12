@@ -24,12 +24,12 @@
 
 package com.terraforged.mod.level.levelgen.noise.erosion;
 
-import com.terraforged.engine.util.FastRandom;
+import java.util.concurrent.CompletableFuture;
+
 import com.terraforged.mod.level.levelgen.noise.NoiseData;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
+import com.terraforged.mod.util.FastRandom;
 import com.terraforged.mod.util.storage.ObjectMap;
-
-import java.util.concurrent.CompletableFuture;
 
 public class NoiseResource {
     public final FastRandom random = new FastRandom();

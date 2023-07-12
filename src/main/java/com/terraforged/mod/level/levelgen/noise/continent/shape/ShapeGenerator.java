@@ -24,14 +24,14 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.shape;
 
-import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.engine.world.heightmap.ControlPoints;
+import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 import com.terraforged.mod.level.levelgen.noise.continent.ContinentGenerator;
 import com.terraforged.mod.level.levelgen.noise.continent.ContinentPoints;
 import com.terraforged.mod.level.levelgen.noise.continent.cell.CellPoint;
 import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig;
-import com.terraforged.noise.util.NoiseUtil;
+import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.util.pos.PosUtil;
 
 public class ShapeGenerator {
     private static final int RADIUS = 2;

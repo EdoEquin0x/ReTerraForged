@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.util;
 
-import com.terraforged.engine.util.pos.PosUtil;
+import com.terraforged.mod.util.pos.PosUtil;
 
 public class SpiralIterator {
     private final int x;

@@ -24,15 +24,14 @@
 
 package com.terraforged.mod.level.levelgen.biome.viability;
 
-import com.terraforged.cereal.spec.DataSpec;
-import com.terraforged.cereal.value.DataValue;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record BiomeEdgeViability(float distance) implements Viability {
-    public static final DataSpec<BiomeEdgeViability> SPEC = DataSpec.builder(BiomeEdgeViability.class,
-            (data, spec, context) -> new BiomeEdgeViability(spec.get("distance", data, DataValue::asFloat)))
-            .add("distance", 1F, BiomeEdgeViability::distance)
-            .build();
-
+	public static final Codec<BiomeEdgeViability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.FLOAT.fieldOf("distance").forGetter(BiomeEdgeViability::distance)
+	).apply(instance, BiomeEdgeViability::new));
+	
     @Override
     public float getFitness(int x, int z, Context context) {
         if (context.edge()) {
@@ -45,4 +44,9 @@ public record BiomeEdgeViability(float distance) implements Viability {
 
         return 0F;
     }
+
+	@Override
+	public Codec<BiomeEdgeViability> codec() {
+		return CODEC;
+	}
 }

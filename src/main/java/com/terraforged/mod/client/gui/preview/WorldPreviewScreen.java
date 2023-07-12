@@ -31,7 +31,7 @@ public class WorldPreviewScreen extends Screen {
 	
 	private final CreateWorldScreen parent;
 	private DynamicTexture framebuffer;
-	private final Registry<Biome> biomes;
+//	private final Registry<Biome> biomes;
 	private final TFChunkGenerator generator;
 	private Layer layer;
 	private int scale;
@@ -40,7 +40,7 @@ public class WorldPreviewScreen extends Screen {
 		super(Component.translatable("createWorld.customize.terraforged.title"));
 		this.parent = parent;
 		this.framebuffer = new DynamicTexture(256, 256, false);
-		this.biomes = biomes;
+//		this.biomes = biomes;
 		this.generator = generator;
 		this.scale = 15;
 		
@@ -235,9 +235,9 @@ public class WorldPreviewScreen extends Screen {
 			blit(stack, x, y, 0, 0.0F, 0.0F, this.width, this.height, this.width, this.height);
 			
 			if(this.isMouseOver(mouseX, mouseY)) {
-				int relativeMouseX = (mouseX - this.getX()) * WorldPreviewScreen.this.scale;
-				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
-				
+//				int relativeMouseX = (mouseX - this.getX()) * WorldPreviewScreen.this.scale;
+//				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
+//				
 //				IClimateSampler sampler = WorldPreviewScreen.this.generator.getClimateSampler();
 //				ClimateSample sample = sampler.getSample(relativeMouseX, relativeMouseY);
 //				Biome biome = sampler.sampleBiome(sample).value();

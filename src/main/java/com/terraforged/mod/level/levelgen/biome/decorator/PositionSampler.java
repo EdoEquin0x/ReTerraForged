@@ -24,12 +24,6 @@
 
 package com.terraforged.mod.level.levelgen.biome.decorator;
 
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
-import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationFeatures;
-import com.terraforged.mod.level.levelgen.terrain.TerrainData;
-import com.terraforged.mod.util.MathUtil;
-import com.terraforged.noise.util.NoiseUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.BiomeTags;
@@ -40,6 +34,13 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 
 import java.util.concurrent.CompletableFuture;
+
+import com.terraforged.mod.level.levelgen.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationFeatures;
+import com.terraforged.mod.level.levelgen.terrain.TerrainData;
+import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.util.MathUtil;
 
 public class PositionSampler {
     protected static final float BORDER = 6F;
@@ -91,11 +92,12 @@ public class PositionSampler {
             var config = vegetation.config;
             context.push(biome.value(), vegetation);
 
-            if (config == VegetationConfig.NONE) {
-                offset = placeAt(seed, offset + i, x, z, context);
-            } else {
-                offset = sample(seed, offset + i, x, z, config.frequency(), config.jitter(), context, PositionSampler::placeAt);
+            if(config.isPresent()) {
+            	var c = config.get();
+                offset = sample(seed, offset + i, x, z, c.frequency(), c.jitter(), context, PositionSampler::placeAt);
                 offset = placeGrassAt(seed, offset + i, x, z, context);
+            } else {
+            	offset = placeAt(seed, offset + i, x, z, context);
             }
         }
 
@@ -136,8 +138,8 @@ public class PositionSampler {
                 var biome = context.getBiome(x, y, z);
 
                 var vegetation = decorator.getVegetationManager().getVegetation(biome);
-                var viability = vegetation.config.viability();
-                float value = viability.getFitness(x, z, context.viabilityContext);
+                
+                float value = vegetation.config.isPresent() ? vegetation.config.get().viability().getFitness(x, z, context.viabilityContext) : 0.0F;
 
                 context.viability.set(dx, dz, value);
                 context.biomeList.add(biome);
@@ -220,7 +222,7 @@ public class PositionSampler {
         if (biome.value() != context.biome) return offset;
 
         float viability = context.viability.get(x & 15, z & 15);
-        float noise = (1 - context.vegetation.density()) * MathUtil.rand(hash);
+        float noise = (1 - context.vegetation.map(VegetationConfig::density).orElse(0.0F)) * MathUtil.rand(hash);
         if (viability < noise) return offset;
 
         for (var feature : context.features.trees()) {

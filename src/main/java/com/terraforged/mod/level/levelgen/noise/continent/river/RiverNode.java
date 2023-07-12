@@ -24,9 +24,9 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.river;
 
-import com.terraforged.noise.func.Interpolation;
-import com.terraforged.noise.source.Line;
-import com.terraforged.noise.util.NoiseUtil;
+import com.terraforged.mod.noise.func.Interpolation;
+import com.terraforged.mod.noise.source.Line;
+import com.terraforged.mod.noise.util.NoiseUtil;
 
 public record RiverNode(float ax, float ay, float bx, float by, float ah, float bh, float ar, float br, float displacement) {
     public float getProjection(float x, float y) {

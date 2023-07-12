@@ -32,15 +32,16 @@ import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.codec.Codecs;
+import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.BiomeGenerator;
 import com.terraforged.mod.level.levelgen.biome.CaveBiomeSampler;
-import com.terraforged.mod.level.levelgen.biome.IClimateSampler;
+import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
 import com.terraforged.mod.level.levelgen.noise.INoiseGenerator;
 import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
+import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.terrain.TerrainCache;
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
@@ -93,19 +94,21 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGenerator {
 	@SuppressWarnings("unchecked")
 	public static final Codec<TFChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    	TerrainLevels.CODEC.optionalFieldOf("levels", TerrainLevels.DEFAULT).forGetter((g) -> g.levels),
+		Settings.CODEC.fieldOf("settings").forGetter((g) -> g.settings),
+    	TerrainLevels.CODEC.fieldOf("levels").forGetter((g) -> g.levels),
     	WeightMap.codec(TerrainNoise.CODEC, (size) -> (Holder<TerrainNoise>[]) new Holder[size]).fieldOf("terrain").forGetter((g) -> g.terrain),
-    	Codecs.forArray(VegetationConfig.CODEC, (size) -> (Holder<VegetationConfig>[]) new Holder[size]).fieldOf("vegetation").forGetter((g) -> g.vegetation),
-    	Codecs.forArray(NoiseCave.CODEC, (size) -> (Holder<NoiseCave>[]) new Holder[size]).fieldOf("caves").forGetter((g) -> g.caves),
+    	TFCodecs.forArray(VegetationConfig.CODEC, (size) -> (Holder<VegetationConfig>[]) new Holder[size]).fieldOf("vegetation").forGetter((g) -> g.vegetation),
+    	TFCodecs.forArray(NoiseCave.CODEC, (size) -> (Holder<NoiseCave>[]) new Holder[size]).fieldOf("caves").forGetter((g) -> g.caves),
     	BiomeSource.CODEC.fieldOf("biomes").forGetter((g) -> g.biomeSource),
     	RegistryOps.retrieveGetter(Registries.BIOME)
 	).apply(instance, instance.stable(TFChunkGenerator::create)));
 
+	protected final Settings settings;
     protected final TerrainLevels levels;
     protected final BiomeSource biomeSource;
     protected final BiomeGenerator biomeGenerator;
     protected final INoiseGenerator noiseGenerator;
-    protected final IClimateSampler.Impl climateSampler;
+    protected final ClimateSampler climateSampler;
     protected final CaveBiomeSampler caveBiomeSampler;
     protected final TerrainCache terrainCache;
     protected final ThreadLocal<GeneratorResource> localResource = ThreadLocal.withInitial(GeneratorResource::new);
@@ -115,17 +118,19 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGener
     protected final Aquifer.FluidPicker globalFluidPicker;
 
     public TFChunkGenerator(
+    	Settings settings,
     	TerrainLevels levels,
     	BiomeSource biomeSource,
     	BiomeGenerator biomeGenerator,
     	INoiseGenerator noiseGenerator,
-    	IClimateSampler.Impl climateSampler,
+    	ClimateSampler climateSampler,
     	CaveBiomeSampler caveBiomeSampler,
     	WeightMap<Holder<TerrainNoise>> terrain,
     	Holder<VegetationConfig>[] vegetation,
     	Holder<NoiseCave>[] caves
     ) {
         super(biomeSource, createGeneratorSettings(levels, climateSampler));
+        this.settings = settings;
         this.levels = levels;
         this.biomeSource = biomeSource;
         this.biomeGenerator = biomeGenerator;
@@ -143,7 +148,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGener
         return this.noiseGenerator;
     }
     
-    public IClimateSampler getClimateSampler() {
+    public ClimateSampler getClimateSampler() {
     	return this.climateSampler;
     }
 
@@ -310,6 +315,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGener
     }
     
     public static TFChunkGenerator create(
+    	Settings settings,
     	TerrainLevels levels,
     	WeightMap<Holder<TerrainNoise>> terrain,
     	Holder<VegetationConfig>[] vegetation,
@@ -317,16 +323,16 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGener
     	BiomeSource source,
     	HolderGetter<Biome> biomes
     ) {
-    	int seed = new Random().nextInt();
+    	int seed = new Random().nextInt(); //TODO obviously this is a placeholder
     	var biomeGenerator = new BiomeGenerator(vegetation, caves);
-    	var noiseGenerator = new NoiseGenerator(seed, levels, terrain).withErosion();
-    	var climateSampler = new IClimateSampler.Impl(noiseGenerator, seed);
+    	var noiseGenerator = new NoiseGenerator(seed, settings, levels, terrain).withErosion();
+    	var climateSampler = new ClimateSampler(noiseGenerator, seed);
     	@SuppressWarnings("unchecked")
 		var caveBiomeSampler = new CaveBiomeSampler(800, new Holder[] { biomes.getOrThrow(TFBiomes.CAVE) });
-    	return new TFChunkGenerator(levels, source, biomeGenerator, noiseGenerator, climateSampler, caveBiomeSampler, terrain, vegetation, caves);
+    	return new TFChunkGenerator(settings, levels, source, biomeGenerator, noiseGenerator, climateSampler, caveBiomeSampler, terrain, vegetation, caves);
     }
     
-    private static Holder<NoiseGeneratorSettings> createGeneratorSettings(TerrainLevels levels, IClimateSampler biomeSampler) {
+    private static Holder<NoiseGeneratorSettings> createGeneratorSettings(TerrainLevels levels, ClimateSampler climateSampler) {
     	return Holder.direct(
     		new NoiseGeneratorSettings(
 	    		new NoiseSettings(levels.minY, levels.maxY, 1, 1), 
@@ -337,15 +343,15 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGener
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,
-	        		new SampledDensityFunction(biomeSampler, (sample) -> sample.temperature),
-	    			new SampledDensityFunction(biomeSampler, (sample) -> sample.moisture), 
-	    			new SampledDensityFunction(biomeSampler, (sample) -> sample.continentNoise),
+	        		new SampledDensityFunction(climateSampler, (sample) -> sample.temperature),
+	    			new SampledDensityFunction(climateSampler, (sample) -> sample.moisture), 
+	    			new SampledDensityFunction(climateSampler, (sample) -> sample.continentNoise),
 	        		// river noise is weird, 1 means no river and 0 means river
 	        		// we invert it to make it less confusing
 	        		// TODO make river noise make sense
-	    			new SampledDensityFunction(biomeSampler, (sample) -> 1 - sample.riverNoise), 
+	    			new SampledDensityFunction(climateSampler, (sample) -> 1 - sample.riverNoise), 
 	        		DensityFunctions.constant(1.0D), // TODO: depth noise
-	        		new SampledDensityFunction(biomeSampler, (sample) -> sample.biomeNoise), // is this right?
+	        		new SampledDensityFunction(climateSampler, (sample) -> sample.biomeNoise), // is this right?
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,

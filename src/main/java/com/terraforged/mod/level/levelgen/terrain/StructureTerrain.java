@@ -24,7 +24,6 @@
 
 package com.terraforged.mod.level.levelgen.terrain;
 
-import com.terraforged.noise.util.NoiseUtil;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
@@ -39,6 +38,8 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
+
+import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class StructureTerrain {
     private static final int RADIUS = 20;

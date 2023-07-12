@@ -24,10 +24,10 @@
 
 package com.terraforged.mod.level.levelgen.noise.erosion;
 
-import com.terraforged.engine.settings.FilterSettings;
-import com.terraforged.engine.util.FastRandom;
+import com.terraforged.mod.level.levelgen.settings.FilterSettings;
+import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.util.FastRandom;
 import com.terraforged.mod.util.MathUtil;
-import com.terraforged.noise.util.NoiseUtil;
 
 public class ErosionFilter {
     private static final float HEIGHT_FALL_OFF = 0.4F;
@@ -53,12 +53,12 @@ public class ErosionFilter {
     private final int iterations;
 
     public ErosionFilter(int mapSize, FilterSettings.Erosion settings) {
-        this.iterations = settings.dropletsPerChunk;
-        this.erodeSpeed = settings.erosionRate;
-        this.depositSpeed = settings.depositeRate;
-        this.initialSpeed = settings.dropletVelocity;
-        this.initialWaterVolume = settings.dropletVolume;
-        this.maxDropletLifetime = settings.dropletLifetime;
+        this.iterations = settings.dropletsPerChunk();
+        this.erodeSpeed = settings.erosionRate();
+        this.depositSpeed = settings.depositeRate();
+        this.initialSpeed = settings.dropletVelocity();
+        this.initialWaterVolume = settings.dropletVolume();
+        this.maxDropletLifetime = settings.dropletLifetime();
         this.erosionBrushIndices = new int[mapSize * mapSize][];
         this.erosionBrushWeights = new float[mapSize * mapSize][];
         initBrushes(mapSize, erosionRadius);

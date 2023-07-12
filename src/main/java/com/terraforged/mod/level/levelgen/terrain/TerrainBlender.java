@@ -24,25 +24,37 @@
 
 package com.terraforged.mod.level.levelgen.terrain;
 
-import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.engine.world.terrain.Terrain;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.noise.domain.Domain;
+import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.MathUtil;
 import com.terraforged.mod.util.SpiralIterator;
+import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.Object2FloatCache;
 import com.terraforged.mod.util.storage.WeightMap;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.domain.Domain;
-import com.terraforged.noise.util.NoiseUtil;
 
 import net.minecraft.core.Holder;
 
 public class TerrainBlender implements Module {
+	@SuppressWarnings("unchecked")
+	public static final Codec<TerrainBlender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.INT.fieldOf("seed").forGetter((m) -> m.seed),
+		Codec.INT.fieldOf("scale").forGetter((m) -> m.scale),
+		Codec.FLOAT.fieldOf("jitter").forGetter((m) -> m.jitter),
+		Codec.FLOAT.fieldOf("blending").forGetter((m) -> m.blending),
+		WeightMap.codec(TerrainNoise.CODEC, (size) -> (Holder<TerrainNoise>[]) new Holder[size]).fieldOf("terrains").forGetter((m) -> m.terrains)
+	).apply(instance, TerrainBlender::new));
+	
     private static final int REGION_SEED_OFFSET = 21491124;
     private static final int WARP_SEED_OFFSET = 12678;
 
     private final int seed;
+    private final int scale;
     private final float frequency;
     private final float jitter;
     private final float blending;
@@ -53,6 +65,7 @@ public class TerrainBlender implements Module {
 
     public TerrainBlender(int seed, int scale, float jitter, float blending, WeightMap<Holder<TerrainNoise>> terrains) {
     	this.seed = seed;
+    	this.scale = scale;
         this.frequency = 1F / scale;
         this.jitter = jitter;
         this.blending = blending;
@@ -65,10 +78,15 @@ public class TerrainBlender implements Module {
         var blender = this.localBlender.get();
         return this.getValue(x, z, blender);
     }
+    
+	@Override
+	public Codec<TerrainBlender> codec() {
+		return CODEC;
+	}
 
     public float getValue(float x, float z, Blender blender) {
         float rx = this.warp.getX(x, z) * this.frequency;
-        float rz = this.warp.getY(x, z) * this.frequency;
+        float rz = this.warp.getY(x, z) * this.frequency;    	
         getCell(this.seed + REGION_SEED_OFFSET, rx, rz, this.jitter, blender);
         return blender.getValue(x, z, this.blending, this.terrains);
     }
@@ -149,21 +167,21 @@ public class TerrainBlender implements Module {
 
                 float dx = MathUtil.rand(hash, NoiseUtil.X_PRIME);
                 float dz = MathUtil.rand(hash, NoiseUtil.Y_PRIME);
-
+                
                 float px = cx + dx * jitter;
                 float pz = cz + dz * jitter;
-                float dist2 = NoiseUtil.dist2(x, z, px, pz);
-
+                float dist = NoiseUtil.dist2(x, z, px, pz);
+                
                 blender.hashes[i] = hash;
-                blender.distances[i] = dist2;
+                blender.distances[i] = dist;
 
-                if (dist2 < nearestDistance) {
+                if (dist < nearestDistance) {
                     nearestDistance2 = nearestDistance;
-                    nearestDistance = dist2;
+                    nearestDistance = dist;
                     nearestIndex2 = nearestIndex;
                     nearestIndex = i;
-                } else if (dist2 < nearestDistance2) {
-                    nearestDistance2 = dist2;
+                } else if (dist < nearestDistance2) {
+                    nearestDistance2 = dist;
                     nearestIndex2 =  i;
                 }
             }

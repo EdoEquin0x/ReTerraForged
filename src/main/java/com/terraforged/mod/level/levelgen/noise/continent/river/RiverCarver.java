@@ -29,10 +29,10 @@ import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 import com.terraforged.mod.level.levelgen.noise.continent.ContinentPoints;
 import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig;
 import com.terraforged.mod.level.levelgen.noise.continent.config.RiverConfig;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.MathUtil;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.util.NoiseUtil;
 
 public class RiverCarver {
     private static final int SEED_OFFSET = 21221;

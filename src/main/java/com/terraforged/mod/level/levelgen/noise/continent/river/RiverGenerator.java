@@ -24,19 +24,19 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.river;
 
-import com.terraforged.engine.util.pos.PosUtil;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 import com.terraforged.mod.level.levelgen.noise.continent.ContinentGenerator;
 import com.terraforged.mod.level.levelgen.noise.continent.cell.CellPoint;
 import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig;
+import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.noise.domain.Domain;
+import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.noise.util.Vec2i;
 import com.terraforged.mod.util.MathUtil;
+import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
 import com.terraforged.mod.util.storage.ObjectPool;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.domain.Domain;
-import com.terraforged.noise.util.NoiseUtil;
-import com.terraforged.noise.util.Vec2i;
 
 public class RiverGenerator {
     public static final Vec2i[] DIRS = {new Vec2i(1, 0), new Vec2i(0, 1), new Vec2i(-1, 0), new Vec2i(0, -1)};

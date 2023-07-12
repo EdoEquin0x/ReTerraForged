@@ -24,8 +24,8 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.cell;
 
-import com.terraforged.noise.func.Interpolation;
-import com.terraforged.noise.util.Noise;
+import com.terraforged.mod.noise.func.Interpolation;
+import com.terraforged.mod.noise.util.Noise;
 
 public enum CellSource {
     PERLIN {

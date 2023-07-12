@@ -31,11 +31,11 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.engine.world.terrain.Terrain;
-import com.terraforged.engine.world.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.TFChunkRegenerator;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
+import com.terraforged.mod.util.pos.PosUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;

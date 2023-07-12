@@ -24,16 +24,17 @@
 
 package com.terraforged.mod.level.levelgen.biome;
 
-import com.terraforged.mod.level.levelgen.cave.CaveType;
-import com.terraforged.mod.util.storage.WeightMap;
-import com.terraforged.noise.util.Noise;
-import com.terraforged.noise.util.NoiseUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+
+import com.terraforged.mod.level.levelgen.cave.CaveType;
+import com.terraforged.mod.noise.util.Noise;
+import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.util.storage.WeightMap;
 
 public class CaveBiomeSampler {
     public static final int OFFSET = 124897;

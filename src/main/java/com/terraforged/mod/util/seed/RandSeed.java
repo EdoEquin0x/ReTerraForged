@@ -26,7 +26,7 @@ package com.terraforged.mod.util.seed;
 
 import java.util.SplittableRandom;
 
-import com.terraforged.engine.Seed;
+import com.terraforged.mod.level.levelgen.seed.Seed;
 
 public class RandSeed extends Seed {
     private final int range;

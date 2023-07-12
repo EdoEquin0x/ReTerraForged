@@ -25,8 +25,8 @@
 package com.terraforged.mod.level.levelgen.biome.surface;
 
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
+import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.registry.data.TFTags;
-import com.terraforged.noise.util.NoiseUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;

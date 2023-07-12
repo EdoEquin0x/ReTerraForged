@@ -24,20 +24,20 @@
 
 package com.terraforged.mod.level.levelgen.noise.erosion;
 
-import com.terraforged.engine.settings.FilterSettings;
-import com.terraforged.engine.util.pos.PosUtil;
-import com.terraforged.engine.world.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.noise.*;
-import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
-import com.terraforged.mod.level.levelgen.util.ThreadPool;
-import com.terraforged.mod.util.storage.LongCache;
-import com.terraforged.mod.util.storage.LossyCache;
-import com.terraforged.mod.util.storage.ObjectPool;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
+
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.noise.*;
+import com.terraforged.mod.level.levelgen.settings.FilterSettings;
+import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.util.ThreadPool;
+import com.terraforged.mod.util.pos.PosUtil;
+import com.terraforged.mod.util.storage.LongCache;
+import com.terraforged.mod.util.storage.LossyCache;
+import com.terraforged.mod.util.storage.ObjectPool;
 
 public class ErodedNoiseGenerator implements INoiseGenerator {
     private static final int CACHE_SIZE = 256;
@@ -55,8 +55,7 @@ public class ErodedNoiseGenerator implements INoiseGenerator {
     protected final LongCache<CompletableFuture<float[]>> cache;
 
     public ErodedNoiseGenerator(int seed, NoiseTileSize tileSize, NoiseGenerator generator) {
-        var settings = new FilterSettings.Erosion();
-        settings.dropletsPerChunk = 350;
+        var settings = new FilterSettings.Erosion(350, 12, 0.7F, 0.7F, 0.5F, 0.5F);
 
         this.seed = seed;
         this.tileSize = tileSize;

@@ -24,10 +24,19 @@
 
 package com.terraforged.mod.level.levelgen.cave;
 
-import com.terraforged.noise.Module;
-import com.terraforged.noise.util.NoiseUtil;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class UniqueCaveDistributor implements Module {
+	public static final Codec<UniqueCaveDistributor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.INT.fieldOf("seed").forGetter((m) -> m.seed),
+		Codec.FLOAT.fieldOf("frequency").forGetter((m) -> m.frequency),
+		Codec.FLOAT.fieldOf("jitter").forGetter((m) -> m.jitter),
+		Codec.FLOAT.fieldOf("density").forGetter((m) -> m.density)
+	).apply(instance, UniqueCaveDistributor::new));
+	
     private final int seed;
     private final float frequency;
     private final float jitter;
@@ -78,6 +87,11 @@ public class UniqueCaveDistributor implements Module {
 
         return 1F - NoiseUtil.sqrt(distA / distB);
     }
+    
+	@Override
+	public Codec<UniqueCaveDistributor> codec() {
+		return CODEC;
+	}
 
     private float cellValue(int cellX, int cellY) {
         float noise = NoiseUtil.valCoord2D(seed, cellX, cellY);

@@ -24,8 +24,8 @@
 
 package com.terraforged.mod.level.levelgen.noise;
 
-import com.terraforged.engine.world.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.asset.TerrainType;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
 
 public class NoiseSample {
     private static final NoiseSample DEFAULT = new NoiseSample();
@@ -35,7 +35,7 @@ public class NoiseSample {
     public float baseNoise = 0;
     public float heightNoise = 0;
     public float riverNoise = 1;
-    public Terrain terrainType = TerrainType.NONE.getTerrain();
+    public Terrain terrainType = TerrainType.NONE;
 
     public NoiseSample() {}
 

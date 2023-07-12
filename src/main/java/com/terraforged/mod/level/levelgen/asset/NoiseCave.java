@@ -25,22 +25,21 @@
 package com.terraforged.mod.level.levelgen.asset;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.codec.LazyCodec;
 import com.terraforged.mod.level.levelgen.cave.CaveType;
-import com.terraforged.mod.level.levelgen.noise.NoiseCodec;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.util.NoiseUtil;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.util.NoiseUtil;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 
 public class NoiseCave {
-    public static final Codec<NoiseCave> DIRECT_CODEC = LazyCodec.record(instance -> instance.group(
+    public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
     	CaveType.CODEC.fieldOf("type").forGetter(c -> c.type),
-    	NoiseCodec.CODEC.fieldOf("elevation").forGetter(c -> c.elevation),
-    	NoiseCodec.CODEC.fieldOf("shape").forGetter(c -> c.shape),
-    	NoiseCodec.CODEC.fieldOf("floor").forGetter(c -> c.floor),
+    	Module.CODEC.fieldOf("elevation").forGetter(c -> c.elevation),
+    	Module.CODEC.fieldOf("shape").forGetter(c -> c.shape),
+    	Module.CODEC.fieldOf("floor").forGetter(c -> c.floor),
     	Codec.INT.fieldOf("size").forGetter(c -> c.size),
     	Codec.INT.optionalFieldOf("min_y", -32).forGetter(c -> c.minY),
     	Codec.INT.fieldOf("max_y").forGetter(c -> c.maxY)

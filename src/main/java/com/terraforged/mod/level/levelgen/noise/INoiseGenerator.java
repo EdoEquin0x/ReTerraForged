@@ -26,7 +26,7 @@ package com.terraforged.mod.level.levelgen.noise;
 
 import java.util.function.Consumer;
 
-import com.terraforged.engine.world.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 
 public interface INoiseGenerator {

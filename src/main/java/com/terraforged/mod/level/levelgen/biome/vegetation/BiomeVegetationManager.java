@@ -25,6 +25,7 @@
 package com.terraforged.mod.level.levelgen.biome.vegetation;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
@@ -53,13 +54,13 @@ public class BiomeVegetationManager {
         return new BiomeVegetation(config, features);
     }
 
-    private static VegetationConfig getConfig(Holder<Biome> biome, Holder<VegetationConfig>[] configs) {
+    private static Optional<VegetationConfig> getConfig(Holder<Biome> biome, Holder<VegetationConfig>[] configs) {
         for (var config : configs) {
         	var value = config.value();
             if (biome.is(value.biomes())) {
-                return value;
+                return Optional.of(value);
             }
         }
-        return VegetationConfig.NONE;
+        return Optional.empty();
     }
 }

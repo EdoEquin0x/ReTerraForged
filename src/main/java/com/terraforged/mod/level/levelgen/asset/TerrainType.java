@@ -25,46 +25,27 @@
 package com.terraforged.mod.level.levelgen.asset;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.engine.world.terrain.Terrain;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.codec.LazyCodec;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
 
 import net.minecraft.core.Holder;
+import net.minecraft.resources.RegistryFileCodec;
 
-public class TerrainType {
-    public static final TerrainType NONE = new TerrainType("none", com.terraforged.engine.world.terrain.TerrainType.NONE);
-
-    public static final Codec<TerrainType> DIRECT_CODEC = LazyCodec.record(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(TerrainType::getName),
-            Codec.STRING.fieldOf("parent").xmap(TerrainType::forName, Terrain::getName).forGetter(TerrainType::getParentType)
+public record TerrainType(String name, Terrain parentType, Terrain terrain) {
+    public static final Codec<TerrainType> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("name").forGetter(TerrainType::name),
+            Codec.STRING.fieldOf("parent").xmap(TerrainType::forName, Terrain::getName).forGetter(TerrainType::parentType)
     ).apply(instance, TerrainType::new));
 
-    public static final Codec<Holder<TerrainType>> CODEC = LazyCodec.registry(DIRECT_CODEC, () -> TerraForged.TERRAIN_TYPE);
-
-    private final String name;
-    private final Terrain parentType;
-    private final Terrain terrain;
+    public static final Codec<Holder<TerrainType>> CODEC = RegistryFileCodec.create(TerraForged.TERRAIN_TYPE, DIRECT_CODEC);
 
     public TerrainType(String name, Terrain type) {
-        this.name = name;
-        this.parentType = type;
-        this.terrain = com.terraforged.engine.world.terrain.TerrainType.getOrCreate(name, type);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Terrain getTerrain() {
-        return terrain;
-    }
-
-    public Terrain getParentType() {
-        return parentType;
+    	this(name, type, com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.getOrCreate(name, type));
     }
 
     private static Terrain forName(String name) {
-        return com.terraforged.engine.world.terrain.TerrainType.get(name);
+        return com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.get(name);
     }
 
     public static TerrainType of(Terrain terrain) {

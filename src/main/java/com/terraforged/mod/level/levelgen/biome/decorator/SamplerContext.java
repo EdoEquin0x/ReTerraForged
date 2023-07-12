@@ -24,6 +24,8 @@
 
 package com.terraforged.mod.level.levelgen.biome.decorator;
 
+import java.util.Optional;
+
 import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.util.BiomeList;
@@ -50,7 +52,7 @@ public class SamplerContext {
     public WorldgenRandom random;
 
     public Biome biome;
-    public VegetationConfig vegetation;
+    public Optional<VegetationConfig> vegetation;
     public VegetationFeatures features;
     public float maxViability = 0F;
 

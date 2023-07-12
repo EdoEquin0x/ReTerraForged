@@ -27,23 +27,20 @@ package com.terraforged.mod.level.levelgen.asset;
 import java.util.Comparator;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.engine.world.terrain.Terrain;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.codec.LazyCodec;
-import com.terraforged.mod.level.levelgen.noise.NoiseCodec;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.Source;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.noise.Module;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 
 public class TerrainNoise {
-    public static final TerrainNoise NONE = new TerrainNoise(Holder.direct(TerrainType.NONE), Source.ZERO);
     public static final Comparator<TerrainNoise> COMPARATOR = Comparator.comparing(t -> t.terrain().getName());
 
-    public static final Codec<TerrainNoise> DIRECT_CODEC = LazyCodec.record(instance -> instance.group(
+    public static final Codec<TerrainNoise> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
     	TerrainType.CODEC.fieldOf("type").forGetter(TerrainNoise::type),
-    	NoiseCodec.CODEC.fieldOf("noise").forGetter(TerrainNoise::noise)
+    	Module.CODEC.fieldOf("noise").forGetter(TerrainNoise::noise)
     ).apply(instance, TerrainNoise::new));
     public static final Codec<Holder<TerrainNoise>> CODEC = RegistryFileCodec.create(TerraForged.TERRAIN, DIRECT_CODEC);
 
@@ -62,7 +59,7 @@ public class TerrainNoise {
     }
 
     public Terrain terrain() {
-        return this.type.value().getTerrain();
+        return this.type.value().terrain();
     }
 
     public Module noise() {
@@ -75,9 +72,5 @@ public class TerrainNoise {
                 "type=" + this.type +
                 ", noise=" + this.noise +
                 '}';
-    }
-
-    static {
-        NoiseCodec.init();
     }
 }

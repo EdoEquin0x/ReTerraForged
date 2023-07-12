@@ -26,18 +26,19 @@ package com.terraforged.mod.registry.data;
 
 import java.util.function.BiFunction;
 
-import com.terraforged.engine.Seed;
-import com.terraforged.engine.settings.TerrainSettings;
-import com.terraforged.engine.world.heightmap.Levels;
-import com.terraforged.engine.world.terrain.LandForms;
-import com.terraforged.engine.world.terrain.Terrain;
-import com.terraforged.engine.world.terrain.TerrainType;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
+import com.terraforged.mod.level.levelgen.generator.terrain.LandForms;
+import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
+import com.terraforged.mod.level.levelgen.heightmap.Levels;
+import com.terraforged.mod.level.levelgen.seed.Seed;
+import com.terraforged.mod.level.levelgen.settings.TerrainSettings;
+import com.terraforged.mod.level.levelgen.settings.TerrainSettings.General;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.noise.domain.Domain;
 import com.terraforged.mod.util.seed.RandSeed;
-import com.terraforged.noise.Module;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.domain.Domain;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -84,7 +85,7 @@ public interface TFTerrain {
 	}
 
     class Factory {
-        static final LandForms LAND_FORMS = new LandForms(settings(), new Levels(63, 255), Source.ZERO);
+        static final LandForms LAND_FORMS = new LandForms(TerrainSettings.DEFAULT, new Levels(63, 255), Source.ZERO);
         static final LandForms LAND_FORMS_NF = new LandForms(nonFancy(), new Levels(63, 255), Source.ZERO);
 
         static Seed createSeed() {
@@ -117,7 +118,7 @@ public interface TFTerrain {
                     .warp(Domain.warp(Source.SIMPLEX, seed.next(), 40, 5, 30))
                     .alpha(0.875);
 
-            var noise = shape.mult(peaks).max(slopes)
+            var noise = shape.mul(peaks).max(slopes)
                     .warp(seed.next(), 800, 3, 300)
                     .scale(0.75);
 
@@ -128,16 +129,24 @@ public interface TFTerrain {
             return getter.getOrThrow(TerraForged.resolve(TerraForged.TERRAIN_TYPE, terrain.getName()));
         }
 
-        static TerrainSettings settings() {
-            var settings = new TerrainSettings();
-            settings.general.globalVerticalScale = 1F;
-            return settings;
-        }
-
         static TerrainSettings nonFancy() {
-            var settings = settings();
-            settings.general.fancyMountains = false;
-            return settings;
+            return new TerrainSettings(
+            	new General(
+            		TerrainSettings.DEFAULT.general().seedOffset(),
+            		TerrainSettings.DEFAULT.general().regionSize(),
+            		TerrainSettings.DEFAULT.general().verticalScale(),
+            		TerrainSettings.DEFAULT.general().horizontalScale(),
+            		false
+            	),
+            	TerrainSettings.DEFAULT.steppe(),
+            	TerrainSettings.DEFAULT.plains(),
+            	TerrainSettings.DEFAULT.hills(),
+            	TerrainSettings.DEFAULT.dales(),
+            	TerrainSettings.DEFAULT.plateau(),
+            	TerrainSettings.DEFAULT.badlands(),
+            	TerrainSettings.DEFAULT.torridonian(),
+            	TerrainSettings.DEFAULT.mountains()
+            );
         }
     }
 }

@@ -26,15 +26,20 @@ package com.terraforged.mod.level.levelgen.biome.viability;
 
 import java.util.Arrays;
 
-import com.terraforged.mod.level.levelgen.biome.IClimateSampler;
+import com.mojang.serialization.Codec;
+import com.terraforged.mod.TerraForged;
+import com.terraforged.mod.codec.TFCodecs;
+import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 
 public interface Viability {
-    Viability NONE = (x, z, ctx) -> 1F;
-
+    public static final Codec<Viability> CODEC = TFCodecs.registryCodec(TerraForged.VIABILITY, Viability::codec);
+    
     float getFitness(int x, int z, Context context);
 
+    Codec<? extends Viability> codec();
+    
     default float getScaler(TerrainLevels levels) {
         return levels.maxY / 255F;
     }
@@ -42,7 +47,7 @@ public interface Viability {
     default Viability mult(Viability... others) {
         var copy = Arrays.copyOf(others, others.length + 1);
         copy[others.length] = this;
-        return new MultViability(copy);
+        return new MulViability(copy);
     }
 
     interface Context {
@@ -54,7 +59,7 @@ public interface Viability {
 
         TerrainData getTerrain();
 
-        IClimateSampler getClimateSampler();
+        ClimateSampler getClimateSampler();
     }
 
     static float getFallOff(float value, float max) {

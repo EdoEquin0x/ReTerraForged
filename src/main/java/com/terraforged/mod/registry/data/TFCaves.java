@@ -27,9 +27,9 @@ package com.terraforged.mod.registry.data;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.cave.CaveType;
+import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.seed.RandSeed;
-import com.terraforged.noise.Source;
-import com.terraforged.noise.util.NoiseUtil;
 
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
