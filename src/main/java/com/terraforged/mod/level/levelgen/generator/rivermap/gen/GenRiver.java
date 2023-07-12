@@ -1,9 +1,9 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.level.levelgen.rivermap.gen;
+package com.terraforged.mod.level.levelgen.generator.rivermap.gen;
 
-import com.terraforged.mod.level.levelgen.rivermap.river.Network;
+import com.terraforged.mod.level.levelgen.generator.rivermap.river.Network;
 
 public class GenRiver implements Comparable<GenRiver> {
 	public final float dx;

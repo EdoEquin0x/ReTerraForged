@@ -3,13 +3,11 @@
  */
 package com.terraforged.mod.level.levelgen.generator.continent.fancy;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.generator.continent.Continent;
-import com.terraforged.mod.level.levelgen.rivermap.RiverCache;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
+import com.terraforged.mod.level.levelgen.generator.rivermap.RiverCache;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.WorldSettings;
 import com.terraforged.mod.noise.Source;
@@ -18,22 +16,12 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.pos.PosUtil;
 
 public class FancyContinentGenerator implements Continent {
-	public static final Codec<FancyContinentGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Seed.CODEC.fieldOf("seed").forGetter((c) -> new Seed(c.seed)), // TODO i think theres a way to do this without converting it back to a Seed
-		GeneratorContext.CODEC.fieldOf("context").forGetter((c) -> c.context)
-	).apply(instance, FancyContinentGenerator::new));
-	
-	private final int seed;
     private final float frequency;
     private final Domain warp;
     private final FancyContinent source;
     private final RiverCache riverCache;
-    private final GeneratorContext context;
 
     public FancyContinentGenerator(Seed seed, GeneratorContext context) {
-    	this.seed = seed.get();
-        this.context = context;
-    	
     	WorldSettings settings = context.settings.world();
         int warpScale = settings.continent().scale() / 2;
         double warpStrength = (double)warpScale * 0.4;
@@ -87,10 +75,5 @@ public class FancyContinentGenerator implements Continent {
         cell.continentId = 0.0f;
         cell.continentEdge = this.getEdgeValue(x, y);
     }
-
-	@Override
-	public Codec<FancyContinentGenerator> codec() {
-		return CODEC;
-	}
 }
 

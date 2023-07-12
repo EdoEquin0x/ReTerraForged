@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.level.levelgen.rivermap.river;
+package com.terraforged.mod.level.levelgen.generator.rivermap.river;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,14 +9,14 @@ import java.util.Random;
 
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.generator.continent.Continent;
+import com.terraforged.mod.level.levelgen.generator.rivermap.RiverGenerator;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
+import com.terraforged.mod.level.levelgen.generator.rivermap.gen.GenWarp;
+import com.terraforged.mod.level.levelgen.generator.rivermap.lake.Lake;
+import com.terraforged.mod.level.levelgen.generator.rivermap.lake.LakeConfig;
+import com.terraforged.mod.level.levelgen.generator.rivermap.wetland.Wetland;
+import com.terraforged.mod.level.levelgen.generator.rivermap.wetland.WetlandConfig;
 import com.terraforged.mod.level.levelgen.heightmap.Levels;
-import com.terraforged.mod.level.levelgen.rivermap.RiverGenerator;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
-import com.terraforged.mod.level.levelgen.rivermap.gen.GenWarp;
-import com.terraforged.mod.level.levelgen.rivermap.lake.Lake;
-import com.terraforged.mod.level.levelgen.rivermap.lake.LakeConfig;
-import com.terraforged.mod.level.levelgen.rivermap.wetland.Wetland;
-import com.terraforged.mod.level.levelgen.rivermap.wetland.WetlandConfig;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.Variance;

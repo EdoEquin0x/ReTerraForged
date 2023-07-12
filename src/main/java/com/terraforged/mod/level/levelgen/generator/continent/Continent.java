@@ -5,18 +5,18 @@ package com.terraforged.mod.level.levelgen.generator.continent;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
 
 public interface Continent extends Populator {
-    public float getEdgeValue(float var1, float var2);
+    public float getEdgeValue(float x, float y);
 
     default public float getLandValue(float x, float z) {
         return this.getEdgeValue(x, z);
     }
 
-    public long getNearestCenter(float var1, float var2);
+    public long getNearestCenter(float x, float y);
 
-    public Rivermap getRivermap(int var1, int var2);
+    public Rivermap getRivermap(int x, int y);
 
     default public Rivermap getRivermap(Cell cell) {
         return this.getRivermap(cell.continentX, cell.continentZ);

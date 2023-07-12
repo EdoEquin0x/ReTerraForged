@@ -37,7 +37,6 @@ import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.level.levelgen.asset.TerrainType;
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.viability.Viability;
-import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.domain.Domain;
 import com.terraforged.mod.noise.func.CurveFunc;
@@ -62,8 +61,6 @@ public abstract class TerraForged implements CommonAPI {
 	public static final ResourceKey<Registry<Codec<? extends Module>>> MODULE = registryKey("noise/module");
 	public static final ResourceKey<Registry<Codec<? extends Domain>>> DOMAIN = registryKey("noise/domain");
 	public static final ResourceKey<Registry<Codec<? extends CurveFunc>>> CURVE = registryKey("noise/curve");
-	@Deprecated(forRemoval = true)
-	public static final ResourceKey<Registry<Codec<? extends Populator>>> POPULATOR = registryKey("worldgen/populator");
 	public static final ResourceKey<Registry<Codec<? extends Viability>>> VIABILITY = registryKey("worldgen/viability");
 	public static final ResourceKey<Registry<NoiseCave>> CAVE = registryKey("worldgen/cave");
 	public static final ResourceKey<Registry<TerrainType>> TERRAIN_TYPE = registryKey("worldgen/terrain_type");

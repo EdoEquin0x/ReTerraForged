@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.level.levelgen.rivermap.river;
+package com.terraforged.mod.level.levelgen.generator.rivermap.river;
 
 public class Range {
 	public final float min;

@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.level.levelgen.rivermap;
+package com.terraforged.mod.level.levelgen.generator.rivermap;
 
 import java.util.concurrent.TimeUnit;
 

@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.level.levelgen.rivermap.gen;
+package com.terraforged.mod.level.levelgen.generator.rivermap.gen;
 
 import com.terraforged.mod.noise.domain.Domain;
 

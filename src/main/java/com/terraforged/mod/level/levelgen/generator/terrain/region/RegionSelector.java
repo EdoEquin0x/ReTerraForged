@@ -5,25 +5,16 @@ package com.terraforged.mod.level.levelgen.generator.terrain.region;
 
 import java.util.LinkedList;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.generator.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class RegionSelector implements Populator {
-	public static final Codec<RegionSelector> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		TFCodecs.forArray(Populator.CODEC, Populator[]::new).fieldOf("populators").forGetter((p) -> p.populators)
-	).apply(instance, RegionSelector::new));
-		
-	private final Populator[] populators;
     private final int maxIndex;
     private final Populator[] nodes;
 
     public RegionSelector(Populator[] populators) {
-    	this.populators = populators;
     	this.nodes = RegionSelector.getWeightedArray(populators);
         this.maxIndex = this.nodes.length - 1;
     }
@@ -71,10 +62,5 @@ public class RegionSelector implements Populator {
         }
         return result.toArray(new Populator[0]);
     }
-
-	@Override
-	public Codec<RegionSelector> codec() {
-		return CODEC;
-	}
 }
 

@@ -5,46 +5,24 @@ package com.terraforged.mod.level.levelgen.generator.continent.fancy;
 
 import java.util.Random;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
+import com.terraforged.mod.level.levelgen.generator.rivermap.RiverGenerator;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
-import com.terraforged.mod.level.levelgen.rivermap.RiverGenerator;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
-import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.pos.PosUtil;
 
-public class FancyContinent implements Module, RiverGenerator {
-	public static final Codec<FancyContinent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Codec.INT.fieldOf("seed").forGetter((c) -> c.seed),
-		Codec.INT.fieldOf("nodes").forGetter((c) -> c.nodes),
-		Codec.FLOAT.fieldOf("radius").forGetter((c) -> c.radius),
-		GeneratorContext.CODEC.fieldOf("context").forGetter((c) -> c.context),
-		FancyContinentGenerator.CODEC.fieldOf("continent").forGetter((c) -> c.continent)
-	).apply(instance, FancyContinent::new));
-	private final int seed;
-	private final int nodes;
-	private final float radius;
-	private final GeneratorContext context;
-	private final FancyContinentGenerator continent;
-	
+public class FancyContinent implements RiverGenerator {
     private final Island[] islands;
     private final FancyRiverGenerator riverGenerator;
 
     public FancyContinent(int seed, int nodes, float radius, GeneratorContext context, FancyContinentGenerator continent) {
         ControlPoints controlPoints = new ControlPoints(context.settings.world().controlPoints());
-        this.seed = seed;
-        this.nodes = nodes;
-        this.radius = radius;
-        this.context = context;
-        this.continent = continent;
         this.islands = FancyContinent.generateIslands(controlPoints, 3, nodes, radius, new Random(seed));
         this.riverGenerator = new FancyRiverGenerator(continent, context);
     }
 
-    @Override
     public float getValue(float x, float y) {
         float value = 0.0f;
         for (Island island : this.islands) {
@@ -53,11 +31,6 @@ public class FancyContinent implements Module, RiverGenerator {
         }
         return FancyContinent.process(value);
     }
-
-	@Override
-	public Codec<FancyContinent> codec() {
-		return CODEC;
-	}
 
     public Island getMain() {
         return this.islands[0];

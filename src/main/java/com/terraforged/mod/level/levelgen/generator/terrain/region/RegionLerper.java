@@ -3,18 +3,11 @@
  */
 package com.terraforged.mod.level.levelgen.generator.terrain.region;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class RegionLerper implements Populator {
-	public static final Codec<RegionLerper> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Populator.CODEC.fieldOf("lower").forGetter((p) -> p.lower),
-		Populator.CODEC.fieldOf("upper").forGetter((p) -> p.upper)		
-	).apply(instance, RegionLerper::new));
-	
     private final Populator lower;
     private final Populator upper;
 
@@ -40,10 +33,5 @@ public class RegionLerper implements Populator {
         float upperValue = cell.value;
         cell.value = NoiseUtil.lerp(lowerValue, upperValue, alpha);
     }
-
-	@Override
-	public Codec<RegionLerper> codec() {
-		return null;
-	}
 }
 

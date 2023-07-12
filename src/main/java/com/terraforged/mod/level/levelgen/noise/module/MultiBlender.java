@@ -3,8 +3,6 @@
  */
 package com.terraforged.mod.level.levelgen.noise.module;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.noise.Module;
@@ -12,16 +10,6 @@ import com.terraforged.mod.noise.func.Interpolation;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class MultiBlender extends Select implements Populator {
-	public static final Codec<MultiBlender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("control").forGetter((p) -> p.control),
-		Populator.CODEC.fieldOf("lower").forGetter((p) -> p.lower),
-		Populator.CODEC.fieldOf("middle").forGetter((p) -> p.middle),
-		Populator.CODEC.fieldOf("upper").forGetter((p) -> p.upper),
-		Codec.FLOAT.fieldOf("min").forGetter((p) -> p.blendLower),
-		Codec.FLOAT.fieldOf("mid").forGetter((p) -> p.midpoint),
-		Codec.FLOAT.fieldOf("max").forGetter((p) -> p.blendUpper)
-	).apply(instance, MultiBlender::new));
-	
     private final Populator lower;
     private final Populator middle;
     private final Populator upper;
@@ -69,10 +57,5 @@ public class MultiBlender extends Select implements Populator {
             cell.value = NoiseUtil.lerp(lowerVal, cell.value, alpha);
         }
     }
-
-	@Override
-	public Codec<? extends Populator> codec() {
-		return null;
-	}
 }
 

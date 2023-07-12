@@ -103,9 +103,6 @@ public class TFForge extends TerraForged implements CommonAPI {
     		TFCurves.register(helper::register);
     		TerraForged.LOG.info("Registered curves");
     	});
-    	event.register(TerraForged.POPULATOR, (helper) -> {
-    		//TODO
-    	});
     	event.register(TerraForged.VIABILITY, (helper) -> {
     		TFViabilities.register(helper::register);
     		TerraForged.LOG.info("Registered viabilities");

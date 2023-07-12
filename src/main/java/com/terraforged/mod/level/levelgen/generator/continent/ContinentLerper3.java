@@ -3,24 +3,12 @@
  */
 package com.terraforged.mod.level.levelgen.generator.continent;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.noise.func.Interpolation;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class ContinentLerper3 implements Populator {
-	public static final Codec<ContinentLerper3> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Populator.CODEC.fieldOf("lower").forGetter((p) -> p.lower),
-		Populator.CODEC.fieldOf("middle").forGetter((p) -> p.middle),
-		Populator.CODEC.fieldOf("upper").forGetter((p) -> p.upper),
-		Codec.FLOAT.fieldOf("min").forGetter((p) -> p.blendLower),
-		Codec.FLOAT.fieldOf("mid").forGetter((p) -> p.midpoint),
-		Codec.FLOAT.fieldOf("max").forGetter((p) -> p.blendUpper),
-		Interpolation.CODEC.optionalFieldOf("interpolation", Interpolation.LINEAR).forGetter((p) -> p.interpolation)
-	).apply(instance, ContinentLerper3::new));
-	
     private final Populator lower;
     private final Populator middle;
     private final Populator upper;
@@ -72,10 +60,5 @@ public class ContinentLerper3 implements Populator {
             cell.value = NoiseUtil.lerp(lowerVal, cell.value, alpha);
         }
     }
-
-	@Override
-	public Codec<ContinentLerper3> codec() {
-		return CODEC;
-	}
 }
 

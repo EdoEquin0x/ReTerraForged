@@ -6,10 +6,10 @@ package com.terraforged.mod.level.levelgen.generator.continent.simple;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.generator.continent.SimpleContinent;
+import com.terraforged.mod.level.levelgen.generator.rivermap.LegacyRiverCache;
+import com.terraforged.mod.level.levelgen.generator.rivermap.RiverCache;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
-import com.terraforged.mod.level.levelgen.rivermap.LegacyRiverCache;
-import com.terraforged.mod.level.levelgen.rivermap.RiverCache;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.WorldSettings;
 import com.terraforged.mod.noise.Module;
@@ -60,13 +60,6 @@ public abstract class ContinentGenerator implements SimpleContinent {
     @Override
     public Rivermap getRivermap(int x, int y) {
         return this.cache.getRivers(x, y);
-    }
-
-    @Override
-    public float getValue(float x, float y) {
-        Cell cell = new Cell();
-        this.apply(cell, x, y);
-        return cell.continentEdge;
     }
 
     @Override

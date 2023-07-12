@@ -4,8 +4,6 @@
  */
 package com.terraforged.mod.level.levelgen.noise.module;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
@@ -14,20 +12,10 @@ import com.terraforged.mod.noise.func.Interpolation;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class Blender extends Select implements Populator {
-	public static final Codec<Blender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("control").forGetter((p) -> p.control),
-		Populator.CODEC.fieldOf("lower").forGetter((p) -> p.lower),
-		Populator.CODEC.fieldOf("upper").forGetter((p) -> p.upper),
-		Codec.FLOAT.fieldOf("min").forGetter((p) -> p.blendLower),
-		Codec.FLOAT.fieldOf("max").forGetter((p) -> p.blendUpper),
-		Codec.FLOAT.fieldOf("split").forGetter((p) -> p.split)
-	).apply(instance, Blender::new));
-	
     private final Populator lower;
     private final Populator upper;
     private final float blendLower;
     private final float blendUpper;
-    private final float split;
     private final float blendRange;
     private final float midpoint;
 
@@ -37,7 +25,6 @@ public class Blender extends Select implements Populator {
         this.upper = upper;
         this.blendLower = min;
         this.blendUpper = max;
-        this.split = split;
         this.blendRange = this.blendUpper - this.blendLower;
         this.midpoint = this.blendLower + this.blendRange * split;
     }
@@ -64,10 +51,5 @@ public class Blender extends Select implements Populator {
             cell.terrain = lowerType;
         }
     }
-
-	@Override
-	public Codec<Blender> codec() {
-		return CODEC;
-	}
 }
 

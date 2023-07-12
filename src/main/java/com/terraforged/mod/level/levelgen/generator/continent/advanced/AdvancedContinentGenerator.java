@@ -3,13 +3,11 @@
  */
 package com.terraforged.mod.level.levelgen.generator.continent.advanced;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.concurrent.Resource;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.generator.continent.SimpleContinent;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.WorldSettings;
 import com.terraforged.mod.noise.Module;
@@ -21,11 +19,6 @@ import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.pos.PosUtil;
 
 public class AdvancedContinentGenerator extends AbstractContinent implements SimpleContinent {
-	public static final Codec<AdvancedContinentGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Seed.CODEC.fieldOf("seed").forGetter((c) -> new Seed(c.seed)), // TODO i think theres a way to do this without converting it back to a Seed
-		GeneratorContext.CODEC.fieldOf("context").forGetter((c) -> c.context)
-	).apply(instance, AdvancedContinentGenerator::new));
-	
     protected static final float CENTER_CORRECTION = 0.35f;
     protected final float frequency;
     protected final float variance;
@@ -123,11 +116,6 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
     public Rivermap getRivermap(int x, int z) {
         return this.riverCache.getRivers(x, z);
     }
-
-	@Override
-	public Codec<AdvancedContinentGenerator> codec() {
-		return CODEC;
-	}
 
     protected Domain createWarp(Seed seed, int tectonicScale, WorldSettings.Continent continent) {
         int warpScale = NoiseUtil.round((float)tectonicScale * 0.225f);

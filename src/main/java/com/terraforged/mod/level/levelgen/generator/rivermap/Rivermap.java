@@ -1,13 +1,13 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.level.levelgen.rivermap;
+package com.terraforged.mod.level.levelgen.generator.rivermap;
 
 import com.terraforged.mod.concurrent.cache.ExpiringEntry;
 import com.terraforged.mod.level.levelgen.cell.Cell;
+import com.terraforged.mod.level.levelgen.generator.rivermap.gen.GenWarp;
+import com.terraforged.mod.level.levelgen.generator.rivermap.river.Network;
 import com.terraforged.mod.level.levelgen.heightmap.Heightmap;
-import com.terraforged.mod.level.levelgen.rivermap.gen.GenWarp;
-import com.terraforged.mod.level.levelgen.rivermap.river.Network;
 import com.terraforged.mod.noise.domain.Domain;
 
 public class Rivermap implements ExpiringEntry {

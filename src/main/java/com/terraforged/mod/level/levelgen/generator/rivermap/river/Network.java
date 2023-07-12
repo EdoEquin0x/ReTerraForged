@@ -1,14 +1,14 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.level.levelgen.rivermap.river;
+package com.terraforged.mod.level.levelgen.generator.rivermap.river;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
-import com.terraforged.mod.level.levelgen.rivermap.lake.Lake;
-import com.terraforged.mod.level.levelgen.rivermap.wetland.Wetland;
+import com.terraforged.mod.level.levelgen.generator.rivermap.lake.Lake;
+import com.terraforged.mod.level.levelgen.generator.rivermap.wetland.Wetland;
 import com.terraforged.mod.noise.source.Line;
 import com.terraforged.mod.util.Boundsf;
 import com.terraforged.mod.util.pos.PosUtil;

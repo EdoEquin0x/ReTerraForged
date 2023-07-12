@@ -15,7 +15,6 @@ public interface TFRegistries {
 		register.accept(createRegistry(TerraForged.MODULE));
 		register.accept(createRegistry(TerraForged.DOMAIN));
 		register.accept(createRegistry(TerraForged.CURVE));
-		register.accept(createRegistry(TerraForged.POPULATOR));
 		register.accept(createRegistry(TerraForged.VIABILITY));
 	}
 	

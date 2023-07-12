@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.level.levelgen.rivermap.wetland;
+package com.terraforged.mod.level.levelgen.generator.rivermap.wetland;
 
 import com.terraforged.mod.level.levelgen.settings.RiverSettings;
 import com.terraforged.mod.noise.util.NoiseUtil;

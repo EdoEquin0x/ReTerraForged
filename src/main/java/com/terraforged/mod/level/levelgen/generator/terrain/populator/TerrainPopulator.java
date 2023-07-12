@@ -3,7 +3,6 @@
  */
 package com.terraforged.mod.level.levelgen.generator.terrain.populator;
 
-import com.mojang.serialization.Codec;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
@@ -48,11 +47,6 @@ public class TerrainPopulator implements Populator {
         }
         cell.terrain = this.type;
     }
-
-	@Override
-	public Codec<? extends Populator> codec() {
-		throw new UnsupportedOperationException("TODO"); //TODO
-	}
 
     public static Module clamp(Module module) {
         if (module.minValue() < 0.0f || module.maxValue() > 1.0f) {

@@ -5,8 +5,8 @@ package com.terraforged.mod.level.levelgen.tile.chunk;
 
 import com.terraforged.mod.concurrent.batch.BatchTask;
 import com.terraforged.mod.level.levelgen.cell.Cell;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.heightmap.Heightmap;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
 
 public class ChunkGenTask implements BatchTask {
     private final ChunkWriter chunk;

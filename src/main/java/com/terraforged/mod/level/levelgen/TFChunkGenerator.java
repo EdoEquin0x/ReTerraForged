@@ -91,7 +91,7 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
-public class TFChunkGenerator extends NoiseBasedChunkGenerator implements IGenerator {
+public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 	@SuppressWarnings("unchecked")
 	public static final Codec<TFChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Settings.CODEC.fieldOf("settings").forGetter((g) -> g.settings),

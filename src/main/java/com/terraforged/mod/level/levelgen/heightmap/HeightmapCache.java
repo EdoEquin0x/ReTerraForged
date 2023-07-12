@@ -6,8 +6,8 @@ package com.terraforged.mod.level.levelgen.heightmap;
 import com.terraforged.mod.concurrent.cache.map.LoadBalanceLongMap;
 import com.terraforged.mod.concurrent.cache.map.LongMap;
 import com.terraforged.mod.level.levelgen.cell.Cell;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
 import com.terraforged.mod.util.pos.PosUtil;
 
 public class HeightmapCache {

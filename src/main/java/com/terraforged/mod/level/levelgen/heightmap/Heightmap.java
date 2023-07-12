@@ -3,8 +3,6 @@
  */
 package com.terraforged.mod.level.levelgen.heightmap;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
@@ -12,6 +10,7 @@ import com.terraforged.mod.level.levelgen.generator.climate.Climate;
 import com.terraforged.mod.level.levelgen.generator.continent.Continent;
 import com.terraforged.mod.level.levelgen.generator.continent.ContinentLerper2;
 import com.terraforged.mod.level.levelgen.generator.continent.ContinentLerper3;
+import com.terraforged.mod.level.levelgen.generator.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
 import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.generator.terrain.populator.TerrainPopulator;
@@ -20,7 +19,6 @@ import com.terraforged.mod.level.levelgen.generator.terrain.region.RegionLerper;
 import com.terraforged.mod.level.levelgen.generator.terrain.region.RegionModule;
 import com.terraforged.mod.level.levelgen.generator.terrain.region.RegionSelector;
 import com.terraforged.mod.level.levelgen.noise.module.Blender;
-import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.settings.TerrainSettings;
@@ -31,14 +29,9 @@ import com.terraforged.mod.noise.func.EdgeFunc;
 import com.terraforged.mod.noise.func.Interpolation;
 
 public class Heightmap implements Populator {
-	public static final Codec<Heightmap> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		GeneratorContext.CODEC.fieldOf("context").forGetter((p) -> p.context)
-	).apply(instance, Heightmap::new));
-	
     public static final int MOUNTAIN_SCALE = 1000;
     private static final int REGION_SEED_OFFSET = 789124;
     private static final int WARP_SEED_OFFSET = 8934;
-    private final GeneratorContext context;
     protected final Continent continentGenerator;
     protected final Populator regionModule;
     private final Levels levels;
@@ -48,7 +41,6 @@ public class Heightmap implements Populator {
     private final float terrainFrequency;
 
     public Heightmap(GeneratorContext context) {
-    	this.context = context;
     	Settings settings = context.settings;
         WorldSettings world = context.settings.world();
         ControlPoints controlPoints = new ControlPoints(world.controlPoints());
@@ -86,11 +78,6 @@ public class Heightmap implements Populator {
     public Levels getLevels() {
         return this.levels;
     }
-
-	@Override
-	public Codec<? extends Populator> codec() {
-		return CODEC;
-	}
 
     @Override
     public void apply(Cell cell, float x, float z) {

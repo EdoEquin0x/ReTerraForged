@@ -3,8 +3,6 @@
  */
 package com.terraforged.mod.level.levelgen.generator.terrain.region;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.heightmap.RegionConfig;
@@ -18,20 +16,7 @@ import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.pos.PosUtil;
 
 public class RegionModule implements Populator {
-	public static final Codec<RegionModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Codec.INT.fieldOf("seed").forGetter((p) -> p.seed),
-		Codec.INT.fieldOf("scale").forGetter((p) -> p.scale),
-		Module.CODEC.fieldOf("warp_x").forGetter((p) -> p.warpX),
-		Module.CODEC.fieldOf("warp_z").forGetter((p) -> p.warpZ),
-		Module.CODEC.fieldOf("warp_strength").forGetter((p) -> p.warpStrength)	
-	).apply(instance, RegionModule::new));
-	
     private static final float JITTER = 0.7f;
-    private final int seed;
-    private final int scale;
-    private final Module warpX;
-    private final Module warpZ;
-    private final Module warpStrength;
     private final int offsetSeed;
     private final float frequency;
     private final float edgeMin;
@@ -44,11 +29,6 @@ public class RegionModule implements Populator {
     }
     
     public RegionModule(int seed, int scale, Module warpX, Module warpZ, Module warpStrength) {
-    	this.seed = seed;
-    	this.scale = scale;
-    	this.warpX = warpX;
-    	this.warpZ = warpZ;
-    	this.warpStrength = warpStrength;
     	this.offsetSeed = seed + 7;
         this.edgeMin = 0.0f;
         this.edgeMax = 0.5f;
@@ -97,11 +77,6 @@ public class RegionModule implements Populator {
         cell.terrainRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
         cell.terrainRegionCenter = PosUtil.pack(centerX / this.frequency, centerY / this.frequency);
     }
-    
-	@Override
-	public Codec<RegionModule> codec() {
-		return CODEC;
-	}
 
     private float cellValue(int seed, int cellX, int cellY) {
         float value = NoiseUtil.valCoord2D(seed, cellX, cellY);
