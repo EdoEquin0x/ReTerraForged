@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.tile;
+package com.terraforged.mod.level.levelgen.tile;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,13 +16,13 @@ import com.terraforged.mod.level.levelgen.filter.Filterable;
 import com.terraforged.mod.level.levelgen.heightmap.Heightmap;
 import com.terraforged.mod.level.levelgen.heightmap.HeightmapCache;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
+import com.terraforged.mod.level.levelgen.tile.chunk.ChunkBatchTask;
+import com.terraforged.mod.level.levelgen.tile.chunk.ChunkGenTask;
+import com.terraforged.mod.level.levelgen.tile.chunk.ChunkReader;
+import com.terraforged.mod.level.levelgen.tile.chunk.ChunkStripeBatchTask;
+import com.terraforged.mod.level.levelgen.tile.chunk.ChunkWriter;
+import com.terraforged.mod.level.levelgen.tile.gen.TileResources;
 import com.terraforged.mod.noise.util.NoiseUtil;
-import com.terraforged.mod.tile.chunk.ChunkBatchTask;
-import com.terraforged.mod.tile.chunk.ChunkGenTask;
-import com.terraforged.mod.tile.chunk.ChunkReader;
-import com.terraforged.mod.tile.chunk.ChunkStripeBatchTask;
-import com.terraforged.mod.tile.chunk.ChunkWriter;
-import com.terraforged.mod.tile.gen.TileResources;
 import com.terraforged.mod.util.pos.PosUtil;
 
 public class Tile

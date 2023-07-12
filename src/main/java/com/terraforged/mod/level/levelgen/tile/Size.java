@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.tile;
+package com.terraforged.mod.level.levelgen.tile;
 
 public class Size {
     public final int size;

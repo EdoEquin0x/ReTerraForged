@@ -1,13 +1,13 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.tile.gen;
+package com.terraforged.mod.level.levelgen.tile.gen;
 
 import com.terraforged.mod.concurrent.Disposable;
 import com.terraforged.mod.concurrent.task.LazyCallable;
 import com.terraforged.mod.concurrent.thread.ThreadPool;
-import com.terraforged.mod.tile.Tile;
-import com.terraforged.mod.tile.api.TileFactory;
+import com.terraforged.mod.level.levelgen.tile.Tile;
+import com.terraforged.mod.level.levelgen.tile.api.TileFactory;
 
 public class TileGeneratorAsync implements TileFactory {
     protected final TileGenerator generator;

@@ -1,12 +1,12 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.tile.api;
+package com.terraforged.mod.level.levelgen.tile.api;
 
 import com.terraforged.mod.concurrent.Disposable;
 import com.terraforged.mod.concurrent.task.LazyCallable;
-import com.terraforged.mod.tile.Tile;
-import com.terraforged.mod.tile.chunk.ChunkReader;
+import com.terraforged.mod.level.levelgen.tile.Tile;
+import com.terraforged.mod.level.levelgen.tile.chunk.ChunkReader;
 
 public interface TileProvider extends Disposable.Listener<Tile> {
     public int chunkToRegion(int var1);

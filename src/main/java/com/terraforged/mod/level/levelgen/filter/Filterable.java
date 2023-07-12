@@ -4,7 +4,7 @@
 package com.terraforged.mod.level.levelgen.filter;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
-import com.terraforged.mod.tile.Size;
+import com.terraforged.mod.level.levelgen.tile.Size;
 
 public interface Filterable {
     public int getBlockX();

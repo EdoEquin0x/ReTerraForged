@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.tile.gen;
+package com.terraforged.mod.level.levelgen.tile.gen;
 
 import java.util.concurrent.TimeUnit;
 
@@ -9,9 +9,9 @@ import com.terraforged.mod.concurrent.cache.Cache;
 import com.terraforged.mod.concurrent.cache.CacheEntry;
 import com.terraforged.mod.concurrent.task.LazyCallable;
 import com.terraforged.mod.concurrent.thread.ThreadPool;
-import com.terraforged.mod.tile.Tile;
-import com.terraforged.mod.tile.api.TileFactory;
-import com.terraforged.mod.tile.api.TileProvider;
+import com.terraforged.mod.level.levelgen.tile.Tile;
+import com.terraforged.mod.level.levelgen.tile.api.TileFactory;
+import com.terraforged.mod.level.levelgen.tile.api.TileProvider;
 
 public class TileCache implements TileProvider {
     public static final int QUEUING_MIN_POOL_SIZE = 4;

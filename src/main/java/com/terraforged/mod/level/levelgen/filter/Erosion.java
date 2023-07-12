@@ -9,8 +9,8 @@ import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.heightmap.Levels;
 import com.terraforged.mod.level.levelgen.settings.FilterSettings;
+import com.terraforged.mod.level.levelgen.tile.Size;
 import com.terraforged.mod.noise.util.NoiseUtil;
-import com.terraforged.mod.tile.Size;
 import com.terraforged.mod.util.FastRandom;
 
 public class Erosion implements Filter {

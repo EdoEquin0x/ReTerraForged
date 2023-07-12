@@ -1,7 +1,7 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.tile.chunk;
+package com.terraforged.mod.level.levelgen.tile.chunk;
 
 import com.terraforged.mod.concurrent.batch.BatchTask;
 import com.terraforged.mod.level.levelgen.cell.Cell;

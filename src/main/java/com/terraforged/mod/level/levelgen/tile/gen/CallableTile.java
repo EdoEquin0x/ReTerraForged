@@ -1,10 +1,10 @@
 /*
  * Decompiled with CFR 0.150.
  */
-package com.terraforged.mod.tile.gen;
+package com.terraforged.mod.level.levelgen.tile.gen;
 
 import com.terraforged.mod.concurrent.task.LazyCallable;
-import com.terraforged.mod.tile.Tile;
+import com.terraforged.mod.level.levelgen.tile.Tile;
 
 public class CallableTile extends LazyCallable<Tile> {
     private final int regionX;

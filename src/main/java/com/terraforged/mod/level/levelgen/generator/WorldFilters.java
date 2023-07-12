@@ -11,7 +11,7 @@ import com.terraforged.mod.level.levelgen.filter.Filterable;
 import com.terraforged.mod.level.levelgen.filter.Smoothing;
 import com.terraforged.mod.level.levelgen.filter.Steepness;
 import com.terraforged.mod.level.levelgen.settings.FilterSettings;
-import com.terraforged.mod.tile.Tile;
+import com.terraforged.mod.level.levelgen.tile.Tile;
 
 public class WorldFilters {
     private final Smoothing smoothing;

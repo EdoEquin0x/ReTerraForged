@@ -14,8 +14,8 @@ import com.terraforged.mod.level.levelgen.generator.terrain.provider.TerrainProv
 import com.terraforged.mod.level.levelgen.heightmap.Levels;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.tile.api.TileProvider;
-import com.terraforged.mod.tile.gen.TileGenerator;
+import com.terraforged.mod.level.levelgen.tile.api.TileProvider;
+import com.terraforged.mod.level.levelgen.tile.gen.TileGenerator;
 
 public class GeneratorContext {
 	public static final Codec<GeneratorContext> CODEC = RecordCodecBuilder.create(instance -> instance.group(
