@@ -3,10 +3,10 @@
  */
 package com.terraforged.mod.level.levelgen.terrain;
 
-public enum TerrainCategory implements ITerrain
-{
+@Deprecated(forRemoval = true)
+public enum TerrainCategory implements ITerrain {
     NONE,
-    DEEP_OCEAN{
+    DEEP_OCEAN {
 
         @Override
         public boolean isDeepOcean() {
@@ -22,9 +22,8 @@ public enum TerrainCategory implements ITerrain
         public boolean isSubmerged() {
             return true;
         }
-    }
-    ,
-    SHALLOW_OCEAN{
+    },
+    SHALLOW_OCEAN {
 
         @Override
         public boolean isShallowOcean() {
@@ -40,9 +39,8 @@ public enum TerrainCategory implements ITerrain
         public boolean overridesRiver() {
             return true;
         }
-    }
-    ,
-    COAST{
+    },
+    COAST {
 
         @Override
         public boolean isCoast() {
@@ -58,9 +56,8 @@ public enum TerrainCategory implements ITerrain
         public boolean overridesRiver() {
             return true;
         }
-    }
-    ,
-    BEACH{
+    },
+    BEACH {
 
         @Override
         public boolean isCoast() {
@@ -76,9 +73,8 @@ public enum TerrainCategory implements ITerrain
         public boolean overridesRiver() {
             return true;
         }
-    }
-    ,
-    RIVER{
+    },
+    RIVER {
 
         @Override
         public boolean isRiver() {
@@ -89,9 +85,8 @@ public enum TerrainCategory implements ITerrain
         public boolean isSubmerged() {
             return true;
         }
-    }
-    ,
-    LAKE{
+    },
+    LAKE {
 
         @Override
         public boolean isLake() {
@@ -102,9 +97,8 @@ public enum TerrainCategory implements ITerrain
         public boolean isSubmerged() {
             return true;
         }
-    }
-    ,
-    WETLAND{
+    },
+    WETLAND {
 
         @Override
         public boolean isWetland() {
@@ -115,9 +109,8 @@ public enum TerrainCategory implements ITerrain
         public boolean isOverground() {
             return true;
         }
-    }
-    ,
-    FLATLAND{
+    },
+    FLATLAND {
 
         @Override
         public boolean isFlat() {
@@ -128,24 +121,21 @@ public enum TerrainCategory implements ITerrain
         public boolean isOverground() {
             return true;
         }
-    }
-    ,
-    LOWLAND{
+    },
+    LOWLAND {
 
         @Override
         public boolean isOverground() {
             return true;
         }
-    }
-    ,
-    HIGHLAND{
+    },
+    HIGHLAND {
 
         @Override
         public boolean isOverground() {
             return true;
         }
     };
-
 
     public TerrainCategory getDominant(TerrainCategory other) {
         if (this.ordinal() > other.ordinal()) {

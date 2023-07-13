@@ -3,6 +3,7 @@
  */
 package com.terraforged.mod.level.levelgen.terrain;
 
+@Deprecated(forRemoval = true)
 public interface ITerrain {
     default public float erosionModifier() {
         return 1.0f;
