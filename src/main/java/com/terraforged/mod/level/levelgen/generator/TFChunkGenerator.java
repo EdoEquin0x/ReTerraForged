@@ -72,7 +72,6 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.OverworldBiomeBuilder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -82,6 +81,7 @@ import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.Aquifer.FluidPicker;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
@@ -174,26 +174,6 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    public int getMinY() {
-        return this.levels.minY;
-    }
-
-    @Override
-    public int getSeaLevel() {
-        return this.levels.seaLevel;
-    }
-
-    @Override
-    public int getGenDepth() {
-        return this.levels.maxY;
-    }
-
-    @Override
-    public BiomeSource getBiomeSource() {
-        return this.biomeSource;
-    }
-    
-    @Override
     public void createStructures(RegistryAccess access, ChunkGeneratorStructureState state, StructureManager structures, ChunkAccess chunk, StructureTemplateManager templates) {
     	this.terrainCache.hint(chunk.getPos());
         super.createStructures(access, state, structures, chunk, templates);
@@ -217,8 +197,8 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     @Override
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState state, StructureManager structureManager, ChunkAccess chunkAccess) {
         return terrainCache.combineAsync(executor, chunkAccess, (chunk, terrainData) -> {
-            ChunkUtil.fillChunk(getSeaLevel(), chunk, terrainData, ChunkUtil.FILLER, this.localResource.get());
-            ChunkUtil.primeHeightmaps(getSeaLevel(), chunk, terrainData, ChunkUtil.FILLER);
+            ChunkUtil.fillChunk(this.getSeaLevel(), chunk, terrainData, ChunkUtil.FILLER, this.localResource.get());
+            ChunkUtil.primeHeightmaps(this.getSeaLevel(), chunk, terrainData, ChunkUtil.FILLER);
             ChunkUtil.buildStructureTerrain(chunk, terrainData, structureManager);
             return chunk;
         });
@@ -260,7 +240,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    public int getBaseHeight(int x, int z, net.minecraft.world.level.levelgen.Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState state) {
+    public int getBaseHeight(int x, int z, Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState state) {
         var sample = this.terrainCache.getSample(x, z);
 
         float scaledBase = this.levels.getScaledBaseLevel(sample.baseNoise);
@@ -297,13 +277,10 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public void addDebugScreenInfo(List<String> lines, RandomState state, BlockPos pos) {
-        var sample = this.climateSampler.getSample();
-        this.terrainCache.sample(pos.getX(), pos.getZ(), sample);
-        this.climateSampler.sample(pos.getX(), pos.getZ(), sample);
+        var sample = this.climateSampler.getSample(pos.getX(), pos.getZ());
         
         lines.add("");
         lines.add("[TerraForged]");
-        lines.add("Terrain Type: " + sample.terrainType.getName());
         lines.add("Temperature: " + sample.temperature);
         lines.add("Moisture: " + sample.moisture);
         lines.add("Continent noise: " + sample.continentNoise);

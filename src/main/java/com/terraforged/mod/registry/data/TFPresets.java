@@ -126,7 +126,7 @@ public interface TFPresets {
 					BiomeTree.Parameter.span(0.0F, 1.0F),
 					BiomeTree.Parameter.span(0.0F, 1.0F),
 					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.point(1.0F)
+					BiomeTree.Parameter.span(0.05F, 1.0F)
 				),
 				biomes.getOrThrow(Biomes.PLAINS)
 			),
@@ -136,7 +136,7 @@ public interface TFPresets {
 					BiomeTree.Parameter.span(0.0F, 1.0F),
 					BiomeTree.Parameter.span(0.0F, 1.0F),
 					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.point(0.0F)
+					BiomeTree.Parameter.span(0.0F, 0.05F)
 				),
 				biomes.getOrThrow(Biomes.RIVER)
 			)

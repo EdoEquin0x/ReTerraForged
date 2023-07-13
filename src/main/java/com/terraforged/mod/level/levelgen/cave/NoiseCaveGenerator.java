@@ -66,10 +66,11 @@ public class NoiseCaveGenerator {
         carver.terrainData = generator.getChunkData(chunk.getPos());
         carver.mask = this.caveBreachNoise;
 
-        for (var config : this.caves) {
+        for (int i = 0; i < this.caves.length; i++) {
+        	var config = this.caves[i];
             carver.modifier = getModifier(config.value());
 
-            NoiseCaveCarver.carve(seed, chunk, carver, generator, config.value(), true);
+            NoiseCaveCarver.carve((int) (i * 0xFA90C2L) + seed, chunk, carver, generator, config.value(), true);
         }
     }
 
@@ -110,10 +111,7 @@ public class NoiseCaveGenerator {
     }
 
     private Module getModifier(NoiseCave cave) {
-        return switch (cave.type()) {
-            case GLOBAL -> Source.ONE;
-            case UNIQUE -> this.uniqueCaveNoise;
-        };
+    	return Source.ONE;
     }
 
     private CarverChunk createCarverChunk(int length) {

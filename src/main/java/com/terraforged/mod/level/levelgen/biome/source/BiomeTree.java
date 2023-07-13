@@ -131,7 +131,7 @@ public class BiomeTree {
 					+ Mth.square(this.moisture.distance(sample.moisture))
 					+ Mth.square(this.continentalness.distance(sample.continentNoise))
 					+ Mth.square(this.biome.distance(sample.biomeNoise))
-					+ Mth.square(this.river.distance(1 - sample.riverNoise));
+					+ Mth.square(this.river.distance(sample.riverNoise));
 		}
 
 		protected List<BiomeTree.Parameter> parameterSpace() {

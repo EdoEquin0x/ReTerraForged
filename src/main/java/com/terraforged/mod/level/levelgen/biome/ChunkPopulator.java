@@ -64,14 +64,14 @@ public class ChunkPopulator {
     }
 
     public void carve(int seed, ChunkAccess chunk, WorldGenRegion region, BiomeManager biomes, GenerationStep.Carving step, TFChunkGenerator generator) {
-    	this.noiseCaveGenerator.carve(seed, chunk, generator);
+    	//this.noiseCaveGenerator.carve(seed, chunk, generator);
     }
 
     public void decorate(int seed, ChunkAccess chunk, WorldGenLevel region, StructureManager structures, TFChunkGenerator generator) {
         var terrain = generator.getChunkDataAsync(chunk.getPos());
 
         this.featureDecorator.decorate(chunk, region, structures, terrain, generator);
-        this.noiseCaveGenerator.decorate(seed, chunk, region, generator);
+        //this.noiseCaveGenerator.decorate(seed, chunk, region, generator);
 
         Surface.smoothWater(chunk, region, terrain.join());
         Surface.applyPost(chunk, terrain.join(), generator);

@@ -12,6 +12,7 @@ import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
@@ -48,7 +49,7 @@ public class TFBiomeSource extends BiomeSource {
 	
 	private Holder<Biome> compute(int x, int z) {
 		ClimateSample sample = this.sampler.getSample();
-		this.sampler.sample(x, z, sample);
+		this.sampler.sample(QuartPos.toBlock(x), QuartPos.toBlock(z), sample);
 		return this.tree.findValue(sample);
 	}
 }
