@@ -12,6 +12,8 @@ import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Module;
 
+import net.minecraft.resources.ResourceLocation;
+
 public interface TerrainProvider {
     public LandForms getLandforms();
 
@@ -22,7 +24,7 @@ public interface TerrainProvider {
     default public void forEach(Consumer<TerrainPopulator> consumer) {
     }
 
-    default public Terrain getTerrain(String name) {
+    default public Terrain getTerrain(ResourceLocation name) {
         return null;
     }
 

@@ -4,6 +4,7 @@
 package com.terraforged.mod.level.levelgen.climate;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
+import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.continent.Continent;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
@@ -17,7 +18,7 @@ import com.terraforged.mod.noise.func.EdgeFunc;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 
-public class ClimateModule {
+public class ClimateModule implements Populator {
     private static final float MOISTURE_SIZE = 2.5f;
     private final int seed;
     private final float biomeFreq;
@@ -58,6 +59,7 @@ public class ClimateModule {
         this.macroBiomeNoise = Source.cell(seed.next(), context.settings.climate().biomeShape().macroNoiseSize());
     }
 
+    @Override
     public void apply(Cell cell, float x, float y) {
         this.apply(cell, x, y, true);
     }
@@ -126,7 +128,7 @@ public class ClimateModule {
     }
 
     private void modifyTerrain(Cell cell, float continentEdge) {
-        if (cell.terrain.isOverground() && !cell.terrain.overridesCoast() && continentEdge <= this.controlPoints.coastMarker) {
+        if (cell.terrain.isOverground() && continentEdge <= this.controlPoints.coastMarker) {
             cell.terrain = TerrainType.COAST;
         }
     }

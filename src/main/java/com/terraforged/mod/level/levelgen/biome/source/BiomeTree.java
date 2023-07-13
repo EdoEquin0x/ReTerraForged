@@ -81,14 +81,8 @@ public class BiomeTree {
 			float j = this.min - point;
 			return i > 0L ? i : Math.max(j, 0L);
 		}
-
-		public float distance(BiomeTree.Parameter parameter) {
-			float i = parameter.min() - this.max;
-			float j = this.min - parameter.max();
-			return i > 0L ? i : Math.max(j, 0L);
-		}
-
-		public BiomeTree.Parameter span(@Nullable BiomeTree.Parameter parameter) {
+		
+		private BiomeTree.Parameter span(@Nullable BiomeTree.Parameter parameter) {
 			return parameter == null ? this : new BiomeTree.Parameter(Math.min(this.min, parameter.min()), Math.max(this.max, parameter.max()));
 		}
 	}

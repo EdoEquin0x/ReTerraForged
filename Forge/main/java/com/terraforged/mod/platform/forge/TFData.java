@@ -34,7 +34,6 @@ import com.terraforged.mod.registry.data.TFCaves;
 import com.terraforged.mod.registry.data.TFPresets;
 import com.terraforged.mod.registry.data.TFTags;
 import com.terraforged.mod.registry.data.TFTerrain;
-import com.terraforged.mod.registry.data.TFTerrainTypes;
 import com.terraforged.mod.registry.data.TFVegetation;
 
 import net.minecraft.core.HolderLookup;
@@ -52,7 +51,6 @@ public class TFData extends Stage {
 	private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
 		.add(Registries.BIOME, TFBiomes::register)
 		.add(TerraForged.CAVE, TFCaves::register)
-		.add(TerraForged.TERRAIN_TYPE, TFTerrainTypes::register)
 		.add(TerraForged.TERRAIN, TFTerrain::register)
 		.add(TerraForged.VEGETATION, TFVegetation::register)
 		.add(Registries.WORLD_PRESET, TFPresets::register);

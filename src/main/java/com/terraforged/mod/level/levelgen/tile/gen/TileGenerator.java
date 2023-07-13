@@ -8,7 +8,6 @@ import com.terraforged.mod.concurrent.task.LazyCallable;
 import com.terraforged.mod.concurrent.thread.ThreadPool;
 import com.terraforged.mod.concurrent.thread.ThreadPools;
 import com.terraforged.mod.level.levelgen.generator.WorldGenerator;
-import com.terraforged.mod.level.levelgen.generator.WorldGeneratorFactory;
 import com.terraforged.mod.level.levelgen.tile.Tile;
 import com.terraforged.mod.level.levelgen.tile.api.TileFactory;
 import com.terraforged.mod.level.levelgen.tile.api.TileProvider;
@@ -26,7 +25,7 @@ public class TileGenerator implements TileFactory {
         this.factor = builder.factor;
         this.border = builder.border;
         this.batchSize = builder.batchSize;
-        this.generator = builder.factory.get();
+        this.generator = builder.generator;
         this.threadPool = Builder.getOrDefaultPool(builder);
     }
 
@@ -99,7 +98,7 @@ public class TileGenerator implements TileFactory {
         protected int border = 0;
         protected int batchSize = 0;
         protected boolean striped = false;
-        protected WorldGeneratorFactory factory;
+        protected WorldGenerator generator;
         private ThreadPool threadPool;
 
         public Builder size(int factor, int border) {
@@ -121,8 +120,8 @@ public class TileGenerator implements TileFactory {
             return this;
         }
 
-        public Builder factory(WorldGeneratorFactory factory) {
-            this.factory = factory;
+        public Builder generator(WorldGenerator generator) {
+            this.generator = generator;
             return this;
         }
 

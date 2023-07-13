@@ -3,23 +3,23 @@
  */
 package com.terraforged.mod.level.levelgen.terrain;
 
-import com.terraforged.mod.noise.util.NoiseUtil;
+import net.minecraft.resources.ResourceLocation;
 
 public class Terrain implements ITerrain.Delegate {
     private final int id;
-    private final String name;
+    private final ResourceLocation name;
     private final TerrainCategory type;
     private final ITerrain delegate;
 
-    Terrain(int id, String name, Terrain terrain) {
+    Terrain(int id, ResourceLocation name, Terrain terrain) {
         this(id, name, terrain.getCategory(), terrain);
     }
 
-    Terrain(int id, String name, TerrainCategory type) {
+    Terrain(int id, ResourceLocation name, TerrainCategory type) {
         this(id, name, type, type);
     }
 
-    Terrain(int id, String name, TerrainCategory type, ITerrain delegate) {
+    Terrain(int id, ResourceLocation name, TerrainCategory type, ITerrain delegate) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -30,7 +30,7 @@ public class Terrain implements ITerrain.Delegate {
         return this.id;
     }
 
-    public String getName() {
+    public ResourceLocation getName() {
         return this.name;
     }
 
@@ -38,17 +38,14 @@ public class Terrain implements ITerrain.Delegate {
         return this.type;
     }
 
-    public float getRenderHue() {
-        return NoiseUtil.valCoord2D(this.name.hashCode(), 0, 0);
-    }
-
     @Override
     public ITerrain getDelegate() {
         return this.delegate;
     }
 
+    @Override
     public String toString() {
-        return this.getName();
+        return this.getName().toString();
     }
 
     public Terrain withId(int id) {

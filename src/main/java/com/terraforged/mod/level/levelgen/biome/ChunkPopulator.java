@@ -49,6 +49,14 @@ public class ChunkPopulator {
         this.featureDecorator = new FeatureDecorator(vegetation);
         this.noiseCaveGenerator = new NoiseCaveGenerator(caves);
     }
+    
+    public FeatureDecorator getDecorator() {
+    	return this.featureDecorator;
+    }
+    
+    public NoiseCaveGenerator getCaveGenerator() {
+    	return this.noiseCaveGenerator;
+    }
 
     public void surface(ChunkAccess chunk, WorldGenRegion region, RandomState state, TFChunkGenerator generator) {
     	SurfaceDecorator.decorate(chunk, region, generator, state);

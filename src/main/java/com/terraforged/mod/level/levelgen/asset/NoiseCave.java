@@ -34,7 +34,7 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 
-public class NoiseCave {
+public record NoiseCave(CaveType type, Module elevation, Module shape, Module floor, int size, int minY, int maxY) {
     public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
     	CaveType.CODEC.fieldOf("type").forGetter(c -> c.type),
     	Module.CODEC.fieldOf("elevation").forGetter(c -> c.elevation),
@@ -46,32 +46,8 @@ public class NoiseCave {
     ).apply(instance, NoiseCave::new));
     public static final Codec<Holder<NoiseCave>> CODEC = RegistryFileCodec.create(TerraForged.CAVE, DIRECT_CODEC);
 
-    private final CaveType type;
-    private final Module elevation;
-    private final Module shape;
-    private final Module floor;
-    private final int size;
-    private final int minY;
-    private final int maxY;
-    private final int rangeY;
-
-    public NoiseCave(CaveType type, Module elevation, Module shape, Module floor, int size, int minY, int maxY) {
-        this.type = type;
-        this.elevation = elevation;
-        this.shape = shape;
-        this.floor = floor;
-        this.size = size;
-        this.minY = minY;
-        this.maxY = maxY;
-        this.rangeY = maxY - minY;
-    }
-
-    public CaveType getType() {
-        return this.type;
-    }
-
     public int getHeight(int x, int z) {
-        return getScaleValue(x, z, 1F, this.minY, this.rangeY, this.elevation);
+        return getScaleValue(x, z, 1F, this.minY, this.maxY - this.minY, this.elevation);
     }
 
     public int getCavernSize(int x, int z, float modifier) {
@@ -80,20 +56,6 @@ public class NoiseCave {
 
     public int getFloorDepth(int x, int z, int size) {
         return getScaleValue(x, z, 1F, 0, size, this.floor);
-    }
-
-    @Override
-    public String toString() {
-        return "NoiseCave{" +
-                "type=" + this.type +
-                ", elevation=" + this.elevation +
-                ", shape=" + this.shape +
-                ", floor=" + this.floor +
-                ", size=" + this.size +
-                ", minY=" + this.minY +
-                ", maxY=" + this.maxY +
-                ", rangeY=" + this.rangeY +
-                '}';
     }
 
     private static int getScaleValue(int x, int z, float modifier, int min, int range, Module noise) {

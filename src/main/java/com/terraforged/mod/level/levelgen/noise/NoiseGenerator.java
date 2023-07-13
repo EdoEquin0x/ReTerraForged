@@ -73,7 +73,7 @@ public class NoiseGenerator {
         this.land = other.land;
         this.ocean = other.ocean;
         this.continent = other.continent;
-        this.controlPoints = continent.getControlPoints();
+        this.controlPoints = other.continent.getControlPoints();
     }
 
     public NoiseLevels getLevels() {

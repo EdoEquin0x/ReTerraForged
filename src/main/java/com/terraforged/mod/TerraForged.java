@@ -34,7 +34,6 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.asset.TerrainType;
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.viability.Viability;
 import com.terraforged.mod.noise.Module;
@@ -59,8 +58,7 @@ public abstract class TerraForged implements CommonAPI {
 	public static final ResourceKey<Registry<Codec<? extends Domain>>> DOMAIN = registryKey("noise/domain");
 	public static final ResourceKey<Registry<Codec<? extends CurveFunc>>> CURVE = registryKey("noise/curve");
 	public static final ResourceKey<Registry<Codec<? extends Viability>>> VIABILITY = registryKey("worldgen/viability");
-	public static final ResourceKey<Registry<NoiseCave>> CAVE = registryKey("worldgen/cave");
-	public static final ResourceKey<Registry<TerrainType>> TERRAIN_TYPE = registryKey("worldgen/terrain_type");
+	public static final ResourceKey<Registry<NoiseCave>> CAVE = registryKey("worldgen/cave");	
 	public static final ResourceKey<Registry<TerrainNoise>> TERRAIN = registryKey("worldgen/terrain_noise");
 	public static final ResourceKey<Registry<VegetationConfig>> VEGETATION = registryKey("worldgen/vegetation");
 

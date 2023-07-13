@@ -28,7 +28,7 @@ public class GeneratorContext {
     public final Settings settings;
     public final LazySupplier<TileProvider> cache;
     public final TerrainProviderFactory terrainFactory;
-    public final LazySupplier<WorldGeneratorFactory> worldGenerator;
+    public final LazySupplier<WorldGenerator> worldGenerator;
 
     public GeneratorContext(Seed seed, Settings settings) {
         this(seed, settings, StandardTerrainProvider::new, GeneratorContext::createCache);
@@ -38,7 +38,7 @@ public class GeneratorContext {
         return LazySupplier.factory(this.copy(), function);
     }
 
-    public GeneratorContext(Seed seed, Settings settings, TerrainProviderFactory terrainFactory, Function<WorldGeneratorFactory, TileProvider> cache) {
+    public GeneratorContext(Seed seed, Settings settings, TerrainProviderFactory terrainFactory, Function<WorldGenerator, TileProvider> cache) {
         this.settings = settings;
         this.seed = seed;
         this.levels = new Levels(settings.world());
@@ -76,12 +76,12 @@ public class GeneratorContext {
         return this.seed.offset(offset);
     }
 
-    protected LazySupplier<WorldGeneratorFactory> createFactory(GeneratorContext context) {
-        return LazySupplier.factory(context.copy(), WorldGeneratorFactory::new);
+    protected LazySupplier<WorldGenerator> createFactory(GeneratorContext context) {
+        return LazySupplier.factory(context.copy(), WorldGenerator::new);
     }
     
-    protected static TileProvider createCache(WorldGeneratorFactory factory) {
-        return TileGenerator.builder().pool(ThreadPools.createDefault()).factory(factory).size(3, 1).build().cached();
+    protected static TileProvider createCache(WorldGenerator factory) {
+        return TileGenerator.builder().pool(ThreadPools.createDefault()).generator(factory).size(3, 1).build().cached();
     }
 }
 

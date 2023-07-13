@@ -300,7 +300,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
         var sample = this.climateSampler.getSample();
         this.terrainCache.sample(pos.getX(), pos.getZ(), sample);
         this.climateSampler.sample(pos.getX(), pos.getZ(), sample);
-
+        
         lines.add("");
         lines.add("[TerraForged]");
         lines.add("Terrain Type: " + sample.terrainType.getName());

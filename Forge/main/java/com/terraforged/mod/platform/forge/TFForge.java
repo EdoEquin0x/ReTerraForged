@@ -31,7 +31,6 @@ import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.command.TFCommands;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.asset.TerrainType;
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.registry.TFChunkGenerators;
 import com.terraforged.mod.registry.TFCurves;
@@ -41,6 +40,7 @@ import com.terraforged.mod.registry.TFRegistries;
 import com.terraforged.mod.registry.TFViabilities;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -52,6 +52,7 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 
+//TODO TerrainNoise doesn't actually do anything i think
 @Mod(TerraForged.MODID)
 public class TFForge extends TerraForged implements CommonAPI {
 
@@ -82,31 +83,34 @@ public class TFForge extends TerraForged implements CommonAPI {
     void onCreateDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
     	event.dataPackRegistry(TerraForged.CAVE, NoiseCave.DIRECT_CODEC);
     	event.dataPackRegistry(TerraForged.TERRAIN, TerrainNoise.DIRECT_CODEC);
-    	event.dataPackRegistry(TerraForged.TERRAIN_TYPE, TerrainType.DIRECT_CODEC);
     	event.dataPackRegistry(TerraForged.VEGETATION, VegetationConfig.DIRECT_CODEC);
     }
     
     void onRegister(RegisterEvent event) {
     	event.register(Registries.CHUNK_GENERATOR, (helper) -> {
     		TFChunkGenerators.register(helper::register);
-    		TerraForged.LOG.info("Registered chunk generators");
+    		logRegister(Registries.CHUNK_GENERATOR);
     	});
     	event.register(TerraForged.MODULE, (helper) -> {
     		TFModules.register(helper::register);
-    		TerraForged.LOG.info("Registered modules");
+    		logRegister(TerraForged.MODULE);
     	});
     	event.register(TerraForged.DOMAIN, (helper) -> {
     		TFDomains.register(helper::register);
-    		TerraForged.LOG.info("Registered domains");
+    		logRegister(TerraForged.DOMAIN);
     	});
     	event.register(TerraForged.CURVE, (helper) -> {
     		TFCurves.register(helper::register);
-    		TerraForged.LOG.info("Registered curves");
+    		logRegister(TerraForged.CURVE);
     	});
     	event.register(TerraForged.VIABILITY, (helper) -> {
     		TFViabilities.register(helper::register);
-    		TerraForged.LOG.info("Registered viabilities");
+    		logRegister(TerraForged.VIABILITY);
     	});
+    }
+    
+    private static void logRegister(ResourceKey<?> registry) {
+    	LOG.info("Registered entries for {}", registry.location());
     }
     
     private static Path getRootPath() {

@@ -27,45 +27,21 @@ package com.terraforged.mod.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.generator.TFChunkRegenerator;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
-import com.terraforged.mod.util.pos.PosUtil;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.Heightmap;
 
 public class TFCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(getLocateTerrainCommand());
         dispatcher.register(getTFCommand());
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> root(String name) {
         return Commands.literal(name).requires(s -> s.hasPermission(2));
-    }
-
-    private static LiteralArgumentBuilder<CommandSourceStack> getLocateTerrainCommand() {
-        return root("locateterrain")
-                .then(TFArgs.terrainType()
-                        .then(Commands.argument("radius", IntegerArgumentType.integer(1))
-                                .executes(c -> locate(c, true)))
-                        .executes(c -> locate(c, false)));
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> getTFCommand() {
@@ -89,65 +65,65 @@ public class TFCommands {
         }
     }
 
-    private static int locate(CommandContext<CommandSourceStack> context, boolean withRadius) throws CommandSyntaxException {
-        var generator = getGenerator(context.getSource().getLevel().getChunkSource().getGenerator());
-        if (generator == null) return Command.SINGLE_SUCCESS;
+//    private static int locate(CommandContext<CommandSourceStack> context, boolean withRadius) throws CommandSyntaxException {
+//        var generator = getGenerator(context.getSource().getLevel().getChunkSource().getGenerator());
+//        if (generator == null) return Command.SINGLE_SUCCESS;
+//
+//        String name = StringArgumentType.getString(context, "terrain");
+//        var terrain = TerrainType.get(name);
+//        int radius = withRadius ? IntegerArgumentType.getInteger(context, "radius") : 1;
+//
+//        var player = context.getSource().getPlayerOrException();
+//        var at = player.blockPosition();
+//        var state = player.getLevel().getChunkSource().randomState();
+//
+//        Component result;
+//        if (terrain == null) {
+//            result = text("Invalid terrain: " + name).withStyle(ChatFormatting.RED);
+//        } else {
+//            int maxRadius = Math.min(100, radius + 50);
+//            long pos = generator.getNoiseGenerator().find(at.getX(), at.getZ(), radius, maxRadius, terrain);
+//
+//            if (pos == 0L) {
+//                result = text("Unable to locate terrain: " + name).withStyle(ChatFormatting.RED);
+//            } else {
+//                int x = PosUtil.unpackLeft(pos);
+//                int z = PosUtil.unpackRight(pos);
+//                int y = generator.getFirstFreeHeight(x, z, Heightmap.Types.MOTION_BLOCKING, player.level, state);
+//
+//                result = createTerrainTeleportMessage(at, x, y, z, terrain);
+//            }
+//        }
+//
+//        player.sendSystemMessage(result);
+//
+//        return Command.SINGLE_SUCCESS;
+//    }
 
-        String name = StringArgumentType.getString(context, "terrain");
-        var terrain = TerrainType.get(name);
-        int radius = withRadius ? IntegerArgumentType.getInteger(context, "radius") : 1;
-
-        var player = context.getSource().getPlayerOrException();
-        var at = player.blockPosition();
-        var state = player.getLevel().getChunkSource().randomState();
-
-        Component result;
-        if (terrain == null) {
-            result = text("Invalid terrain: " + name).withStyle(ChatFormatting.RED);
-        } else {
-            int maxRadius = Math.min(100, radius + 50);
-            long pos = generator.getNoiseGenerator().find(at.getX(), at.getZ(), radius, maxRadius, terrain);
-
-            if (pos == 0L) {
-                result = text("Unable to locate terrain: " + name).withStyle(ChatFormatting.RED);
-            } else {
-                int x = PosUtil.unpackLeft(pos);
-                int z = PosUtil.unpackRight(pos);
-                int y = generator.getFirstFreeHeight(x, z, Heightmap.Types.MOTION_BLOCKING, player.level, state);
-
-                result = createTerrainTeleportMessage(at, x, y, z, terrain);
-            }
-        }
-
-        player.sendSystemMessage(result);
-
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private static Component createTerrainTeleportMessage(BlockPos pos, int x, int y, int z, Terrain terrain) {
-        double distance = Math.sqrt(pos.distToCenterSqr(x, y, z));
-        String commandText = String.format("/tp %s %s %s", x, y, z);
-        String distanceText = String.format("%.1f", distance);
-        String positionText = String.format("%s;%s;%s", x, y, z);
-        return text("Found terrain: ").withStyle(ChatFormatting.GREEN)
-                .append(text(terrain.getName()).withStyle(ChatFormatting.YELLOW))
-                .append(text(" Distance: ").withStyle(ChatFormatting.GREEN))
-                .append(text(distanceText).withStyle(ChatFormatting.YELLOW))
-                .append(text(". ").withStyle(ChatFormatting.GREEN))
-                .append(text("Teleport")
-                        .withStyle(ChatFormatting.YELLOW, ChatFormatting.UNDERLINE)
-                        .withStyle(style -> style
-                                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, commandText))
-                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                        text("Location: ").withStyle(ChatFormatting.GREEN)
-                                                .append(text(positionText).withStyle(ChatFormatting.YELLOW))))));
-    }
-
-    private static MutableComponent text(String message) {
-        return MutableComponent.create(new LiteralContents(message));
-    }
-    
-    private static TFChunkGenerator getGenerator(ChunkGenerator chunkGenerator) {
-        return chunkGenerator instanceof TFChunkGenerator generator ? generator : null;
-    }
+//    private static Component createTerrainTeleportMessage(BlockPos pos, int x, int y, int z, Terrain terrain) {
+//        double distance = Math.sqrt(pos.distToCenterSqr(x, y, z));
+//        String commandText = String.format("/tp %s %s %s", x, y, z);
+//        String distanceText = String.format("%.1f", distance);
+//        String positionText = String.format("%s;%s;%s", x, y, z);
+//        return text("Found terrain: ").withStyle(ChatFormatting.GREEN)
+//                .append(text(terrain.getName()).withStyle(ChatFormatting.YELLOW))
+//                .append(text(" Distance: ").withStyle(ChatFormatting.GREEN))
+//                .append(text(distanceText).withStyle(ChatFormatting.YELLOW))
+//                .append(text(". ").withStyle(ChatFormatting.GREEN))
+//                .append(text("Teleport")
+//                        .withStyle(ChatFormatting.YELLOW, ChatFormatting.UNDERLINE)
+//                        .withStyle(style -> style
+//                                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, commandText))
+//                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+//                                        text("Location: ").withStyle(ChatFormatting.GREEN)
+//                                                .append(text(positionText).withStyle(ChatFormatting.YELLOW))))));
+//    }
+//
+//    private static MutableComponent text(String message) {
+//        return MutableComponent.create(new LiteralContents(message));
+//    }
+//    
+//    private static TFChunkGenerator getGenerator(ChunkGenerator chunkGenerator) {
+//        return chunkGenerator instanceof TFChunkGenerator generator ? generator : null;
+//    }
 }

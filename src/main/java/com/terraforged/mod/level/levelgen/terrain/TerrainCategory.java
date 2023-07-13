@@ -7,33 +7,13 @@ package com.terraforged.mod.level.levelgen.terrain;
 public enum TerrainCategory implements ITerrain {
     NONE,
     DEEP_OCEAN {
-
-        @Override
-        public boolean isDeepOcean() {
-            return true;
-        }
-
+    	
         @Override
         public boolean overridesRiver() {
             return true;
         }
-
-        @Override
-        public boolean isSubmerged() {
-            return true;
-        }
     },
     SHALLOW_OCEAN {
-
-        @Override
-        public boolean isShallowOcean() {
-            return true;
-        }
-
-        @Override
-        public boolean isSubmerged() {
-            return true;
-        }
 
         @Override
         public boolean overridesRiver() {
@@ -80,11 +60,6 @@ public enum TerrainCategory implements ITerrain {
         public boolean isRiver() {
             return true;
         }
-
-        @Override
-        public boolean isSubmerged() {
-            return true;
-        }
     },
     LAKE {
 
@@ -92,18 +67,8 @@ public enum TerrainCategory implements ITerrain {
         public boolean isLake() {
             return true;
         }
-
-        @Override
-        public boolean isSubmerged() {
-            return true;
-        }
     },
     WETLAND {
-
-        @Override
-        public boolean isWetland() {
-            return true;
-        }
 
         @Override
         public boolean isOverground() {
@@ -111,11 +76,6 @@ public enum TerrainCategory implements ITerrain {
         }
     },
     FLATLAND {
-
-        @Override
-        public boolean isFlat() {
-            return true;
-        }
 
         @Override
         public boolean isOverground() {

@@ -24,6 +24,8 @@ import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 
+import net.minecraft.resources.ResourceLocation;
+
 public class StandardTerrainProvider implements TerrainProvider {
     private final List<TerrainPopulator> mixable = new ArrayList<TerrainPopulator>();
     private final List<TerrainPopulator> unmixable = new ArrayList<TerrainPopulator>();
@@ -67,9 +69,9 @@ public class StandardTerrainProvider implements TerrainProvider {
     }
 
     @Override
-    public Terrain getTerrain(String name) {
+    public Terrain getTerrain(ResourceLocation name) {
         for (Terrain terrain : this.populators.keySet()) {
-            if (!terrain.getName().equalsIgnoreCase(name)) continue;
+            if (!terrain.getName().equals(name)) continue;
             return terrain;
         }
         return null;
@@ -103,7 +105,7 @@ public class StandardTerrainProvider implements TerrainProvider {
 
     @Override
     public Populator[] getPopulators() {
-        List<TerrainPopulator> mixed = StandardTerrainProvider.combine(StandardTerrainProvider.getMixable(this.mixable), (arg_0, arg_1) -> this.combine(arg_0, arg_1));
+        List<TerrainPopulator> mixed = StandardTerrainProvider.combine(StandardTerrainProvider.getMixable(this.mixable), (p1, p2) -> this.combine(p1, p2));
         ArrayList<Populator> result = new ArrayList<Populator>(mixed.size() + this.unmixable.size());
         result.addAll(mixed);
         result.addAll(this.unmixable);

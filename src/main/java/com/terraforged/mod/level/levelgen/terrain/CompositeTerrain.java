@@ -3,24 +3,21 @@
  */
 package com.terraforged.mod.level.levelgen.terrain;
 
+import com.terraforged.mod.TerraForged;
+
+import net.minecraft.resources.ResourceLocation;
+
 public class CompositeTerrain extends Terrain {
-    private final boolean flat;
     private final float erosion;
 
     CompositeTerrain(int id, Terrain a, Terrain b) {
-        super(id, a.getName() + "-" + b.getName(), CompositeTerrain.getDominant(a, b));
-        this.flat = a.isFlat() && b.isFlat();
+        super(id, new ResourceLocation(TerraForged.MODID, a.toString() + "-" + b.toString()), CompositeTerrain.getDominant(a, b));
         this.erosion = Math.min(a.erosionModifier(), b.erosionModifier());
     }
 
     @Override
     public float erosionModifier() {
         return this.erosion;
-    }
-
-    @Override
-    public boolean isFlat() {
-        return this.flat;
     }
 
     private static Terrain getDominant(Terrain a, Terrain b) {

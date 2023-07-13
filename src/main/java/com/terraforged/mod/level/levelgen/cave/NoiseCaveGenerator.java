@@ -51,10 +51,14 @@ public class NoiseCaveGenerator {
     protected final Map<ChunkPos, CarverChunk> cache = new ConcurrentHashMap<>();
 
     public NoiseCaveGenerator(Holder<NoiseCave>[] caves) {
-    	this.caves = createArray(caves);
+    	this.caves = caves;
         this.uniqueCaveNoise = createUniqueNoise(500, DENSITY);
         this.caveBreachNoise = createBreachNoise(300, BREACH_THRESHOLD);
         this.pool = new ObjectPool<>(POOL_SIZE, () -> this.createCarverChunk(caves.length));
+    }
+    
+    public Module getBreachNoise() {
+    	return this.caveBreachNoise;
     }
     
     public void carve(int seed, ChunkAccess chunk, TFChunkGenerator generator) {
@@ -79,11 +83,11 @@ public class NoiseCaveGenerator {
         this.pool.restore(carver);
     }
 
-    private CarverChunk getPreCarveChunk(ChunkAccess chunk) {
+    public CarverChunk getPreCarveChunk(ChunkAccess chunk) {
         return this.cache.computeIfAbsent(chunk.getPos(), p -> this.pool.take().reset());
     }
 
-    private CarverChunk getPostCarveChunk(int seed, ChunkAccess chunk, TFChunkGenerator generator) {
+    public CarverChunk getPostCarveChunk(int seed, ChunkAccess chunk, TFChunkGenerator generator) {
         var carver = this.cache.remove(chunk.getPos());
         if (carver != null) return carver;
 
@@ -106,7 +110,7 @@ public class NoiseCaveGenerator {
     }
 
     private Module getModifier(NoiseCave cave) {
-        return switch (cave.getType()) {
+        return switch (cave.type()) {
             case GLOBAL -> Source.ONE;
             case UNIQUE -> this.uniqueCaveNoise;
         };
@@ -124,30 +128,5 @@ public class NoiseCaveGenerator {
 
     private static Module createBreachNoise(int scale, float threshold) {
         return Source.simplexRidge(1567328, scale, 2).clamp(threshold * 0.8F, threshold).map(0, 1);
-    }
-
-    private static Holder<NoiseCave>[] createArray(Holder<NoiseCave>[] source) {
-        int length = 0;
-        for (var cave : source) {
-            length += getCount(cave);
-        }
-
-        @SuppressWarnings("unchecked")
-		Holder<NoiseCave>[] array = new Holder[length];
-
-        int i = 0;
-        for (Holder<NoiseCave> cave : source) {
-            int count = getCount(cave);
-            for (int j = 0; j < count; j++) {
-                array[i++] = cave;
-            }
-        }
-
-        return array;
-    }
-
-    private static int getCount(Holder<NoiseCave> cave) {
-//        return cave.getType() == CaveType.GLOBAL ? GLOBAL_CAVE_REPS : 1;
-    	return GLOBAL_CAVE_REPS;
     }
 }
