@@ -6,18 +6,18 @@ package com.terraforged.mod.level.levelgen.terrain.populator;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.settings.TerrainSettings;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
+//import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 
 public class TerrainPopulator implements Populator {
 	protected final float weight;
-    protected final Terrain type;
+//    protected final Terrain type;
     protected final Module base;
     protected final Module variance;
 
-    public TerrainPopulator(Terrain type, Module base, Module variance, float weight) {
-        this.type = type;
+    public TerrainPopulator(/*Terrain type, */Module base, Module variance, float weight) {
+//        this.type = type;
         this.base = base;
         this.weight = weight;
         this.variance = variance;
@@ -31,9 +31,9 @@ public class TerrainPopulator implements Populator {
         return this.variance;
     }
 
-    public Terrain getType() {
-        return this.type;
-    }
+//    public Terrain getType() {
+//        return this.type;
+//    }
 
     @Override
     public void apply(Cell cell, float x, float z) {
@@ -45,7 +45,7 @@ public class TerrainPopulator implements Populator {
         } else if (cell.value > 1.0f) {
             cell.value = 1.0f;
         }
-        cell.terrain = this.type;
+//        cell.terrain = this.type;
     }
 
     public static Module clamp(Module module) {
@@ -55,15 +55,15 @@ public class TerrainPopulator implements Populator {
         return module;
     }
 
-    public static TerrainPopulator of(Terrain type, Module variance) {
-        return new TerrainPopulator(type, Source.ZERO, variance, 1.0f);
+    public static TerrainPopulator of(/*Terrain type, */Module variance) {
+        return new TerrainPopulator(/*type, */Source.ZERO, variance, 1.0f);
     }
 
-    public static TerrainPopulator of(Terrain type, Module base, Module variance, TerrainSettings.Terrain settings) {
+    public static TerrainPopulator of(/*Terrain type, */Module base, Module variance, TerrainSettings.Terrain settings) {
         if (settings.verticalScale() == 1.0f && settings.baseScale() == 1.0f) {
-            return new TerrainPopulator(type, base, variance, settings.weight());
+            return new TerrainPopulator(/*type, */base, variance, settings.weight());
         }
-        return new ScaledPopulator(type, base, variance, settings.baseScale(), settings.verticalScale(), settings.weight());
+        return new ScaledPopulator(/*type, */base, variance, settings.baseScale(), settings.verticalScale(), settings.weight());
     }
 }
 

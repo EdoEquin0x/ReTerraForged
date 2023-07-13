@@ -7,7 +7,6 @@ import java.util.Random;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.heightmap.Levels;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.func.CurveFunc;
@@ -17,7 +16,6 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class RiverCarver extends TerrainPopulator implements Comparable<RiverCarver> {
     public final boolean main;
-    private final boolean connecting;
     private final float fade;
     private final float fadeInv;
     private final Range bedWidth;
@@ -32,7 +30,7 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
     public final CurveFunc valleyCurve;
 
     public RiverCarver(River river, RiverWarp warp, RiverConfig config, Settings settings, Levels levels) {
-        super(TerrainType.RIVER, Source.ZERO, Source.ZERO, 1.0f);
+        super(Source.ZERO, Source.ZERO, 1.0f);
         this.fade = settings.fadeIn;
         this.fadeInv = 1.0f / settings.fadeIn;
         this.bedWidth = new Range(0.25f, config.bedWidth * config.bedWidth);
@@ -42,7 +40,6 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
         this.warp = warp;
         this.config = config;
         this.main = config.main;
-        this.connecting = settings.connecting;
         this.waterLine = levels.water;
         this.bedDepth = new Range(levels.water, config.bedHeight);
         this.banksDepth = new Range(config.minBankHeight, config.maxBankHeight);
@@ -70,9 +67,6 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
         valleyAlpha = this.valleyCurve.apply(valleyAlpha);
         cell.riverMask = Math.min(cell.riverMask, 1.0f - valleyAlpha);
         cell.value = Math.min(NoiseUtil.lerp(cell.value, bankHeight, valleyAlpha), cell.value);
-        if (!this.connecting || t > 1.0f) {
-            // empty if block
-        }
         float mouthModifier = RiverCarver.getMouthModifier(cell);
         float bedHeight = this.getScaledSize(t, this.bedDepth);
         float banksAlpha = this.getDistanceAlpha(t, d2 * mouthModifier, this.banksWidth);
@@ -135,12 +129,12 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
     }
 
     private void tag(Cell cell, float bedHeight) {
-        if (cell.terrain.overridesRiver() && (cell.value < bedHeight || cell.value > this.waterLine)) {
+        if (/*cell.terrain.overridesRiver()*/cell.overrideRiver && (cell.value < bedHeight || cell.value > this.waterLine)) {
             return;
         }
         cell.erosionMask = true;
         if (cell.value <= this.waterLine) {
-            cell.terrain = TerrainType.RIVER;
+//            cell.terrain = TerrainType.RIVER;
         }
     }
 
@@ -169,7 +163,6 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
         RiverWarp warp = RiverWarp.create(0.35f, random);
         float valleyWidth = 275.0f * River.MAIN_VALLEY.next(random);
         Settings settings = RiverCarver.creatSettings(random);
-        settings.connecting = false;
         settings.fadeIn = config.fade;
         settings.valleySize = valleyWidth;
         return new RiverCarver(river, warp, config, settings, levels);
@@ -184,7 +177,6 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
     public static class Settings {
         public float valleySize = 275.0f;
         public float fadeIn = 0.7f;
-        public boolean connecting = false;
         public CurveFunc valleyCurve = new SCurve(2.0f, -0.5f);
     }
 }

@@ -4,7 +4,6 @@
 package com.terraforged.mod.level.levelgen.rivermap.lake;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.util.NoiseUtil;
@@ -25,7 +24,7 @@ public class Lake extends TerrainPopulator {
 	protected final Vec2f center;
 
 	public Lake(Vec2f center, float radius, float multiplier, LakeConfig config) {
-		super(TerrainType.LAKE, Source.ZERO, Source.ZERO, 1.0f);
+		super(Source.ZERO, Source.ZERO, 1.0f);
 		float valley;
 		float lake = radius * multiplier;
 		this.valley = valley = 275.0f * multiplier;
@@ -73,7 +72,6 @@ public class Lake extends TerrainPopulator {
 			}
 			float lakeDepth = Math.min(cell.value, this.depth);
 			cell.value = NoiseUtil.lerp(cell.value, lakeDepth, depthAlpha);
-			cell.terrain = TerrainType.LAKE;
 			cell.riverMask = Math.min(cell.riverMask, 1.0f - depthAlpha);
 		}
 	}

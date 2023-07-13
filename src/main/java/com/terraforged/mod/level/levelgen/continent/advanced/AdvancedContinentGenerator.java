@@ -94,7 +94,7 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
 
     @Override
     public float getEdgeValue(float x, float z) {
-        try (Resource<Cell> resource = Cell.getResource();){
+        try (Resource<Cell> resource = Cell.getResource();) {
             Cell cell = resource.get();
             this.apply(cell, x, z);
             float f = cell.continentEdge;
@@ -104,7 +104,7 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
 
     @Override
     public long getNearestCenter(float x, float z) {
-        try (Resource<Cell> resource = Cell.getResource();){
+        try (Resource<Cell> resource = Cell.getResource();) {
             Cell cell = resource.get();
             this.apply(cell, x, z);
             long l = PosUtil.pack(cell.continentX, cell.continentZ);

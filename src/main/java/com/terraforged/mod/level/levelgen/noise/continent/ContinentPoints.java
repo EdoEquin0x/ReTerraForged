@@ -26,8 +26,6 @@ package com.terraforged.mod.level.levelgen.noise.continent;
 
 import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.noise.continent.shape.FalloffPoint;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.util.MathUtil;
 
 public interface ContinentPoints {
@@ -36,20 +34,7 @@ public interface ContinentPoints {
     float BEACH = 0.5f;
     float COAST = 0.55f;
     float INLAND = 0.6f;
-
-    static Terrain getTerrainType(float continentNoise) {
-        if (continentNoise < ContinentPoints.SHALLOW_OCEAN) {
-            return TerrainType.DEEP_OCEAN;
-        }
-        if (continentNoise < ContinentPoints.BEACH) {
-            return TerrainType.SHALLOW_OCEAN;
-        }
-        if (continentNoise < ContinentPoints.COAST) {
-            return TerrainType.COAST;
-        }
-        return TerrainType.NONE;
-    }
-
+    
     static FalloffPoint[] getFalloff(ControlPoints controlPoints) {
         return new FalloffPoint[] {
         	new FalloffPoint(controlPoints.inland, 1.0f, 1.0f),

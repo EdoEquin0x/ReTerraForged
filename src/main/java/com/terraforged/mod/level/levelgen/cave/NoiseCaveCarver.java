@@ -40,8 +40,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 public class NoiseCaveCarver {
     private static final int CHUNK_AREA = 16 * 16;
 
-    public static void carve(int seed,
-                             ChunkAccess chunk,
+    public static void carve(int seedOffset,
+    						 ChunkAccess chunk,
                              CarverChunk carver,
                              TFChunkGenerator generator,
                              NoiseCave config,
@@ -71,7 +71,7 @@ public class NoiseCaveCarver {
 
             if (top - bottom < 2) continue;
 
-            var biome = carver.getBiome(seed, x, z, config, generator);
+            var biome = carver.getBiome(seedOffset, x, z, config, generator);
 
             if (carve) {
                 carve(chunk, biome, dx, dz, bottom, top, surface, pos);

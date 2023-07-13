@@ -24,12 +24,10 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.river;
 
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
-
 public record CarverSample(NodeSample river, NodeSample lake) {
 
     public CarverSample() {
-    	this(new NodeSample(TerrainType.RIVER), new NodeSample(TerrainType.LAKE));
+    	this(new NodeSample(), new NodeSample());
     }
     
     public CarverSample reset() {

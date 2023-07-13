@@ -168,7 +168,7 @@ public class ErosionNoiseGenerator extends NoiseGenerator {
                 var sample = resource.chunkSample.get(chunkIndex);
                 sample.heightNoise = height;
 
-                super.sampleRiver(nx, nz, sample);
+                this.continent.sampleRiver(nx, nz, sample);
 
                 resource.chunk.setNoise(chunkIndex, sample);
             }

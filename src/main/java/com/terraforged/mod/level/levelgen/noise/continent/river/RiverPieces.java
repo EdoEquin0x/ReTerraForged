@@ -24,52 +24,47 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.river;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RiverPieces {
     public static final RiverPieces NONE = new RiverPieces();
-    private static final int INITIAL_SIZE = RiverGenerator.DIRS.length;
-    private static final int GROW_AMOUNT = 1;
 
-    private int riverCount = 0;
-    private int lakeCount = 0;
-    private RiverNode[] riverNodes = new RiverNode[INITIAL_SIZE];
-    private RiverNode[] lakeNodes = new RiverNode[INITIAL_SIZE];
+    private List<RiverNode> rivers;
+    private List<RiverNode> lakes;
 
+    public RiverPieces() {
+    	this.rivers = new ArrayList<>();
+    	this.lakes = new ArrayList<>();
+    }
+    
     public RiverPieces reset() {
-        riverCount = 0;
-        lakeCount = 0;
-        return this;
+    	this.rivers.clear();
+    	this.lakes.clear();
+    	return this;
     }
 
     public int riverCount() {
-        return riverCount;
+        return this.rivers.size();
     }
 
     public int lakeCount() {
-        return lakeCount;
+        return this.lakes.size();
     }
 
     public RiverNode river(int i) {
-        return riverNodes[i];
+        return this.rivers.get(i);
     }
 
     public RiverNode lake(int i) {
-        return lakeNodes[i];
+        return this.lakes.get(i);
     }
 
     public void addRiver(RiverNode node) {
-        riverNodes = ensureCapacity(riverCount, riverNodes);
-        riverNodes[riverCount++] = node;
+    	this.rivers.add(node);
     }
 
     public void addLake(RiverNode node) {
-        lakeNodes = ensureCapacity(lakeCount, lakeNodes);
-        lakeNodes[lakeCount++] = node;
-    }
-
-    private RiverNode[] ensureCapacity(int size, RiverNode[] array) {
-        if (size < array.length) return array;
-        return Arrays.copyOf(array, size + GROW_AMOUNT);
+    	this.lakes.add(node);
     }
 }

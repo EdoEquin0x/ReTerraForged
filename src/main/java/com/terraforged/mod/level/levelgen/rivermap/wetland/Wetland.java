@@ -5,7 +5,6 @@ package com.terraforged.mod.level.levelgen.rivermap.wetland;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.heightmap.Levels;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
@@ -29,10 +28,9 @@ public class Wetland extends TerrainPopulator {
     private final float moundVariance;
     private final Module moundShape;
     private final Module moundHeight;
-    private final Module terrainEdge;
 
     public Wetland(int seed, Vec2f a, Vec2f b, float radius, Levels levels) {
-        super(TerrainType.WETLAND, Source.ZERO, Source.ZERO, 1.0f);
+        super(Source.ZERO, Source.ZERO, 1.0f);
         this.a = a;
         this.b = b;
         this.radius = radius;
@@ -44,7 +42,6 @@ public class Wetland extends TerrainPopulator {
         this.moundVariance = this.moundMax - this.moundMin;
         this.moundShape = Source.perlin(++seed, 10, 1).clamp(0.3, 0.6).map(0.0, 1.0);
         this.moundHeight = Source.simplex(++seed, 20, 1).clamp(0.0, 0.3).map(0.0, 1.0);
-        this.terrainEdge = Source.perlin(++seed, 8, 1).clamp(0.2, 0.8).map(0.0, 0.9);
     }
 
     @Override
@@ -75,9 +72,6 @@ public class Wetland extends TerrainPopulator {
         }
         if (poolsAlpha >= 1.0f) {
             cell.erosionMask = true;
-        }
-        if (dist > 0.65f && poolsAlpha > this.terrainEdge.getValue(x, z)) {
-            cell.terrain = this.getType();
         }
         if (cell.value >= this.bed && cell.value < this.moundMax) {
             float shapeAlpha = this.moundShape.getValue(x, z) * poolsAlpha;

@@ -73,6 +73,7 @@ public class FastPoisson {
     private static boolean checkNeighbours(int startX, int startZ, long point, int x, int z, int halfRadius, float radius2, LongIterSet region) {
         region.reset();
         int boundHigh = 16 + halfRadius;
+
         while (region.hasNext()) {
             int pz;
             int px;

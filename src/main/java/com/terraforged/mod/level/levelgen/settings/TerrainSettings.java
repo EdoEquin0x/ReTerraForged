@@ -5,7 +5,6 @@ package com.terraforged.mod.level.levelgen.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Module;
 
 public record TerrainSettings(General general, Terrain steppe, Terrain plains, Terrain hills, Terrain dales, Terrain plateau, Terrain badlands, Terrain torridonian, Terrain mountains) {
@@ -47,7 +46,14 @@ public record TerrainSettings(General general, Terrain steppe, Terrain plains, T
             double moduleBias = bias * (double)this.baseScale;
             double moduleScale = scale * (double)this.verticalScale;
             Module outputModule = module.scale(moduleScale).bias(moduleBias);
-            return TerrainPopulator.clamp(outputModule);
+            return clamp(outputModule);
+        }
+        
+        private static Module clamp(Module module) {
+            if (module.minValue() < 0.0f || module.maxValue() > 1.0f) {
+                return module.clamp(0.0, 1.0);
+            }
+            return module;
         }
     }
 

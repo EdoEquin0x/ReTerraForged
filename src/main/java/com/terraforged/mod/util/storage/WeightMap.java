@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -29,18 +30,23 @@ public class WeightMap<T> implements Iterable<T> {
         this.sumWeight = MathUtil.sum(weights) * MathUtil.EPSILON;
     }
 
+    @SuppressWarnings("unchecked")
+	public Stream<T> streamValues() {
+    	return (Stream<T>) Stream.of(this.values);
+    }
+    
     public boolean isEmpty() {
         return values.length == 0;
     }
 
     @SuppressWarnings("unchecked")
-	public T getValue(float noise) {
-        noise *= sumWeight;
+	public T getValue(float value) {
+        value *= sumWeight;
 
-        if (noise < zeroWeight) return (T) values[0];
+        if (value < zeroWeight) return (T) values[0];
 
         for (int i = 1; i < cumulativeWeights.length; i++) {
-            if (noise < cumulativeWeights[i]) {
+            if (value < cumulativeWeights[i]) {
                 return (T) values[i];
             }
         }

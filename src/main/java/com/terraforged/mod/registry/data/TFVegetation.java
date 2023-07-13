@@ -34,7 +34,6 @@ import com.terraforged.mod.level.levelgen.biome.viability.SlopeViability;
 import com.terraforged.mod.level.levelgen.biome.viability.SumViability;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.noise.Source;
-import com.terraforged.mod.util.seed.RandSeed;
 
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -50,7 +49,7 @@ public interface TFVegetation {
 	static ResourceKey<VegetationConfig> TREES_SPARSE_RAINFOREST = resolve("trees_sparse_rainforest");
 		
     static void register(BootstapContext<VegetationConfig> ctx) {
-        var seed = Factory.createSeed();
+        var seed = new Seed(0);
         ctx.register(TREES_COPSE, Factory.copse(seed));
         ctx.register(TREES_SPARSE, Factory.sparse(seed));
         ctx.register(TREES_PATCHY, Factory.patchy(seed));
@@ -66,9 +65,6 @@ public interface TFVegetation {
 	}
 
     class Factory {
-        static Seed createSeed() {
-            return new RandSeed(2353245L, 500_000);
-        }
 
         static VegetationConfig copse(Seed seed) {
             return new VegetationConfig(0.20F, 0.8F, 0.6F, TFTags.COPSES, SumViability.builder(0F)
@@ -145,20 +141,6 @@ public interface TFVegetation {
                     .with(-0.75F, new BiomeEdgeViability(0.8F))
                     .with(-0.45F, new NoiseViability(Source.simplex(seed.next(), 150, 3).clamp(0.4, 0.7).map(0, 1)))
                     .build());
-        }
-
-        static VegetationConfig[] getDefaults() {
-            var seed = new RandSeed(2353245L, 500_000);
-            return new VegetationConfig[] {
-                    copse(seed),
-                    hardy(seed),
-                    hardySlopes(seed),
-                    sparse(seed),
-                    rainforest(seed),
-                    sparseRainforest(seed),
-                    temperate(seed),
-                    patchy(seed),
-            };
         }
     }
 }

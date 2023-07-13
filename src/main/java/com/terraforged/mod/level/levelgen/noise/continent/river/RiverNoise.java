@@ -38,7 +38,7 @@ import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
 import com.terraforged.mod.util.storage.ObjectPool;
 
-public class RiverGenerator {
+public class RiverNoise {
     public static final Vec2i[] DIRS = {new Vec2i(1, 0), new Vec2i(0, 1), new Vec2i(-1, 0), new Vec2i(0, -1)};
 
     private static final int X_OFFSET = 8657124;
@@ -60,7 +60,7 @@ public class RiverGenerator {
     private final ObjectPool<RiverPieces> pool = ObjectPool.forCacheSize(RIVER_CACHE_SIZE, RiverPieces::new);
     private final LongCache<RiverPieces> cache = LossyCache.concurrent(RIVER_CACHE_SIZE, RiverPieces[]::new, this.pool);
 
-    public RiverGenerator(int seed, ContinentGenerator continent, ContinentConfig config) {
+    public RiverNoise(int seed, ContinentGenerator continent, ContinentConfig config) {
     	this.seed = seed;
     	this.continent = continent;
         this.lakeDensity = config.rivers.lakeDensity;
@@ -139,7 +139,7 @@ public class RiverGenerator {
             float radius = node.getRadius(sample.projection);
             sample.distance = NoiseUtil.sqrt(sample.distance);
             sample.position = radius;
-            sample.level = continent.shapeGenerator.getBaseNoise(level);
+            sample.level = continent.shapeNoise.getBaseNoise(level);
         } else {
             sample.invalidate();
         }
@@ -155,7 +155,7 @@ public class RiverGenerator {
         int ay = PosUtil.unpackRight(index);
 
         var a = continent.getCell(ax, ay);
-        if (continent.shapeGenerator.getThresholdValue(a) <= 0) return RiverPieces.NONE;
+        if (continent.shapeNoise.getThresholdValue(a) <= 0) return RiverPieces.NONE;
 
         var min = a;
         float minValue = getBaseValue(a);
@@ -253,7 +253,7 @@ public class RiverGenerator {
         // If B is an ocean cell then extend the connection all the way to prevent
         // rivers stopping short at the coast/beach. Note: we must use the 'b.noise'
         // here and not the low-octave 'b.noise()'.
-        if (b.noise < continent.shapeGenerator.threshold) {
+        if (b.noise < continent.shapeNoise.threshold) {
             pieces.addRiver(new RiverNode(mx, my, b.px, b.py, mh, bh, mr, br, warp1));
         }
     }
@@ -291,11 +291,11 @@ public class RiverGenerator {
 
     private boolean hasLake(CellPoint cell, int hash) {
         return MathUtil.rand(hash + LAKE_CHANCE_OFFSET) <= lakeDensity
-                || continent.shapeGenerator.getBaseNoise(cell.noise()) < 0.25f;
+                || continent.shapeNoise.getBaseNoise(cell.noise()) < 0.25f;
     }
 
     private float getBaseValue(CellPoint point) {
-        return continent.shapeGenerator.getThresholdValue(point) <= 0 ? 0 : point.noise();
+        return continent.shapeNoise.getThresholdValue(point) <= 0 ? 0 : point.noise();
     }
 
     private float getHeight(float noise, float min, float max) {

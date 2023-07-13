@@ -30,8 +30,8 @@ import com.terraforged.mod.level.levelgen.noise.continent.cell.CellPoint;
 import com.terraforged.mod.level.levelgen.noise.continent.cell.CellShape;
 import com.terraforged.mod.level.levelgen.noise.continent.cell.CellSource;
 import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig;
-import com.terraforged.mod.level.levelgen.noise.continent.river.RiverGenerator;
-import com.terraforged.mod.level.levelgen.noise.continent.shape.ShapeGenerator;
+import com.terraforged.mod.level.levelgen.noise.continent.river.RiverNoise;
+import com.terraforged.mod.level.levelgen.noise.continent.shape.ShapeNoise;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.MathUtil;
@@ -58,8 +58,8 @@ public class ContinentGenerator {
 
     public final CellShape cellShape;
     public final CellSource cellSource;
-    public final RiverGenerator riverGenerator;
-    public final ShapeGenerator shapeGenerator;
+    public final RiverNoise riverNoise;
+    public final ShapeNoise shapeNoise;
 
     private final ObjectPool<CellPoint> cellPool = ObjectPool.forCacheSize(CELL_POINT_CACHE_SIZE, CellPoint::new);
     private final LongCache<CellPoint> cellCache = LossyCache.concurrent(CELL_POINT_CACHE_SIZE, CellPoint[]::new, cellPool);
@@ -76,8 +76,8 @@ public class ContinentGenerator {
         this.jitter = config.shape.jitter;
         this.cellShape = config.shape.cellShape;
         this.cellSource = config.shape.cellSource;
-        this.riverGenerator = new RiverGenerator(levelSeed, this, config);
-        this.shapeGenerator = new ShapeGenerator(this, config, controlPoints);
+        this.riverNoise = new RiverNoise(levelSeed, this, config);
+        this.shapeNoise = new ShapeNoise(this, config, controlPoints);
     }
 
     public Vec2f getWorldOffset() {
@@ -131,8 +131,8 @@ public class ContinentGenerator {
         int cy = PosUtil.unpackRight(index) + oy;
 
         int hash = MathUtil.hash(this.seed, cx, cy);
-        float px = cellShape.getCellX(hash, cx, cy, jitter);
-        float py = cellShape.getCellY(hash, cx, cy, jitter);
+        float px = cellShape.getCellX(hash, cx, cy, this.jitter);
+        float py = cellShape.getCellY(hash, cx, cy, this.jitter);
 
         cell.px = px;
         cell.py = py;
@@ -140,7 +140,7 @@ public class ContinentGenerator {
         float target = 4000f;
         float freq = (CONTINENT_SAMPLE_SCALE / target);
 
-        sampleCell(this.levelSeed + sampleSeed, px, py,  cellSource,2, freq, 2.75f, 0.3f, cell);
+        sampleCell(this.levelSeed + this.sampleSeed, px, py, this.cellSource, 2, freq, 2.75f, 0.3f, cell);
 
         return cell;
     }
@@ -175,7 +175,7 @@ public class ContinentGenerator {
             long pos = iterator.next();
             computeCell(pos, 0, 0, cell);
 
-            if (shapeGenerator.getThresholdValue(cell) == 0) {
+            if (shapeNoise.getThresholdValue(cell) == 0) {
                 continue;
             }
 
@@ -200,7 +200,7 @@ public class ContinentGenerator {
 
                 computeCell(pos, dx, dy, cell);
 
-                if (shapeGenerator.getThresholdValue(cell) == 0) {
+                if (shapeNoise.getThresholdValue(cell) == 0) {
                     return false;
                 }
             }

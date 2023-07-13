@@ -6,8 +6,6 @@ package com.terraforged.mod.level.levelgen.cell;
 import com.terraforged.mod.concurrent.Resource;
 import com.terraforged.mod.concurrent.SimpleResource;
 import com.terraforged.mod.concurrent.pool.ThreadLocalPool;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 
 public class Cell {
     private static final Cell defaults = new Cell();
@@ -38,7 +36,9 @@ public class Cell {
     public int continentX;
     public int continentZ;
     public boolean erosionMask = false;
-    public Terrain terrain = TerrainType.NONE;
+    public boolean overrideRiver = false;
+    public float erosionModifier = 1.0F;
+    public boolean isCoast = false;
 
     public void copyFrom(Cell other) {
         this.value = other.value;
@@ -58,7 +58,6 @@ public class Cell {
         this.gradient = other.gradient;
         this.erosion = other.erosion;
         this.sediment = other.sediment;
-        this.terrain = other.terrain;
     }
 
     public Cell reset() {

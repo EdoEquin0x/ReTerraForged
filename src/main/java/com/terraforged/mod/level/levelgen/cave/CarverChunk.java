@@ -66,12 +66,12 @@ public class CarverChunk {
         return biomes.get(config);
     }
 
-    public Holder<Biome> getBiome(int seed, int x, int z, NoiseCave cave, TFChunkGenerator generator) {
+    public Holder<Biome> getBiome(int offset, int x, int z, NoiseCave cave, TFChunkGenerator generator) {
         int biomeX = x >> 2;
         int biomeZ = z >> 2;
         if (cached == null || biomeX != cachedX || biomeZ != cachedZ) {
             // pretty sure the seed passed to this should be derived from the cave seed
-            cached = generator.getCaveBiomeSampler().getUnderGroundBiome(seed, x, z, cave.type());
+            cached = generator.getCaveBiomeSampler().getUnderGroundBiome(offset, x, z, cave);
             cachedX = biomeX;
             cachedZ = biomeZ;
             biomes.computeIfAbsent(cave, c -> nextList()).add(cached);

@@ -7,7 +7,6 @@ import com.terraforged.mod.concurrent.cache.map.LoadBalanceLongMap;
 import com.terraforged.mod.concurrent.cache.map.LongMap;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.util.pos.PosUtil;
 
 public class HeightmapCache {
@@ -60,9 +59,9 @@ public class HeightmapCache {
         int z = PosUtil.unpackRight(index);
         Cell cell = new Cell();
         this.heightmap.apply(cell, x, z);
-        if (cell.terrain == TerrainType.COAST && cell.value > this.waterLevel && cell.value <= this.beachLevel) {
-            cell.terrain = TerrainType.BEACH;
-        }
+//        if (cell.terrain == TerrainType.COAST && cell.value > this.waterLevel && cell.value <= this.beachLevel) {
+//            cell.terrain = TerrainType.BEACH;
+//        }
         return cell;
     }
 
@@ -78,11 +77,8 @@ public class HeightmapCache {
     }
 
     private static class CachedContext {
-        private Cell cell;
-        private Rivermap rivermap;
-
-        private CachedContext() {
-        }
+        public Cell cell;
+        public Rivermap rivermap;
     }
 }
 

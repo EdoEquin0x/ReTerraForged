@@ -107,7 +107,6 @@ public class RiverCarver {
         if (riverAlpha < 1.0f) {
             float level = Math.min(bedLevel, height);
             height = NoiseUtil.lerp(level, height, riverAlpha);
-            sample.terrainType = nodeSample.type;
             sample.riverNoise *= getRiverNoise(height, baseLevel, bankLevel);
         }
 

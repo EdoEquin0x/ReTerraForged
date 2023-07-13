@@ -96,7 +96,6 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
                     if (!this.riverOverlaps(river, parent, rivers)) {
                         float valleyWidth = 275.0f * River.FORK_VALLEY.next(random);
                         RiverCarver.Settings settings = BaseRiverGenerator.creatSettings(random);
-                        settings.connecting = true;
                         settings.fadeIn = config.fade;
                         settings.valleySize = valleyWidth;
                         RiverWarp forkWarp = parent.carver.warp.createChild(0.15f, 0.75f, 0.65f, random);
@@ -194,7 +193,6 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
         RiverWarp warp = RiverWarp.create(0.35f, random);
         float valleyWidth = 275.0f * River.MAIN_VALLEY.next(random);
         RiverCarver.Settings settings = BaseRiverGenerator.creatSettings(random);
-        settings.connecting = false;
         settings.fadeIn = config.fade;
         settings.valleySize = valleyWidth;
         return new RiverCarver(river, warp, config, settings, levels);
@@ -204,7 +202,6 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
         River river = new River(x1, z1, x2, z2);
         RiverWarp warp = RiverWarp.create(0.4f, random);
         RiverCarver.Settings settings = BaseRiverGenerator.creatSettings(random);
-        settings.connecting = true;
         settings.fadeIn = config.fade;
         settings.valleySize = valleyWidth;
         return new RiverCarver(river, warp, config, settings, levels);

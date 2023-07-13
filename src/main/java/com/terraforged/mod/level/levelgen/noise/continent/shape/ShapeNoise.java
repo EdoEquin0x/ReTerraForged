@@ -33,7 +33,7 @@ import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.pos.PosUtil;
 
-public class ShapeGenerator {
+public class ShapeNoise {
     private static final int RADIUS = 2;
 
     private final float baseFalloff;
@@ -47,7 +47,7 @@ public class ShapeGenerator {
     private final FalloffPoint[] falloffPoints;
     private final ThreadLocal<CellLocal[]> cellBuffer = ThreadLocal.withInitial(CellLocal::init);
 
-    public ShapeGenerator(ContinentGenerator continent, ContinentConfig config, ControlPoints controlPoints) {
+    public ShapeNoise(ContinentGenerator continent, ContinentConfig config, ControlPoints controlPoints) {
         this.continent = continent;
         this.baseFalloff = config.noise.baseNoiseFalloff;
         this.continentFalloff = config.noise.continentNoiseFalloff;

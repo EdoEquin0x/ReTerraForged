@@ -27,22 +27,25 @@ package com.terraforged.mod.level.levelgen.asset;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.cave.CaveType;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.world.level.biome.Biome;
 
-public record NoiseCave(CaveType type, Module elevation, Module shape, Module floor, int size, int minY, int maxY) {
-    public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    	CaveType.CODEC.fieldOf("type").forGetter(c -> c.type),
-    	Module.CODEC.fieldOf("elevation").forGetter(c -> c.elevation),
-    	Module.CODEC.fieldOf("shape").forGetter(c -> c.shape),
-    	Module.CODEC.fieldOf("floor").forGetter(c -> c.floor),
-    	Codec.INT.fieldOf("size").forGetter(c -> c.size),
-    	Codec.INT.optionalFieldOf("min_y", -32).forGetter(c -> c.minY),
-    	Codec.INT.fieldOf("max_y").forGetter(c -> c.maxY)
+public record NoiseCave(WeightMap<Holder<Biome>> biomes, Module elevation, Module shape, Module floor, Module modifier, int size, int minY, int maxY) {
+    @SuppressWarnings("unchecked")
+	public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		WeightMap.codec(Biome.CODEC, (size) -> (Holder<Biome>[]) new Holder[size]).fieldOf("biomes").forGetter(NoiseCave::biomes),
+    	Module.CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
+    	Module.CODEC.fieldOf("shape").forGetter(NoiseCave::shape),
+    	Module.CODEC.fieldOf("floor").forGetter(NoiseCave::floor),
+    	Module.CODEC.fieldOf("modifier").forGetter(NoiseCave::modifier),
+    	Codec.INT.fieldOf("size").forGetter(NoiseCave::size),
+    	Codec.INT.optionalFieldOf("min_y", -32).forGetter(NoiseCave::minY),
+    	Codec.INT.fieldOf("max_y").forGetter(NoiseCave::maxY)
     ).apply(instance, NoiseCave::new));
     public static final Codec<Holder<NoiseCave>> CODEC = RegistryFileCodec.create(TerraForged.CAVE, DIRECT_CODEC);
 

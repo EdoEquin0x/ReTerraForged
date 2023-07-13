@@ -1,10 +1,12 @@
 package com.terraforged.mod.level.levelgen.biome.source;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.codec.TFCodecs;
+import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
 import com.terraforged.mod.level.levelgen.noise.climate.ClimateSample;
 import com.terraforged.mod.util.pos.PosUtil;
@@ -20,11 +22,14 @@ import net.minecraft.world.level.biome.Climate;
 public class TFBiomeSource extends BiomeSource {
 	private final ClimateSampler sampler;
 	private final BiomeTree.ParameterList<Holder<Biome>> tree;
+	@Deprecated
+	private final Holder<NoiseCave>[] caves;
 	@SuppressWarnings("unchecked")
 	private final LongCache<Holder<Biome>> cache = LossyCache.concurrent(2048, i -> (Holder<Biome>[]) new Holder[i]);
 	
-	public TFBiomeSource(ClimateSampler sampler, BiomeTree.ParameterList<Holder<Biome>> tree) {
+	public TFBiomeSource(ClimateSampler sampler, BiomeTree.ParameterList<Holder<Biome>> tree, Holder<NoiseCave>[] caves) {
 		this.sampler = sampler;
+		this.caves = caves;
 		this.tree = tree;
 	}
 	
@@ -39,7 +44,7 @@ public class TFBiomeSource extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return this.tree.values().stream().map(Pair::getSecond);
+		return Stream.concat(this.tree.values().stream().map(Pair::getSecond), this.collectCaveBiomes());
 	}
 
 	@Override
@@ -51,5 +56,9 @@ public class TFBiomeSource extends BiomeSource {
 		ClimateSample sample = this.sampler.getSample();
 		this.sampler.sample(QuartPos.toBlock(x), QuartPos.toBlock(z), sample);
 		return this.tree.findValue(sample);
+	}
+	
+	private Stream<Holder<Biome>> collectCaveBiomes() {
+		return Arrays.stream(this.caves).flatMap((cave) -> cave.get().biomes().streamValues());
 	}
 }

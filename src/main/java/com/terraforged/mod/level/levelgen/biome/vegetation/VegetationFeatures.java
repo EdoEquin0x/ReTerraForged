@@ -38,18 +38,11 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 public class VegetationFeatures {
-    public static VegetationFeatures NONE = new VegetationFeatures();
     public static final int STAGE = GenerationStep.Decoration.VEGETAL_DECORATION.ordinal();
 
     private final PlacedFeature[] trees;
     private final PlacedFeature[] grass;
     private final PlacedFeature[] other;
-
-    private VegetationFeatures() {
-        trees = new PlacedFeature[0];
-        grass = new PlacedFeature[0];
-        other = new PlacedFeature[0];
-    }
 
     public VegetationFeatures(List<PlacedFeature> trees, List<PlacedFeature> grass, List<PlacedFeature> other) {
         this.trees = trees.toArray(PlacedFeature[]::new);

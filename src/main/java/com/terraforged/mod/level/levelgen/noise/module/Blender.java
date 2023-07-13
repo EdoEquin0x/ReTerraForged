@@ -6,7 +6,7 @@ package com.terraforged.mod.level.levelgen.noise.module;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
+//import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.func.Interpolation;
 import com.terraforged.mod.noise.util.NoiseUtil;
@@ -17,16 +17,14 @@ public class Blender extends Select implements Populator {
     private final float blendLower;
     private final float blendUpper;
     private final float blendRange;
-    private final float midpoint;
 
-    public Blender(Module control, Populator lower, Populator upper, float min, float max, float split) {
+    public Blender(Module control, Populator lower, Populator upper, float min, float max) {
         super(control);
         this.lower = lower;
         this.upper = upper;
         this.blendLower = min;
         this.blendUpper = max;
         this.blendRange = this.blendUpper - this.blendLower;
-        this.midpoint = this.blendLower + this.blendRange * split;
     }
 
     @Override
@@ -43,13 +41,9 @@ public class Blender extends Select implements Populator {
         float alpha = Interpolation.LINEAR.apply((select - this.blendLower) / this.blendRange);
         this.lower.apply(cell, x, y);
         float lowerVal = cell.value;
-        Terrain lowerType = cell.terrain;
         this.upper.apply(cell, x, y);
         float upperVal = cell.value;
         cell.value = NoiseUtil.lerp(lowerVal, upperVal, alpha);
-        if (select < this.midpoint) {
-            cell.terrain = lowerType;
-        }
     }
 }
 

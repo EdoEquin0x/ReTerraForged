@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.TerraForged;
+import com.terraforged.mod.level.levelgen.cave.UniqueCaveDistributor;
 import com.terraforged.mod.level.levelgen.noise.module.Valley;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.combiner.Add;
@@ -102,6 +103,7 @@ public interface TFModules {
 	ResourceKey<Codec<? extends Module>> SELECT = resolve("select");
 	ResourceKey<Codec<? extends Module>> VARIABLE_BLEND = resolve("variable_blend");
 	ResourceKey<Codec<? extends Module>> VALLEY = resolve("valley");
+	ResourceKey<Codec<? extends Module>> UNIQUE_CAVE_DISTRIBUTOR = resolve("unique_cave_distributor");
 	
 	static void register(BiConsumer<ResourceKey<Codec<? extends Module>>, Codec<? extends Module>> register) {
 		register.accept(CONSTANT, Constant.CODEC);
@@ -150,6 +152,7 @@ public interface TFModules {
 		register.accept(SELECT, Select.CODEC);
 		register.accept(VARIABLE_BLEND, VariableBlend.CODEC);
 		register.accept(VALLEY, Valley.Noise.CODEC);
+		register.accept(UNIQUE_CAVE_DISTRIBUTOR, UniqueCaveDistributor.CODEC);
 	}
 	
 	private static ResourceKey<Codec<? extends Module>> resolve(String path) {

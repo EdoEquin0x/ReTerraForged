@@ -100,8 +100,7 @@ public interface TFPresets {
 							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
 							caves.getOrThrow(TFCaves.SYNAPSE_MID)
 						}, 
-						createBiomes(biomes),
-						biomes
+						createBiomes(biomes)
 					)
 				)
 			)
@@ -124,7 +123,7 @@ public interface TFPresets {
 				BiomeTree.parameters(
 					BiomeTree.Parameter.span(0.0F, 1.0F),
 					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.25F, 1.0F),
 					BiomeTree.Parameter.span(0.0F, 1.0F),
 					BiomeTree.Parameter.span(0.05F, 1.0F)
 				),
@@ -139,6 +138,16 @@ public interface TFPresets {
 					BiomeTree.Parameter.span(0.0F, 0.05F)
 				),
 				biomes.getOrThrow(Biomes.RIVER)
+			),
+			Pair.of(
+				BiomeTree.parameters(
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 0.25F),
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 0.05F)
+				),
+				biomes.getOrThrow(Biomes.OCEAN)
 			)
 		);
 		return new BiomeTree.ParameterList<>(params);

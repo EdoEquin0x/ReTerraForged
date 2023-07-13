@@ -24,18 +24,11 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.river;
 
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
-
 public class NodeSample {
     public float projection = 0;
     public float distance = Float.NaN;;
     public float position = 0;
     public float level = 0;
-    public final Terrain type;
-
-    public NodeSample(Terrain type) {
-        this.type = type;
-    }
 
     public boolean isInvalid() {
         return Float.isNaN(distance);

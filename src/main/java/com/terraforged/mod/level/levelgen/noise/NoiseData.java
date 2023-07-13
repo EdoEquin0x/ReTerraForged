@@ -24,10 +24,8 @@
 
 package com.terraforged.mod.level.levelgen.noise;
 
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.util.storage.FloatMap;
 import com.terraforged.mod.util.storage.Index;
-import com.terraforged.mod.util.storage.ObjectMap;
 
 public class NoiseData {
     protected static final int BORDER = 1;
@@ -38,7 +36,6 @@ public class NoiseData {
     protected final FloatMap height = new FloatMap(BORDER);
     protected final FloatMap river = new FloatMap(BORDER);
     protected final FloatMap base = new FloatMap(BORDER);
-    protected final ObjectMap<Terrain> terrain = new ObjectMap<>(BORDER, Terrain[]::new);
 
     public int min() {
         return MIN;
@@ -68,17 +65,12 @@ public class NoiseData {
         return river;
     }
 
-    public ObjectMap<Terrain> getTerrain() {
-        return terrain;
-    }
-
     public void setNoise(int x, int z, NoiseSample sample) {
         int index = index().of(x, z);
         setNoise(index, sample);
     }
 
     public void setNoise(int index, NoiseSample sample) {
-        terrain.set(index, sample.terrainType);
         height.set(index, sample.heightNoise);
         base.set(index, sample.baseNoise);
         river.set(index, sample.riverNoise);

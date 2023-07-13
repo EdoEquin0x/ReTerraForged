@@ -25,9 +25,7 @@ import com.terraforged.mod.level.levelgen.tile.gen.TileResources;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.pos.PosUtil;
 
-public class Tile
-implements Disposable,
-SafeCloseable {
+public class Tile implements Disposable, SafeCloseable {
     protected final int regionX;
     protected final int regionZ;
     protected final int chunkX;
@@ -389,8 +387,7 @@ SafeCloseable {
         return PosUtil.unpackRight(id);
     }
 
-    protected class FilterRegion
-    implements Filterable {
+    protected class FilterRegion implements Filterable {
         protected FilterRegion() {
         }
 
@@ -424,9 +421,7 @@ SafeCloseable {
         }
     }
 
-    public class GenChunk
-    implements ChunkReader,
-    ChunkWriter {
+    public class GenChunk implements ChunkReader, ChunkWriter {
         private final int chunkX;
         private final int chunkZ;
         private final int blockX;

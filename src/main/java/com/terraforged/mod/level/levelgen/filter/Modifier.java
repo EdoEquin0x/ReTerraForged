@@ -7,11 +7,11 @@ import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public interface Modifier {
-    public float getValueModifier(float var1);
+    float getValueModifier(float var1);
 
-    default public float modify(Cell cell, float value) {
+    default float modify(Cell cell, float value) {
         float strengthModifier = 1.0f;
-        float erosionModifier = cell.terrain.erosionModifier();
+        float erosionModifier = cell.erosionModifier;//terrain.erosionModifier();
         if (erosionModifier != 1.0f) {
             float alpha = NoiseUtil.map(cell.terrainRegionEdge, 0.0f, 0.15f, 0.15f);
             strengthModifier = NoiseUtil.lerp(1.0f, erosionModifier, alpha);
@@ -22,11 +22,11 @@ public interface Modifier {
         return this.getValueModifier(cell.value) * strengthModifier * value;
     }
 
-    default public Modifier invert() {
+    default Modifier invert() {
         return v -> 1.0f - this.getValueModifier(v);
     }
 
-    public static Modifier range(final float minValue, final float maxValue) {
+    static Modifier range(final float minValue, final float maxValue) {
         return new Modifier(){
             private final float min;
             private final float max;

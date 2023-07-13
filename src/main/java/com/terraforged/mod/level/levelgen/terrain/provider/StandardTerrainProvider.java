@@ -5,12 +5,9 @@ package com.terraforged.mod.level.levelgen.terrain.provider;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
@@ -18,18 +15,14 @@ import com.terraforged.mod.level.levelgen.heightmap.RegionConfig;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.TerrainSettings;
 import com.terraforged.mod.level.levelgen.terrain.LandForms;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 
-import net.minecraft.resources.ResourceLocation;
-
 public class StandardTerrainProvider implements TerrainProvider {
     private final List<TerrainPopulator> mixable = new ArrayList<TerrainPopulator>();
     private final List<TerrainPopulator> unmixable = new ArrayList<TerrainPopulator>();
-    private final Map<Terrain, List<Populator>> populators = new HashMap<Terrain, List<Populator>>();
+    private final List<Populator> populators = new ArrayList<>();
     private final Seed seed;
     private final LandForms landForms;
     private final RegionConfig config;
@@ -48,54 +41,30 @@ public class StandardTerrainProvider implements TerrainProvider {
     }
 
     protected void init(GeneratorContext context) {
-        this.registerMixable(TerrainType.FLATS, this.landForms.getLandBase(), this.landForms.steppe(this.seed), this.settings.steppe());
-        this.registerMixable(TerrainType.FLATS, this.landForms.getLandBase(), this.landForms.plains(this.seed), this.settings.plains());
-        this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.dales(this.seed), this.settings.dales());
-        this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.hills1(this.seed), this.settings.hills());
-        this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.hills2(this.seed), this.settings.hills());
-        this.registerMixable(TerrainType.HILLS, this.landForms.getLandBase(), this.landForms.torridonian(this.seed), this.settings.torridonian());
-        this.registerMixable(TerrainType.PLATEAU, this.landForms.getLandBase(), this.landForms.plateau(this.seed), this.settings.plateau());
-        this.registerMixable(TerrainType.BADLANDS, this.landForms.getLandBase(), this.landForms.badlands(this.seed), this.settings.badlands());
-        this.registerUnMixable(TerrainType.BADLANDS, this.landForms.getLandBase(), this.landForms.badlands(this.seed), this.settings.badlands());
-        this.registerUnMixable(TerrainType.MOUNTAINS, this.landForms.getLandBase(), this.landForms.mountains(this.seed), this.settings.mountains());
-        this.registerUnMixable(TerrainType.MOUNTAINS, this.landForms.getLandBase(), this.landForms.mountains2(this.seed), this.settings.mountains());
-        this.registerUnMixable(TerrainType.MOUNTAINS, this.landForms.getLandBase(), this.landForms.mountains3(this.seed), this.settings.mountains());
-    }
-
-    @Override
-    public void forEach(Consumer<TerrainPopulator> consumer) {
-        this.mixable.forEach(consumer);
-        this.unmixable.forEach(consumer);
-    }
-
-    @Override
-    public Terrain getTerrain(ResourceLocation name) {
-        for (Terrain terrain : this.populators.keySet()) {
-            if (!terrain.getName().equals(name)) continue;
-            return terrain;
-        }
-        return null;
+        this.registerMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.steppe(this.seed), this.settings.steppe()));
+        this.registerMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.plains(this.seed), this.settings.plains()));
+        this.registerMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.dales(this.seed), this.settings.dales()));
+        this.registerMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.hills1(this.seed), this.settings.hills()));
+        this.registerMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.hills2(this.seed), this.settings.hills()));
+        this.registerMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.torridonian(this.seed), this.settings.torridonian()));
+        this.registerMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.plateau(this.seed), this.settings.plateau()));
+        this.registerMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.badlands(this.seed), this.settings.badlands()));
+        this.registerUnMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.badlands(this.seed), this.settings.badlands()));
+        this.registerUnMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.mountains(this.seed), this.settings.mountains()));
+        this.registerUnMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.mountains2(this.seed), this.settings.mountains()));
+        this.registerUnMixable(TerrainPopulator.of(this.landForms.getLandBase(), this.landForms.mountains3(this.seed), this.settings.mountains()));
     }
 
     @Override
     public void registerMixable(TerrainPopulator populator) {
-        this.populators.computeIfAbsent(populator.getType(), t -> new ArrayList<>()).add(populator);
+    	this.populators.add(populator);
         this.mixable.add(populator);
     }
 
     @Override
     public void registerUnMixable(TerrainPopulator populator) {
-        this.populators.computeIfAbsent(populator.getType(), t -> new ArrayList<>()).add(populator);
+    	this.populators.add(populator);
         this.unmixable.add(populator);
-    }
-
-    @Override
-    public int getVariantCount(Terrain terrain) {
-        List<Populator> list = this.populators.get(terrain);
-        if (list == null) {
-            return 0;
-        }
-        return list.size();
     }
 
     @Override
@@ -112,23 +81,15 @@ public class StandardTerrainProvider implements TerrainProvider {
         Collections.shuffle(result, new Random(this.seed.next()));
         return result.toArray(Populator[]::new);
     }
-
-    public List<TerrainPopulator> getTerrainPopulators() {
-        ArrayList<TerrainPopulator> populators = new ArrayList<TerrainPopulator>();
-        populators.addAll(this.mixable);
-        populators.addAll(this.unmixable);
-        return populators;
-    }
-
+    
     private TerrainPopulator combine(TerrainPopulator tp1, TerrainPopulator tp2) {
         return this.combine(tp1, tp2, this.seed, this.config.scale / 2);
     }
 
     private TerrainPopulator combine(TerrainPopulator tp1, TerrainPopulator tp2, Seed seed, int scale) {
-        Terrain type = TerrainType.registerComposite(tp1.getType(), tp2.getType());
         Module combined = Source.perlin(seed.next(), scale, 1).warp(seed.next(), scale / 2, 2, (double)scale / 2.0).blend(tp1.getVariance(), tp2.getVariance(), 0.5, 0.25).clamp(0.0, 1.0);
         float weight = (tp1.getWeight() + tp2.getWeight()) / 2.0f;
-        return new TerrainPopulator(type, this.landForms.getLandBase(), combined, weight);
+        return new TerrainPopulator(this.landForms.getLandBase(), combined, weight);
     }
 
     private static <T> List<T> combine(List<T> input, BiFunction<T, T, T> operator) {
@@ -158,7 +119,7 @@ public class StandardTerrainProvider implements TerrainProvider {
     }
 
     private static List<TerrainPopulator> getMixable(List<TerrainPopulator> input) {
-        ArrayList<TerrainPopulator> output = new ArrayList<TerrainPopulator>(input.size());
+        ArrayList<TerrainPopulator> output = new ArrayList<>(input.size());
         for (TerrainPopulator populator : input) {
             if (!(populator.getWeight() > 0.0f)) continue;
             output.add(populator);

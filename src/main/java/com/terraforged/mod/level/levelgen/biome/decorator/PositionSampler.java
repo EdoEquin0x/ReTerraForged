@@ -24,15 +24,6 @@
 
 package com.terraforged.mod.level.levelgen.biome.decorator;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.tags.BiomeTags;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
-
 import java.util.concurrent.CompletableFuture;
 
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
@@ -41,6 +32,15 @@ import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.MathUtil;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
 
 public class PositionSampler {
     protected static final float BORDER = 6F;
@@ -114,7 +114,6 @@ public class PositionSampler {
                                   FeatureDecorator decorator) {
 
         var vegetation = decorator.getVegetationManager().getVegetation(biome);
-        if (vegetation.features == VegetationFeatures.NONE) return;
 
         for (var other : vegetation.features.other()) {
             random.setFeatureSeed(seed, offset, VegetationFeatures.STAGE);

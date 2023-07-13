@@ -16,8 +16,6 @@ import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.settings.TerrainSettings;
 import com.terraforged.mod.level.levelgen.settings.WorldSettings;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.level.levelgen.terrain.provider.TerrainProvider;
 import com.terraforged.mod.level.levelgen.terrain.region.RegionLerper;
@@ -57,13 +55,13 @@ public class Heightmap implements Populator {
         Module mountainShape = mountainShapeBase.curve(Interpolation.CURVE3).clamp(0.0, 0.9).map(0.0, 1.0);
         this.terrainProvider = context.terrainFactory.create(context, regionConfig);
         RegionSelector terrainRegions = new RegionSelector(this.terrainProvider.getPopulators());
-        TerrainPopulator terrainRegionBorders = TerrainPopulator.of(TerrainType.FLATS, this.terrainProvider.getLandforms().getLandBase(), this.terrainProvider.getLandforms().plains(context.seed), settings.terrain().steppe());
+        TerrainPopulator terrainRegionBorders = TerrainPopulator.of(this.terrainProvider.getLandforms().getLandBase(), this.terrainProvider.getLandforms().plains(context.seed), settings.terrain().steppe());
         RegionLerper terrain = new RegionLerper(terrainRegionBorders, terrainRegions);
-        TerrainPopulator mountains = this.register(TerrainType.MOUNTAIN_CHAIN, this.terrainProvider.getLandforms().getLandBase(), this.terrainProvider.getLandforms().mountains(mountainSeed), settings.terrain().mountains());
+        TerrainPopulator mountains = this.register(this.terrainProvider.getLandforms().getLandBase(), this.terrainProvider.getLandforms().mountains(mountainSeed), settings.terrain().mountains());
         this.continentGenerator = world.continent().type().create(context.seed, context);
         this.climate = new Climate(this.continentGenerator, context);
-        Blender land = new Blender(mountainShape, terrain, mountains, 0.3f, 0.8f, 0.575f);
-        ContinentLerper3 oceans = new ContinentLerper3(this.register(TerrainType.DEEP_OCEAN, this.terrainProvider.getLandforms().deepOcean(context.seed.next())), this.register(TerrainType.SHALLOW_OCEAN, Source.constant(context.levels.water(-7))), this.register(TerrainType.COAST, Source.constant(context.levels.water)), controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
+        Blender land = new Blender(mountainShape, terrain, mountains, 0.3f, 0.8f);
+        ContinentLerper3 oceans = new ContinentLerper3(this.register(this.terrainProvider.getLandforms().deepOcean(context.seed.next())), this.register(Source.constant(context.levels.water(-7))), this.register(Source.constant(context.levels.water)), controlPoints.deepOcean, controlPoints.shallowOcean, controlPoints.coast);
         this.root = new ContinentLerper2(oceans, land, controlPoints.shallowOcean, controlPoints.inland);
     }
 
@@ -87,7 +85,7 @@ public class Heightmap implements Populator {
     }
 
     public void applyBase(Cell cell, float x, float z) {
-        cell.terrain = TerrainType.FLATS;
+//        cell.terrain = TerrainType.FLATS;
         this.continentGenerator.apply(cell, x, z);
         this.regionModule.apply(cell, x, z);
         this.root.apply(cell, x *= this.terrainFrequency, z *= this.terrainFrequency);
@@ -117,14 +115,14 @@ public class Heightmap implements Populator {
         this.applyRivers(cell, x, z, this.continentGenerator.getRivermap(cell));
     }
 
-    private TerrainPopulator register(Terrain terrain, Module variance) {
-        TerrainPopulator populator = TerrainPopulator.of(terrain, variance);
+    private TerrainPopulator register(/*Terrain terrain, */Module variance) {
+        TerrainPopulator populator = TerrainPopulator.of(/*terrain, */variance);
         this.terrainProvider.registerMixable(populator);
         return populator;
     }
 
-    private TerrainPopulator register(Terrain terrain, Module base, Module variance, TerrainSettings.Terrain settings) {
-        TerrainPopulator populator = TerrainPopulator.of(terrain, base, variance, settings);
+    private TerrainPopulator register(/*Terrain terrain, */Module base, Module variance, TerrainSettings.Terrain settings) {
+        TerrainPopulator populator = TerrainPopulator.of(/*terrain, */base, variance, settings);
         this.terrainProvider.registerMixable(populator);
         return populator;
     }

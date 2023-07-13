@@ -27,14 +27,11 @@ package com.terraforged.mod.level.levelgen.terrain.generation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.MathUtil;
-import com.terraforged.mod.util.SpiralIterator;
-import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.Object2FloatCache;
 import com.terraforged.mod.util.storage.WeightMap;
 
@@ -93,59 +90,6 @@ public class TerrainBlender implements Module {
 
     public Blender getBlenderResource() {
         return this.localBlender.get();
-    }
-
-    public Terrain getTerrain(Blender blender) {
-        float index = blender.getCentreNoiseIndex();
-        return this.terrains.getValue(index).value().terrain();
-    }
-
-    public SpiralIterator.PositionFinder findNearest(float x, float z, int minRadius, int maxRadius, Terrain type) {
-        var terrain = this.terrains.find(t -> t.value().terrain().getName().equals(type.getName()));
-        if (terrain == null) return null;
-
-        long band = this.terrains.getBand(terrain);
-        float lower = PosUtil.unpackLeftf(band);
-        float upper = PosUtil.unpackRightf(band);
-
-        return iterator(x, z, minRadius, maxRadius).finder(it -> {
-            long pos = find(this.seed + REGION_SEED_OFFSET, this.jitter, lower, upper, it);
-            float px = PosUtil.unpackLeftf(pos) / this.frequency;
-            float pz = PosUtil.unpackRightf(pos) / this.frequency;
-            return PosUtil.packf(px, pz);
-        });
-    }
-
-    public SpiralIterator iterator(float x, float z, int min, int max) {
-        float rx = this.warp.getX(x, z) * this.frequency;
-        float rz = this.warp.getY(x, z) * this.frequency;
-
-        int cx = NoiseUtil.floor(rx);
-        int cz = NoiseUtil.floor(rz);
-
-        return new SpiralIterator(cx, cz, min, max);
-    }
-
-    private static long find(int seed, float jitter, float lower, float upper, SpiralIterator iterator) {
-        while (iterator.hasNext()) {
-            long next = iterator.next();
-            int cx = PosUtil.unpackLeft(next);
-            int cz = PosUtil.unpackRight(next);
-
-            int hash = NoiseUtil.hash2D(seed, cx, cz);
-            float noise = MathUtil.rand(hash);
-
-            if (noise > lower && noise <= upper) {
-                float dx = MathUtil.rand(hash, NoiseUtil.X_PRIME);
-                float dz = MathUtil.rand(hash, NoiseUtil.Y_PRIME);
-
-                float px = cx + dx * jitter;
-                float pz = cz + dz * jitter;
-
-                return PosUtil.packf(px, pz);
-            }
-        }
-        return 0L;
     }
 
     private static void getCell(int seed, float x, float z, float jitter, Blender blender) {

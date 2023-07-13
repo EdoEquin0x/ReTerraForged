@@ -4,17 +4,24 @@
 package com.terraforged.mod.level.levelgen.terrain.populator;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.noise.Module;
 
 public class ScaledPopulator extends TerrainPopulator {
     private final float baseScale;
     private final float varianceScale;
 
-    public ScaledPopulator(Terrain type, Module base, Module variance, float baseScale, float varianceScale, float weight) {
-        super(type, base, variance, weight);
+    public ScaledPopulator(Module base, Module variance, float weight, float baseScale, float varianceScale) {
+    	super(base, variance, weight);
         this.baseScale = baseScale;
         this.varianceScale = varianceScale;
+    }
+
+    public float getWeight() {
+        return this.weight;
+    }
+
+    public Module getVariance() {
+        return this.variance;
     }
 
     @Override
@@ -27,7 +34,6 @@ public class ScaledPopulator extends TerrainPopulator {
         } else if (cell.value > 1.0f) {
             cell.value = 1.0f;
         }
-        cell.terrain = this.type;
     }
 }
 

@@ -7,7 +7,7 @@ import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.continent.Continent;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.heightmap.Levels;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
+//import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.source.Builder;
 import com.terraforged.mod.noise.source.Rand;
@@ -51,10 +51,10 @@ public class Climate {
         this.biomeNoise.apply(cell, x, z, true);
         float edgeBlend = 0.4f;
         if (cell.value <= this.levels.water) {
-            if (cell.terrain == TerrainType.COAST) {
-                cell.terrain = TerrainType.SHALLOW_OCEAN;
-            }
-        } else if (cell.biomeRegionEdge < edgeBlend || cell.terrain == TerrainType.MOUNTAIN_CHAIN) {
+//            if (cell.terrain == TerrainType.COAST) {
+//                cell.terrain = TerrainType.SHALLOW_OCEAN;
+//            }
+        } else if (cell.biomeRegionEdge < edgeBlend/* || cell.terrain == TerrainType.MOUNTAIN_CHAIN*/) {
             float modifier = 1.0f - NoiseUtil.map(cell.biomeRegionEdge, 0.0f, edgeBlend, edgeBlend);
             float distance = (float)this.offsetDistance * modifier;
             float dx = this.getOffsetX(x, z, distance);

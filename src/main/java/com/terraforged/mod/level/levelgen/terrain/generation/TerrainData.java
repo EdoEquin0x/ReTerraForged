@@ -27,10 +27,8 @@ package com.terraforged.mod.level.levelgen.terrain.generation;
 import java.util.function.Consumer;
 
 import com.terraforged.mod.level.levelgen.noise.NoiseData;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.storage.FloatMap;
-import com.terraforged.mod.util.storage.ObjectMap;
 
 public class TerrainData implements Consumer<NoiseData> {
     protected final TerrainLevels levels;
@@ -38,7 +36,6 @@ public class TerrainData implements Consumer<NoiseData> {
     protected final FloatMap gradient = new FloatMap();
     protected final FloatMap river = new FloatMap();
     protected final FloatMap baseHeight = new FloatMap();
-    protected final ObjectMap<Terrain> terrain = new ObjectMap<>(Terrain[]::new);
 
     protected float min = Float.MAX_VALUE;
     protected float max = Float.MIN_VALUE;
@@ -90,10 +87,6 @@ public class TerrainData implements Consumer<NoiseData> {
         return river;
     }
 
-    public ObjectMap<Terrain> getTerrain() {
-        return terrain;
-    }
-
     public float getGradient(int x, int z, float norm) {
         float grad = getGradient().get(x, z);
         return NoiseUtil.clamp(grad * norm, 0, 1);
@@ -103,7 +96,6 @@ public class TerrainData implements Consumer<NoiseData> {
     public void accept(NoiseData noiseData) {
         var basemap = noiseData.getBase();
         var heightmap = noiseData.getHeight();
-        var terrainMap = noiseData.getTerrain();
 
         for (int z = 0; z < 16; z++) {
             for (int x = 0; x < 16; x++) {
@@ -111,7 +103,6 @@ public class TerrainData implements Consumer<NoiseData> {
                 float baseLevelNoise = basemap.get(x, z);
                 float scaledHeight = levels.getScaledHeight(heightNoise);
                 float scaledBaseLevel = levels.getScaledBaseLevel(baseLevelNoise);
-                var terrainType = terrainMap.get(x, z);
 
                 float n = heightmap.get(x, z - 1);
                 float s = heightmap.get(x, z + 1);
@@ -124,7 +115,6 @@ public class TerrainData implements Consumer<NoiseData> {
                 float noiseGrad = NoiseUtil.clamp(grad, 0, 1);
 
                 gradient.set(x, z, noiseGrad);
-                terrain.set(x, z, terrainType);
                 height.set(x, z, scaledHeight);
                 baseHeight.set(x, z, scaledBaseLevel);
                 river.set(x, z, noiseData.getRiver().get(x, z));

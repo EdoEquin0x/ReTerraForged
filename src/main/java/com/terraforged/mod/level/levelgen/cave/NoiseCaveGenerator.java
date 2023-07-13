@@ -40,19 +40,16 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class NoiseCaveGenerator {
     protected static final int POOL_SIZE = 32;
-    protected static final float DENSITY = 0.05F;
     protected static final float BREACH_THRESHOLD = 0.7F;
     protected static final int GLOBAL_CAVE_REPS = 2;
 
     protected final Holder<NoiseCave>[] caves;
-    protected final Module uniqueCaveNoise;
     protected final Module caveBreachNoise;
     protected final ObjectPool<CarverChunk> pool;
     protected final Map<ChunkPos, CarverChunk> cache = new ConcurrentHashMap<>();
 
     public NoiseCaveGenerator(Holder<NoiseCave>[] caves) {
     	this.caves = caves;
-        this.uniqueCaveNoise = createUniqueNoise(500, DENSITY);
         this.caveBreachNoise = createBreachNoise(300, BREACH_THRESHOLD);
         this.pool = new ObjectPool<>(POOL_SIZE, () -> this.createCarverChunk(caves.length));
     }
@@ -63,15 +60,7 @@ public class NoiseCaveGenerator {
     
     public void carve(int seed, ChunkAccess chunk, TFChunkGenerator generator) {
         var carver = getPreCarveChunk(chunk);
-        carver.terrainData = generator.getChunkData(chunk.getPos());
-        carver.mask = this.caveBreachNoise;
-
-        for (int i = 0; i < this.caves.length; i++) {
-        	var config = this.caves[i];
-            carver.modifier = getModifier(config.value());
-
-            NoiseCaveCarver.carve((int) (i * 0xFA90C2L) + seed, chunk, carver, generator, config.value(), true);
-        }
+    	this.carve(seed, chunk, carver, generator, true);
     }
 
     public void decorate(int seed, ChunkAccess chunk, WorldGenLevel region, TFChunkGenerator generator) {
@@ -96,32 +85,24 @@ public class NoiseCaveGenerator {
         // again to populate the CarverChunk (flag set false to skip setting blocks).
 
         carver = this.pool.take().reset();
-
+    	this.carve(seed, chunk, carver, generator, false);
+        return carver;
+    }
+    
+    private void carve(int seed, ChunkAccess chunk, CarverChunk carver, TFChunkGenerator generator, boolean setBlocks) {
         carver.mask = this.caveBreachNoise;
         carver.terrainData = generator.getChunkData(chunk.getPos());
 
         for (int i = 0; i < this.caves.length; i++) {
         	var config = this.caves[i];
-            carver.modifier = getModifier(config.value());
+            carver.modifier = config.value().modifier();
 
-            NoiseCaveCarver.carve((int) (i * 0xFA90C2L) + seed, chunk, carver, generator, config.value(), false);
+            NoiseCaveCarver.carve(seed + (int) (i * 0xFA90C2L), chunk, carver, generator, config.value(), setBlocks);
         }
-
-        return carver;
-    }
-
-    private Module getModifier(NoiseCave cave) {
-    	return Source.ONE;
     }
 
     private CarverChunk createCarverChunk(int length) {
         return new CarverChunk(length);
-    }
-
-    private static Module createUniqueNoise(int scale, float density) {
-        return new UniqueCaveDistributor(1286745, 1F / scale, 0.75F, density)
-                .clamp(0.2, 1.0).map(0, 1)
-                .warp(781624, 30, 1, 20);
     }
 
     private static Module createBreachNoise(int scale, float threshold) {

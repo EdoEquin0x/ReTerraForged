@@ -34,14 +34,11 @@ import com.terraforged.mod.level.levelgen.noise.continent.ContinentPoints;
 import com.terraforged.mod.level.levelgen.noise.erosion.NoiseTileSize;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.level.levelgen.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.terrain.generation.TerrainBlender;
 import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.util.NoiseUtil;
-import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
@@ -55,7 +52,7 @@ public class NoiseGenerator {
     protected final TerrainLevels levels;
     protected final Module ocean;
     protected final TerrainBlender land;
-    protected final IContinentNoise continent;
+    protected final ContinentNoise continent;
     protected final ControlPoints controlPoints;
     protected final ThreadLocal<NoiseData> localChunk = ThreadLocal.withInitial(NoiseData::new);
     protected final ThreadLocal<NoiseSample> localSample = ThreadLocal.withInitial(NoiseSample::new);
@@ -84,43 +81,12 @@ public class NoiseGenerator {
         return levels;
     }
 
-    public IContinentNoise getContinent() {
+    public ContinentNoise getContinent() {
         return continent;
     }
 
     public float getHeightNoise(int x, int z) {;
         return getNoiseSample(x, z).heightNoise;
-    }
-
-    public long find(int x, int z, int minRadius, int maxRadius, Terrain terrain) {
-        if (!terrain.isOverground()) return 0L;
-
-        float nx = getNoiseCoord(x);
-        float nz = getNoiseCoord(z);
-        var finder = land.findNearest(nx, nz, minRadius, maxRadius, terrain);
-
-        var sample = localSample.get().reset();
-        while (finder.hasNext()) {
-            long pos = finder.next();
-            if (pos == 0L) continue;
-
-            float px = PosUtil.unpackLeftf(pos) / levels.noiseLevels.frequency;
-            float pz = PosUtil.unpackRightf(pos) / levels.noiseLevels.frequency;
-
-            // Skip if coast or ocean
-            continent.sampleContinent(px, pz, sample);
-            if (sample.continentNoise < ContinentPoints.BEACH) continue;
-
-            // Skip if near river
-            continent.sampleRiver(px, pz, sample);
-            if (!terrain.isRiver() && sample.riverNoise < 0.75F) continue;
-
-            int xi = NoiseUtil.floor(px);
-            int zi = NoiseUtil.floor(pz);
-            return PosUtil.pack(xi, zi);
-        }
-
-        return 0;
     }
 
     public void generate(int chunkX, int chunkZ, Consumer<NoiseData> consumer) {
@@ -158,24 +124,12 @@ public class NoiseGenerator {
         var blender = land.getBlenderResource();
         sample(x, z, sample, blender);
     }
-
-    public void sampleContinentNoise(int x, int z, NoiseSample sample) {
-        float nx = getNoiseCoord(x);
-        float nz = getNoiseCoord(z);
-        continent.sampleContinent(nx, nz, sample);
-    }
-
-    public void sampleRiverNoise(int x, int z, NoiseSample sample) {
-        float nx = getNoiseCoord(x);
-        float nz = getNoiseCoord(z);
-        continent.sampleRiver(nx, nz, sample);
-    }
-
+    
     public NoiseSample sample(int x, int z, NoiseSample sample, TerrainBlender.Blender blender) {
         float nx = getNoiseCoord(x);
         float nz = getNoiseCoord(z);
         sampleTerrain(nx, nz, sample, blender);
-        sampleRiver(nx, nz, sample);
+        this.continent.sampleRiver(nx, nz, sample);
         return sample;
     }
 
@@ -194,16 +148,11 @@ public class NoiseGenerator {
         return sample;
     }
 
-    public NoiseSample sampleRiver(float nx, float nz, NoiseSample sample) {
-        continent.sampleRiver(nx, nz, sample);
-        return sample;
-    }
-
     protected void getOcean(float x, float z, NoiseSample sample, TerrainBlender.Blender blender) {
         float rawNoise = ocean.getValue(x, z);
 
         sample.heightNoise = levels.noiseLevels.toDepthNoise(rawNoise);
-        sample.terrainType = TerrainType.DEEP_OCEAN;
+//        sample.terrainType = TerrainType.DEEP_OCEAN;
     }
 
     protected void getInland(float x, float z, NoiseSample sample, TerrainBlender.Blender blender) {
@@ -211,7 +160,7 @@ public class NoiseGenerator {
         float heightNoise = land.getValue(x, z, blender) * heightMultiplier;
 
         sample.heightNoise = levels.noiseLevels.toHeightNoise(baseNoise, heightNoise);
-        sample.terrainType = land.getTerrain(blender);
+//        sample.terrainType = land.getTerrain(blender);
     }
 
     protected void getBlend(float x, float z, NoiseSample sample, TerrainBlender.Blender blender) {
@@ -233,16 +182,15 @@ public class NoiseGenerator {
             float alpha = (sample.continentNoise - ContinentPoints.BEACH) / (ContinentPoints.COAST - ContinentPoints.BEACH);
 
             sample.heightNoise = NoiseUtil.lerp(lower, upper, alpha);
-            sample.terrainType = land.getTerrain(blender);
         }
     }
 
-    protected Terrain getTerrain(float value, TerrainBlender.Blender blender) {
-        if (value < levels.noiseLevels.heightMin) return TerrainType.SHALLOW_OCEAN;
-
-        return land.getTerrain(blender);
-    }
-    
+//    protected Terrain getTerrain(float value, TerrainBlender.Blender blender) {
+//        if (value < levels.noiseLevels.heightMin) return TerrainType.SHALLOW_OCEAN;
+//
+//        return land.getTerrain(blender);
+//    }
+//    
     public float getNoiseCoord(int coord) {
         return coord * this.getLevels().frequency;
     }
@@ -259,23 +207,7 @@ public class NoiseGenerator {
         return new TerrainBlender(seed + TERRAIN_OFFSET, 800, 0.8F, 0.4F, terrains);
     }
 
-    protected static IContinentNoise createContinentNoise(int seed, Settings settings, TerrainLevels levels) {
-//        settings.world.properties.seaLevel = levels.seaLevel;
-//        settings.world.properties.worldHeight = levels.maxY;
-//
-//        settings.climate.biomeShape.biomeSize = 220;
-//        settings.climate.temperature.falloff = 2;
-//        settings.climate.temperature.bias = 0.1f;
-//        settings.climate.moisture.falloff = 1;
-//        settings.climate.moisture.bias = -0.05f;
-//
-//        var context = new GeneratorContext(new Seed(seed), settings);
-//        settings.world.continent.continentScale = ContinentGenerator.CONTINENT_SAMPLE_SCALE;
-//        settings.world.controlPoints.deepOcean = 0.05f;
-//        settings.world.controlPoints.shallowOcean = 0.3f;
-//        settings.world.controlPoints.beach = 0.45f;
-//        settings.world.controlPoints.coast = 0.75f;
-//        settings.world.controlPoints.inland = 0.80f;
+    protected static ContinentNoise createContinentNoise(int seed, Settings settings, TerrainLevels levels) {
         return new ContinentNoise(seed + CONTINENT_OFFSET, levels, new GeneratorContext(new Seed(seed), settings));
     }
 }

@@ -32,8 +32,7 @@ public class RegionSelector implements Populator {
     private static Populator[] getWeightedArray(Populator[] modules) {
         float smallest = Float.MAX_VALUE;
         for (Populator p : modules) {
-            if (p instanceof TerrainPopulator) {
-                TerrainPopulator tp = (TerrainPopulator)p;
+            if (p instanceof TerrainPopulator tp) {
                 if (tp.getWeight() == 0.0f) continue;
                 smallest = Math.min(smallest, tp.getWeight());
                 continue;
@@ -60,7 +59,7 @@ public class RegionSelector implements Populator {
         if (result.isEmpty()) {
             return new Populator[0];
         }
-        return result.toArray(new Populator[0]);
+        return result.toArray(Populator[]::new);
     }
 }
 

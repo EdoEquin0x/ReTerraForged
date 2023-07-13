@@ -6,35 +6,35 @@ package com.terraforged.mod.level.levelgen.generator;
 import java.util.concurrent.locks.StampedLock;
 import java.util.function.IntFunction;
 
-public class WorldErosion<T> {
-    private volatile T value = null;
-    private final IntFunction<T> factory;
-    private final Validator<T> validator;
+import com.terraforged.mod.level.levelgen.filter.Erosion;
+
+public class WorldErosion {
+    private volatile Erosion value = null;
+    private final IntFunction<Erosion> factory;
     private final StampedLock lock = new StampedLock();
 
-    public WorldErosion(IntFunction<T> factory, Validator<T> validator) {
-        this.factory = factory;
-        this.validator = validator;
+    public WorldErosion(GeneratorContext ctx) {
+    	this.factory = Erosion.factory(ctx);
     }
 
-    public T get(int ctx) {
-        T value = this.readValue();
-        if (this.validate(value, ctx)) {
+    public Erosion get(int size) {
+    	Erosion value = this.readValue();
+        if (this.validate(value, size)) {
             return value;
         }
-        return this.writeValue(ctx);
+        return this.writeValue(size);
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private T readValue() {
+    private Erosion readValue() {
         long optRead = this.lock.tryOptimisticRead();
-        T value = this.value;
+        Erosion value = this.value;
         if (!this.lock.validate(optRead)) {
             long stamp = this.lock.readLock();
             try {
-                T t = this.value;
+            	Erosion t = this.value;
                 return t;
             }
             finally {
@@ -47,15 +47,15 @@ public class WorldErosion<T> {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private T writeValue(int ctx) {
+    private Erosion writeValue(int size) {
         long stamp = this.lock.writeLock();
         try {
-            if (this.validate(this.value, ctx)) {
-                T t = this.value;
+            if (this.validate(this.value, size)) {
+            	Erosion t = this.value;
                 return t;
             }
-            this.value = this.factory.apply(ctx);
-            T t = this.value;
+            this.value = this.factory.apply(size);
+            Erosion t = this.value;
             return t;
         }
         finally {
@@ -63,12 +63,8 @@ public class WorldErosion<T> {
         }
     }
 
-    private boolean validate(T value, int ctx) {
-        return value != null && this.validator.validate(value, ctx);
-    }
-
-    public static interface Validator<T> {
-        public boolean validate(T var1, int var2);
+    private boolean validate(Erosion value, int size) {
+        return value != null && value.getSize() == size;
     }
 }
 

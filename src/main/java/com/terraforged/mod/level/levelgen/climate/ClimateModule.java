@@ -7,10 +7,8 @@ import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.continent.Continent;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
-import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.func.DistanceFunc;
@@ -29,7 +27,6 @@ public class ClimateModule implements Populator {
     private final Module temperature;
     private final Module macroBiomeNoise;
     private final Continent continent;
-    private final ControlPoints controlPoints;
 
     public ClimateModule(Continent continent, GeneratorContext context) {
         Seed seed = context.seed;
@@ -46,7 +43,6 @@ public class ClimateModule implements Populator {
         this.continent = continent;
         this.seed = seed.next();
         this.biomeFreq = 1.0f / (float)biomeSize;
-        this.controlPoints = new ControlPoints(context.settings.world().controlPoints());
         this.warpStrength = settings.climate().biomeShape().biomeWarpStrength();
         this.warpX = Source.simplex(seed.next(), warpScale, 2).bias(-0.5);
         this.warpZ = Source.simplex(seed.next(), warpScale, 2).bias(-0.5);
@@ -108,7 +104,6 @@ public class ClimateModule implements Populator {
         float continentEdge = this.continent.getLandValue(posX, posZ);
         if (mask) {
             cell.biomeRegionEdge = this.edgeValue(edgeDistance, edgeDistance2);
-            this.modifyTerrain(cell, continentEdge);
         }
         this.modifyMoisture(cell, continentEdge);
     }
@@ -124,12 +119,6 @@ public class ClimateModule implements Populator {
             float alpha = (continentEdge - limit) / range;
             float multiplier = 1.0f - alpha * range;
             cell.moisture *= multiplier;
-        }
-    }
-
-    private void modifyTerrain(Cell cell, float continentEdge) {
-        if (cell.terrain.isOverground() && continentEdge <= this.controlPoints.coastMarker) {
-            cell.terrain = TerrainType.COAST;
         }
     }
 

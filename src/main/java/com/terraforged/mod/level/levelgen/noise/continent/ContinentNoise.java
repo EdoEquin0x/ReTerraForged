@@ -26,7 +26,6 @@ package com.terraforged.mod.level.levelgen.noise.continent;
 
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
-import com.terraforged.mod.level.levelgen.noise.IContinentNoise;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig;
@@ -34,7 +33,7 @@ import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
 
-public class ContinentNoise implements IContinentNoise {
+public class ContinentNoise {
     protected final TerrainLevels levels;
     protected final GeneratorContext context;
     protected final ControlPoints controlPoints;
@@ -66,7 +65,6 @@ public class ContinentNoise implements IContinentNoise {
         );
     }
 
-    @Override
     public void sampleContinent(float x, float y, NoiseSample sample) {
         x *= frequency;
         y *= frequency;
@@ -78,12 +76,9 @@ public class ContinentNoise implements IContinentNoise {
         px += offset.x;
         py += offset.y;
 
-        generator.shapeGenerator.sample(px, py, sample);
-
-        sample.terrainType = ContinentPoints.getTerrainType(sample.continentNoise);
+        generator.shapeNoise.sample(px, py, sample);
     }
 
-    @Override
     public void sampleRiver(float x, float y, NoiseSample sample) {
         x *= frequency;
         y *= frequency;
@@ -95,15 +90,13 @@ public class ContinentNoise implements IContinentNoise {
         px += offset.x;
         py += offset.y;
 
-        generator.riverGenerator.sample(px, py, sample);
+        generator.riverNoise.sample(px, py, sample);
     }
 
-    @Override
     public GeneratorContext getContext() {
         return context;
     }
 
-    @Override
     public ControlPoints getControlPoints() {
         return controlPoints;
     }
