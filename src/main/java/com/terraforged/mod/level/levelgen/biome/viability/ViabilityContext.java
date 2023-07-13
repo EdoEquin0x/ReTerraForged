@@ -27,8 +27,8 @@ package com.terraforged.mod.level.levelgen.biome.viability;
 import java.util.concurrent.CompletableFuture;
 
 import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
-import com.terraforged.mod.level.levelgen.terrain.TerrainData;
-import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
 
 public class ViabilityContext implements Viability.Context {
     public int seed;

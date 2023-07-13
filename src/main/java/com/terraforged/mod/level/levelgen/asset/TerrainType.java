@@ -27,7 +27,7 @@ package com.terraforged.mod.level.levelgen.asset;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
@@ -41,11 +41,11 @@ public record TerrainType(String name, Terrain parentType, Terrain terrain) {
     public static final Codec<Holder<TerrainType>> CODEC = RegistryFileCodec.create(TerraForged.TERRAIN_TYPE, DIRECT_CODEC);
 
     public TerrainType(String name, Terrain type) {
-    	this(name, type, com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.getOrCreate(name, type));
+    	this(name, type, com.terraforged.mod.level.levelgen.terrain.TerrainType.getOrCreate(name, type));
     }
 
     private static Terrain forName(String name) {
-        return com.terraforged.mod.level.levelgen.generator.terrain.TerrainType.get(name);
+        return com.terraforged.mod.level.levelgen.terrain.TerrainType.get(name);
     }
 
     public static TerrainType of(Terrain terrain) {

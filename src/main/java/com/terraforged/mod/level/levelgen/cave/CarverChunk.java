@@ -30,10 +30,10 @@ import net.minecraft.world.level.biome.Biome;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.biome.util.BiomeList;
-import com.terraforged.mod.level.levelgen.terrain.TerrainData;
+import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
 import com.terraforged.mod.noise.Module;
 
 public class CarverChunk {

@@ -24,9 +24,9 @@
 
 package com.terraforged.mod.level.levelgen.noise.climate;
 
+import com.terraforged.mod.level.levelgen.climate.Moisture;
+import com.terraforged.mod.level.levelgen.climate.Temperature;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
-import com.terraforged.mod.level.levelgen.generator.climate.Moisture;
-import com.terraforged.mod.level.levelgen.generator.climate.Temperature;
 import com.terraforged.mod.level.levelgen.noise.continent.cell.CellShape;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.Settings;

@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;

@@ -98,4 +98,19 @@ public class TFCodecs {
 			}
 		};
 	}
+	
+	public static <A> Codec<A> error(String error) {
+		return new Codec<>() {
+
+			@Override
+			public <T> DataResult<T> encode(A input, DynamicOps<T> ops, T prefix) {
+				return DataResult.error(() -> error);
+			}
+
+			@Override
+			public <T> DataResult<Pair<A, T>> decode(DynamicOps<T> ops, T input) {
+				return DataResult.error(() -> error);
+			}			
+		};
+	}
 }

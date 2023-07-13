@@ -28,13 +28,13 @@ import java.util.function.BiFunction;
 
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.generator.terrain.LandForms;
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.heightmap.Levels;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.TerrainSettings;
 import com.terraforged.mod.level.levelgen.settings.TerrainSettings.General;
+import com.terraforged.mod.level.levelgen.terrain.LandForms;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;

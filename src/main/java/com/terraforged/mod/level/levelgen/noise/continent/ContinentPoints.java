@@ -24,10 +24,10 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent;
 
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.noise.continent.shape.FalloffPoint;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 import com.terraforged.mod.util.MathUtil;
 
 public interface ContinentPoints {
@@ -51,12 +51,12 @@ public interface ContinentPoints {
     }
 
     static FalloffPoint[] getFalloff(ControlPoints controlPoints) {
-        return new FalloffPoint[]{
-                new FalloffPoint(controlPoints.inland, 1.0f, 1.0f),
-                new FalloffPoint(controlPoints.coast, ContinentPoints.COAST, 1.0f),
-                new FalloffPoint(controlPoints.beach, ContinentPoints.BEACH, ContinentPoints.COAST),
-                new FalloffPoint(controlPoints.shallowOcean, ContinentPoints.SHALLOW_OCEAN, ContinentPoints.BEACH),
-                new FalloffPoint(controlPoints.deepOcean, ContinentPoints.DEEP_OCEAN, ContinentPoints.SHALLOW_OCEAN),
+        return new FalloffPoint[] {
+        	new FalloffPoint(controlPoints.inland, 1.0f, 1.0f),
+        	new FalloffPoint(controlPoints.coast, ContinentPoints.COAST, 1.0f),
+        	new FalloffPoint(controlPoints.beach, ContinentPoints.BEACH, ContinentPoints.COAST),
+        	new FalloffPoint(controlPoints.shallowOcean, ContinentPoints.SHALLOW_OCEAN, ContinentPoints.BEACH),
+        	new FalloffPoint(controlPoints.deepOcean, ContinentPoints.DEEP_OCEAN, ContinentPoints.SHALLOW_OCEAN),
         };
     }
 

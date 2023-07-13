@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.river;
 
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
 
 public class NodeSample {
     public float projection = 0;

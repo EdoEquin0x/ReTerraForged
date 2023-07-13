@@ -27,7 +27,7 @@ package com.terraforged.mod.command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
+import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

@@ -24,8 +24,8 @@
 
 package com.terraforged.mod.level.levelgen.biome.decorator;
 
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.biome.surface.Surface;
+import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.util.NoiseChunkUtil;
 
 import net.minecraft.core.registries.Registries;
@@ -36,7 +36,7 @@ import net.minecraft.world.level.levelgen.WorldGenerationContext;
 
 public class SurfaceDecorator {
 	
-    public void decorate(ChunkAccess chunk, WorldGenRegion region, TFChunkGenerator generator, RandomState state) {
+    public static void decorate(ChunkAccess chunk, WorldGenRegion region, TFChunkGenerator generator, RandomState state) {
         var context = new WorldGenerationContext(generator, region);
         var noiseChunk = NoiseChunkUtil.getNoiseChunk(chunk, state, generator);
 
@@ -48,7 +48,7 @@ public class SurfaceDecorator {
         surface.buildSurface(state, biomeManager, biomes, false, context, chunk, noiseChunk, surfaceRules);
     }
 
-    public void decoratePost(ChunkAccess chunk, WorldGenRegion region, TFChunkGenerator generator) {
+    public static void decoratePost(ChunkAccess chunk, WorldGenRegion region, TFChunkGenerator generator) {
         var chunkData = generator.getChunkData(chunk.getPos());
         Surface.apply(chunkData, chunk, generator);
     }

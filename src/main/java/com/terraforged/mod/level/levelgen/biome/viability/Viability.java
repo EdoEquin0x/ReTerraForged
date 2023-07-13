@@ -30,8 +30,8 @@ import com.mojang.serialization.Codec;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
-import com.terraforged.mod.level.levelgen.terrain.TerrainData;
-import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
 
 public interface Viability {
     public static final Codec<Viability> CODEC = TFCodecs.registryCodec(TerraForged.VIABILITY, Viability::codec);

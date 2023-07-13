@@ -6,8 +6,8 @@ package com.terraforged.mod.level.levelgen.cell;
 import com.terraforged.mod.concurrent.Resource;
 import com.terraforged.mod.concurrent.SimpleResource;
 import com.terraforged.mod.concurrent.pool.ThreadLocalPool;
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 
 public class Cell {
     private static final Cell defaults = new Cell();

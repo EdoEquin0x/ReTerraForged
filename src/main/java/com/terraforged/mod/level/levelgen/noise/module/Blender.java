@@ -6,7 +6,7 @@ package com.terraforged.mod.level.levelgen.noise.module;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.func.Interpolation;
 import com.terraforged.mod.noise.util.NoiseUtil;

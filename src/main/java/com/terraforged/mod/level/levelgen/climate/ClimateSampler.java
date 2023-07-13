@@ -24,21 +24,21 @@
 
 package com.terraforged.mod.level.levelgen.climate;
 
-import com.terraforged.mod.level.levelgen.noise.INoiseGenerator;
+import java.util.function.Supplier;
+
+import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
 import com.terraforged.mod.level.levelgen.noise.climate.ClimateNoise;
 import com.terraforged.mod.level.levelgen.noise.climate.ClimateSample;
 
+import net.minecraftforge.common.util.Lazy;
+
 public class ClimateSampler {
-	protected final NoiseLevels levels;
-	protected final ClimateNoise climateNoise;
-	protected final INoiseGenerator noiseGenerator;
-	protected final int seed;
+	protected final Supplier<ClimateNoise> climateNoise;
+	protected final Supplier<NoiseGenerator> noiseGenerator;
 	protected final ThreadLocal<ClimateSample> localSample = ThreadLocal.withInitial(ClimateSample::new);
 
-	public ClimateSampler(INoiseGenerator noiseGenerator, int seed) {
-		this.levels = noiseGenerator.getLevels();
-		this.seed = seed;
+	public ClimateSampler(Supplier<NoiseGenerator> noiseGenerator) {
 		this.climateNoise = createClimate(noiseGenerator);
 		this.noiseGenerator = noiseGenerator;
 	}
@@ -47,40 +47,50 @@ public class ClimateSampler {
 		return localSample.get().reset();
 	}
 
-	public INoiseGenerator getNoiseGenerator() {
-		return noiseGenerator;
+	public NoiseGenerator getNoiseGenerator() {
+		return noiseGenerator.get();
 	}
 
 	public ClimateSample getSample(int x, int z) {
+		NoiseLevels levels = this.noiseGenerator.get().getLevels();
+		
 		float px = x * levels.frequency;
 		float pz = z * levels.frequency;
 
 		var sample = localSample.get().reset();
-		climateNoise.sample(px, pz, sample);
+		noiseGenerator.get().getContinent().sampleContinent(px, pz, sample);
+		noiseGenerator.get().getContinent().sampleRiver(px, pz, sample);
+		climateNoise.get().sample(px, pz, sample);
 
 		return sample;
 	}
 
 	public float getShape(int x, int z) {
+		NoiseLevels levels = this.noiseGenerator.get().getLevels();
+		
 		float px = x * levels.frequency;
 		float pz = z * levels.frequency;
 
 		var sample = localSample.get().reset();
 
-		climateNoise.sample(px, pz, sample);
+		noiseGenerator.get().getContinent().sampleContinent(px, pz, sample);
+		noiseGenerator.get().getContinent().sampleRiver(px, pz, sample);
+		climateNoise.get().sample(px, pz, sample);
 
 		return sample.biomeEdgeNoise;
 	}
 
 	public void sample(int x, int z, ClimateSample sample) {
+		NoiseLevels levels = this.noiseGenerator.get().getLevels();
+		
 		float px = x * levels.frequency;
 		float pz = z * levels.frequency;
-		climateNoise.sample(px, pz, sample);
+		noiseGenerator.get().getContinent().sampleContinent(px, pz, sample);
+		noiseGenerator.get().getContinent().sampleRiver(px, pz, sample);
+		climateNoise.get().sample(px, pz, sample);
 	}
 
-	static ClimateNoise createClimate(INoiseGenerator generator) {
-		if (generator == null)
-			return null;
-		return new ClimateNoise(generator.getContinent().getContext());
+	static Supplier<ClimateNoise> createClimate(Supplier<NoiseGenerator> generator) {
+		return Lazy.concurrentOf(() -> new ClimateNoise(generator.get().getContinent().getContext()));
 	}
 }

@@ -45,9 +45,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
-//	TODO FIXME Fix VegetationFeatures.create()
-//	TODO should deserts only be on flat land? mountain deserts look really bad
-//	TODO remove ClimateType and just use raw biomes instead
 public abstract class TerraForged implements CommonAPI {
 	public static final String MODID = "terraforged";
 	public static final String TITLE = "TerraForged";

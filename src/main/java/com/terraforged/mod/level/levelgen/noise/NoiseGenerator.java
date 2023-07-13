@@ -28,17 +28,16 @@ import java.util.function.Consumer;
 
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
-import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.noise.continent.ContinentNoise;
 import com.terraforged.mod.level.levelgen.noise.continent.ContinentPoints;
-import com.terraforged.mod.level.levelgen.noise.erosion.ErodedNoiseGenerator;
 import com.terraforged.mod.level.levelgen.noise.erosion.NoiseTileSize;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.level.levelgen.terrain.TerrainBlender;
-import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.TerrainType;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainBlender;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.util.NoiseUtil;
@@ -47,13 +46,12 @@ import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
 
-public class NoiseGenerator implements INoiseGenerator {
+public class NoiseGenerator {
     protected static final int OCEAN_OFFSET = 8763214;
     protected static final int TERRAIN_OFFSET = 45763218;
     protected static final int CONTINENT_OFFSET = 18749560;
     protected final float heightMultiplier = 1.2F;
 
-    private int seed;
     protected final TerrainLevels levels;
     protected final Module ocean;
     protected final TerrainBlender land;
@@ -63,7 +61,6 @@ public class NoiseGenerator implements INoiseGenerator {
     protected final ThreadLocal<NoiseSample> localSample = ThreadLocal.withInitial(NoiseSample::new);
 
     public NoiseGenerator(int seed, Settings settings, TerrainLevels levels, WeightMap<Holder<TerrainNoise>> terrains) {
-    	this.seed = seed;
     	this.levels = levels;
         this.ocean = createOceanTerrain(seed);
         this.land = createLandTerrain(seed, terrains);
@@ -79,27 +76,22 @@ public class NoiseGenerator implements INoiseGenerator {
         this.controlPoints = continent.getControlPoints();
     }
 
-    @Override
     public NoiseLevels getLevels() {
         return levels.noiseLevels;
     }
 
-    @Override
     public TerrainLevels getTerrainLevels() {
         return levels;
     }
 
-    @Override
     public IContinentNoise getContinent() {
         return continent;
     }
 
-    @Override
     public float getHeightNoise(int x, int z) {;
         return getNoiseSample(x, z).heightNoise;
     }
 
-    @Override
     public long find(int x, int z, int minRadius, int maxRadius, Terrain terrain) {
         if (!terrain.isOverground()) return 0L;
 
@@ -131,7 +123,6 @@ public class NoiseGenerator implements INoiseGenerator {
         return 0;
     }
 
-    @Override
     public void generate(int chunkX, int chunkZ, Consumer<NoiseData> consumer) {
         var noiseData = localChunk.get();
         var blender = land.getBlenderResource();
@@ -153,22 +144,16 @@ public class NoiseGenerator implements INoiseGenerator {
         consumer.accept(noiseData);
     }
 
-    public INoiseGenerator withErosion() {
-        return new ErodedNoiseGenerator(this.seed, getNoiseTileSize(), this);
-    }
-
     public TerrainBlender.Blender getBlenderResource() {
         return land.getBlenderResource();
     }
 
-    @Override
     public NoiseSample getNoiseSample(int x, int z) {
         var sample = localSample.get().reset();
         sample(x, z, sample);
         return sample;
     }
 
-    @Override
     public void sample(int x, int z, NoiseSample sample) {
         var blender = land.getBlenderResource();
         sample(x, z, sample, blender);
@@ -256,6 +241,10 @@ public class NoiseGenerator implements INoiseGenerator {
         if (value < levels.noiseLevels.heightMin) return TerrainType.SHALLOW_OCEAN;
 
         return land.getTerrain(blender);
+    }
+    
+    public float getNoiseCoord(int coord) {
+        return coord * this.getLevels().frequency;
     }
 
     protected static NoiseTileSize getNoiseTileSize() {

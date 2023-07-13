@@ -27,8 +27,8 @@ package com.terraforged.mod.level.levelgen.util;
 import java.lang.invoke.MethodHandle;
 import java.util.concurrent.CompletableFuture;
 
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
-import com.terraforged.mod.level.levelgen.terrain.TerrainData;
+import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
 import com.terraforged.mod.util.ReflectionUtil;
 
 import it.unimi.dsi.fastutil.longs.Long2IntMap;

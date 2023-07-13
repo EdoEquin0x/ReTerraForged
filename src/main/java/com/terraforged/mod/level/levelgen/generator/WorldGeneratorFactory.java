@@ -5,7 +5,7 @@ package com.terraforged.mod.level.levelgen.generator;
 
 import java.util.function.Supplier;
 
-import com.terraforged.mod.level.levelgen.generator.climate.Climate;
+import com.terraforged.mod.level.levelgen.climate.Climate;
 import com.terraforged.mod.level.levelgen.heightmap.Heightmap;
 
 public class WorldGeneratorFactory implements Supplier<WorldGenerator> {

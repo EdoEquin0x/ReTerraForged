@@ -5,7 +5,7 @@ package com.terraforged.mod.level.levelgen.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.level.levelgen.generator.terrain.populator.TerrainPopulator;
+import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Module;
 
 public record TerrainSettings(General general, Terrain steppe, Terrain plains, Terrain hills, Terrain dales, Terrain plateau, Terrain badlands, Terrain torridonian, Terrain mountains) {

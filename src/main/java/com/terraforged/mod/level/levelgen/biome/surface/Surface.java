@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.biome.surface;
 
-import com.terraforged.mod.level.levelgen.terrain.TerrainData;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.registry.data.TFTags;
 

@@ -24,6 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.noise.climate;
 
+import com.terraforged.mod.level.levelgen.biome.source.BiomeTree;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 
 public class ClimateSample extends NoiseSample {
@@ -31,6 +32,8 @@ public class ClimateSample extends NoiseSample {
     public float biomeEdgeNoise;
     public float moisture;
     public float temperature;
+    @Deprecated
+    public float[] params = new float[BiomeTree.PARAM_COUNT];
     
     public ClimateSample reset() {
     	super.reset();

@@ -5,8 +5,8 @@ package com.terraforged.mod.level.levelgen.filter;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
-import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
 import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
+import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 
 public class BeachDetect implements Filter, Filter.Visitor {
     private final ControlPoints transition;

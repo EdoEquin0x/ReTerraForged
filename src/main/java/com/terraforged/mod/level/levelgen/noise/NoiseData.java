@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.noise;
 
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.util.storage.FloatMap;
 import com.terraforged.mod.util.storage.Index;
 import com.terraforged.mod.util.storage.ObjectMap;

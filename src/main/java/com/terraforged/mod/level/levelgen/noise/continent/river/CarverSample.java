@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.noise.continent.river;
 
-import com.terraforged.mod.level.levelgen.generator.terrain.TerrainType;
+import com.terraforged.mod.level.levelgen.terrain.TerrainType;
 
 public record CarverSample(NodeSample river, NodeSample lake) {
 

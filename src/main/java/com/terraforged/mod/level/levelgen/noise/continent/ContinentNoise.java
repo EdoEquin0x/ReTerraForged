@@ -30,7 +30,7 @@ import com.terraforged.mod.level.levelgen.noise.IContinentNoise;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 import com.terraforged.mod.level.levelgen.noise.continent.config.ContinentConfig;
-import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
 

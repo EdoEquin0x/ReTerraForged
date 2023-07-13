@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.noise.climate.ClimateSample;
 import com.terraforged.mod.util.ColorUtil;
 import com.terraforged.mod.util.MathUtil;

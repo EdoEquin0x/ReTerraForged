@@ -5,8 +5,8 @@ package com.terraforged.mod.level.levelgen.settings;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.level.levelgen.generator.continent.ContinentType;
-import com.terraforged.mod.level.levelgen.generator.continent.SpawnType;
+import com.terraforged.mod.level.levelgen.continent.ContinentType;
+import com.terraforged.mod.level.levelgen.continent.SpawnType;
 import com.terraforged.mod.noise.func.DistanceFunc;
 
 //TODO make none of these fields optional and don't have any defaults

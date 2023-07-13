@@ -27,10 +27,10 @@ package com.terraforged.mod.level.levelgen.util;
 import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
-import com.terraforged.mod.level.levelgen.GeneratorResource;
-import com.terraforged.mod.level.levelgen.terrain.StructureTerrain;
-import com.terraforged.mod.level.levelgen.terrain.TerrainData;
-import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.generator.GeneratorResource;
+import com.terraforged.mod.level.levelgen.terrain.generation.StructureTerrain;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

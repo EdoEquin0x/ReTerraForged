@@ -9,11 +9,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.concurrent.task.LazySupplier;
 import com.terraforged.mod.concurrent.thread.ThreadPools;
-import com.terraforged.mod.level.levelgen.generator.terrain.provider.StandardTerrainProvider;
-import com.terraforged.mod.level.levelgen.generator.terrain.provider.TerrainProviderFactory;
 import com.terraforged.mod.level.levelgen.heightmap.Levels;
 import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.Settings;
+import com.terraforged.mod.level.levelgen.terrain.provider.StandardTerrainProvider;
+import com.terraforged.mod.level.levelgen.terrain.provider.TerrainProviderFactory;
 import com.terraforged.mod.level.levelgen.tile.api.TileProvider;
 import com.terraforged.mod.level.levelgen.tile.gen.TileGenerator;
 

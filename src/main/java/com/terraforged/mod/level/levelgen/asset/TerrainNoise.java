@@ -29,7 +29,7 @@ import java.util.Comparator;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.generator.terrain.Terrain;
+import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.noise.Module;
 
 import net.minecraft.core.Holder;

@@ -7,12 +7,13 @@ import java.util.List;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
+import com.terraforged.mod.level.levelgen.biome.source.BiomeTree;
+import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
 import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
@@ -22,8 +23,6 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.level.biome.Climate.ParameterList;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterLists;
@@ -51,7 +50,6 @@ public interface TFPresets {
 		HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
 		HolderGetter<NoiseGeneratorSettings> noiseSettings = ctx.lookup(Registries.NOISE_SETTINGS);
 		HolderGetter<MultiNoiseBiomeSourceParameterList> presets = ctx.lookup(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
-
 		return new WorldPreset(
 			ImmutableMap.<ResourceKey<LevelStem>, LevelStem>builder()
 			.put(LevelStem.NETHER, 
@@ -102,7 +100,7 @@ public interface TFPresets {
 							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
 							caves.getOrThrow(TFCaves.SYNAPSE_MID)
 						}, 
-						MultiNoiseBiomeSource.createFromList(createBiomes(biomes)),
+						createBiomes(biomes),
 						biomes
 					)
 				)
@@ -119,35 +117,31 @@ public interface TFPresets {
 			.build());
 	}
 	
-	private static ParameterList<Holder<Biome>> createBiomes(HolderGetter<Biome> biomes) {
-		List<Pair<Climate.ParameterPoint, Holder<Biome>>> params = new ArrayList<>();
+	private static BiomeTree.ParameterList<Holder<Biome>> createBiomes(HolderGetter<Biome> biomes) {
+		List<Pair<BiomeTree.ParameterPoint, Holder<Biome>>> params = new ArrayList<>();
 		Collections.addAll(params, 
 			Pair.of(
-				Climate.parameters(
-					Climate.Parameter.span(0.0F, 1.0F),
-					Climate.Parameter.span(0.0F, 1.0F),
-					Climate.Parameter.span(0.0F, 1.0F), 
-					Climate.Parameter.span(0.0F, 0.95F),
-					Climate.Parameter.span(0.0F, 1.0F),
-					Climate.Parameter.span(0.0F, 1.0F),
-					0.0F
+				BiomeTree.parameters(
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.point(1.0F)
 				),
 				biomes.getOrThrow(Biomes.PLAINS)
 			),
 			Pair.of(
-				Climate.parameters(
-					Climate.Parameter.span(0.0F, 1.0F),
-					Climate.Parameter.span(0.0F, 1.0F),
-					Climate.Parameter.span(0.0F, 1.0F), 
-					Climate.Parameter.span(0.95F, 1.0F),
-					Climate.Parameter.span(0.0F, 1.0F),
-					Climate.Parameter.span(0.0F, 1.0F),
-					0.0F
+				BiomeTree.parameters(
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.span(0.0F, 1.0F),
+					BiomeTree.Parameter.point(0.0F)
 				),
 				biomes.getOrThrow(Biomes.RIVER)
 			)
 		);
-		return new ParameterList<>(params);
+		return new BiomeTree.ParameterList<>(params);
 	}
 
 	private static ResourceKey<WorldPreset> resolve(String path) {

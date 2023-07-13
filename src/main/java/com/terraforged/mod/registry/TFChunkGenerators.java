@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
