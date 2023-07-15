@@ -26,10 +26,9 @@ package com.terraforged.mod.level.levelgen.climate;
 
 import java.util.function.Supplier;
 
+import com.terraforged.mod.level.levelgen.continent.ContinentNoise;
 import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
-import com.terraforged.mod.level.levelgen.noise.climate.ClimateNoise;
-import com.terraforged.mod.level.levelgen.noise.climate.ClimateSample;
 
 import net.minecraftforge.common.util.Lazy;
 
@@ -91,6 +90,9 @@ public class ClimateSampler {
 	}
 
 	static Supplier<ClimateNoise> createClimate(Supplier<NoiseGenerator> generator) {
-		return Lazy.concurrentOf(() -> new ClimateNoise(generator.get().getContinent().getContext()));
+		return Lazy.concurrentOf(() -> {
+			ContinentNoise continent = generator.get().getContinent();
+			return new ClimateNoise(continent.getSeed(), continent.getSettings());
+		});
 	}
 }

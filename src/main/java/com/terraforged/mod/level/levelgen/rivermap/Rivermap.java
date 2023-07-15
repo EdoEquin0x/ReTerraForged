@@ -5,7 +5,6 @@ package com.terraforged.mod.level.levelgen.rivermap;
 
 import com.terraforged.mod.concurrent.cache.ExpiringEntry;
 import com.terraforged.mod.level.levelgen.cell.Cell;
-import com.terraforged.mod.level.levelgen.heightmap.Heightmap;
 import com.terraforged.mod.level.levelgen.rivermap.gen.GenRiver;
 import com.terraforged.mod.level.levelgen.rivermap.river.Network;
 import com.terraforged.mod.noise.domain.Domain;
@@ -48,17 +47,6 @@ public class Rivermap implements ExpiringEntry {
 
     public int getZ() {
         return this.z;
-    }
-
-    public static Rivermap get(Cell cell, Rivermap instance, Heightmap heightmap) {
-        return Rivermap.get(cell.continentX, cell.continentZ, instance, heightmap);
-    }
-
-    public static Rivermap get(int x, int z, Rivermap instance, Heightmap heightmap) {
-        if (instance != null && x == instance.getX() && z == instance.getZ()) {
-            return instance;
-        }
-        return heightmap.getContinent().getRivermap(x, z);
     }
 }
 

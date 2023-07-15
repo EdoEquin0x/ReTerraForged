@@ -27,12 +27,10 @@ package com.terraforged.mod.level.levelgen.noise;
 import java.util.function.Consumer;
 
 import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
-import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
-import com.terraforged.mod.level.levelgen.noise.continent.ContinentNoise;
-import com.terraforged.mod.level.levelgen.noise.continent.ContinentPoints;
-import com.terraforged.mod.level.levelgen.noise.erosion.NoiseTileSize;
+import com.terraforged.mod.level.levelgen.continent.ContinentNoise;
+import com.terraforged.mod.level.levelgen.continent.ContinentPoints;
 import com.terraforged.mod.level.levelgen.seed.Seed;
+import com.terraforged.mod.level.levelgen.settings.ControlPoints;
 import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.terrain.generation.TerrainBlender;
 import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
@@ -195,10 +193,6 @@ public class NoiseGenerator {
         return coord * this.getLevels().frequency;
     }
 
-    protected static NoiseTileSize getNoiseTileSize() {
-        return new NoiseTileSize(2);
-    }
-
     protected static Module createOceanTerrain(int seed) {
         return Source.simplex(seed + OCEAN_OFFSET, 64, 3).scale(0.4);
     }
@@ -208,6 +202,6 @@ public class NoiseGenerator {
     }
 
     protected static ContinentNoise createContinentNoise(int seed, Settings settings, TerrainLevels levels) {
-        return new ContinentNoise(seed + CONTINENT_OFFSET, levels, new GeneratorContext(new Seed(seed), settings));
+        return new ContinentNoise(new Seed(seed + CONTINENT_OFFSET), levels, settings);
     }
 }

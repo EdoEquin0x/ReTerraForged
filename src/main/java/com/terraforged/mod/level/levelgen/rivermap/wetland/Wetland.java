@@ -4,7 +4,7 @@
 package com.terraforged.mod.level.levelgen.rivermap.wetland;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
-import com.terraforged.mod.level.levelgen.heightmap.Levels;
+import com.terraforged.mod.level.levelgen.settings.Levels;
 import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;

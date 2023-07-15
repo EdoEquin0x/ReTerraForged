@@ -3,7 +3,7 @@
  */
 package com.terraforged.mod.level.levelgen.rivermap.lake;
 
-import com.terraforged.mod.level.levelgen.heightmap.Levels;
+import com.terraforged.mod.level.levelgen.settings.Levels;
 import com.terraforged.mod.level.levelgen.settings.RiverSettings;
 
 public class LakeConfig {

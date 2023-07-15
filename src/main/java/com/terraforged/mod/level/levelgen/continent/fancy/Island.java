@@ -3,7 +3,7 @@
  */
 package com.terraforged.mod.level.levelgen.continent.fancy;
 
-import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
+import com.terraforged.mod.level.levelgen.settings.ControlPoints;
 import com.terraforged.mod.noise.source.Line;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;

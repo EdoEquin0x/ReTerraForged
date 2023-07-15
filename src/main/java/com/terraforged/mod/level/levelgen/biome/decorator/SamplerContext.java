@@ -24,10 +24,11 @@
 
 package com.terraforged.mod.level.levelgen.biome.decorator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
-import com.terraforged.mod.level.levelgen.biome.util.BiomeList;
 import com.terraforged.mod.level.levelgen.biome.vegetation.BiomeVegetation;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationFeatures;
 import com.terraforged.mod.level.levelgen.biome.viability.ViabilityContext;
@@ -58,7 +59,7 @@ public class SamplerContext {
 
     public final FloatMap viability = new FloatMap();
 
-    public final BiomeList biomeList = new BiomeList();
+    public final List<Holder<Biome>> biomeList = new ArrayList<>();
     public final ViabilityContext viabilityContext = new ViabilityContext();
     public final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
@@ -75,7 +76,7 @@ public class SamplerContext {
     }
 
     public SamplerContext reset() {
-        biomeList.reset();
+        biomeList.clear();
         return this;
     }
 

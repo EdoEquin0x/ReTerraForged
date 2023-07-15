@@ -6,15 +6,13 @@ package com.terraforged.mod.level.levelgen.rivermap.river;
 import java.util.Random;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
-import com.terraforged.mod.level.levelgen.heightmap.Levels;
-import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
-import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.level.levelgen.settings.Levels;
 import com.terraforged.mod.noise.func.CurveFunc;
 import com.terraforged.mod.noise.func.SCurve;
 import com.terraforged.mod.noise.source.Line;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
-public class RiverCarver extends TerrainPopulator implements Comparable<RiverCarver> {
+public class RiverCarver implements Comparable<RiverCarver> {
     public final boolean main;
     private final float fade;
     private final float fadeInv;
@@ -30,7 +28,6 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
     public final CurveFunc valleyCurve;
 
     public RiverCarver(River river, RiverWarp warp, RiverConfig config, Settings settings, Levels levels) {
-        super(Source.ZERO, Source.ZERO, 1.0f);
         this.fade = settings.fadeIn;
         this.fadeInv = 1.0f / settings.fadeIn;
         this.bedWidth = new Range(0.25f, config.bedWidth * config.bedWidth);
@@ -44,10 +41,6 @@ public class RiverCarver extends TerrainPopulator implements Comparable<RiverCar
         this.bedDepth = new Range(levels.water, config.bedHeight);
         this.banksDepth = new Range(config.minBankHeight, config.maxBankHeight);
         this.valleyCurve = settings.valleyCurve;
-    }
-
-    @Override
-    public void apply(Cell cell, float x, float z) {
     }
 
     @Override

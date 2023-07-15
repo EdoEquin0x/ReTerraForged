@@ -16,7 +16,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.level.levelgen.noise.climate.ClimateSample;
+import com.terraforged.mod.level.levelgen.climate.ClimateSample;
 
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;

@@ -6,47 +6,26 @@ package com.terraforged.mod.level.levelgen.settings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.noise.Module;
-import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
-public record ClimateSettings(RangeValue temperature, RangeValue moisture, BiomeShape biomeShape, BiomeNoise biomeEdgeShape) {
+public record ClimateSettings(RangeValue temperature, RangeValue moisture, BiomeShape biomeShape) {
 	public static final ClimateSettings DEFAULT = new ClimateSettings(
 		new RangeValue(7, 6, 2, 0.0f, 0.98f, 0.05f), 
 		new RangeValue(7, 6, 1, 0.0f, 1.0f, 0.0f), 
-		BiomeShape.DEFAULT, 
-		BiomeNoise.DEFAULT
+		BiomeShape.DEFAULT 
 	);
 	
 	public static final Codec<ClimateSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		RangeValue.CODEC.optionalFieldOf("temperature", new RangeValue(0, 6, 2, 0.0F, 0.98F, 0.05F)).forGetter(ClimateSettings::temperature),
 		RangeValue.CODEC.optionalFieldOf("moisture", new RangeValue(0, 6, 1, 0.0F, 1.0F, 0.0F)).forGetter(ClimateSettings::moisture),
-		BiomeShape.CODEC.fieldOf("biome_shape").forGetter(ClimateSettings::biomeShape),
-		BiomeNoise.CODEC.fieldOf("biome_edge_shape").forGetter(ClimateSettings::biomeEdgeShape)
+		BiomeShape.CODEC.fieldOf("biome_shape").forGetter(ClimateSettings::biomeShape)
 	).apply(instance, ClimateSettings::new));
-	
-    public record BiomeNoise(Source type, int scale, int octaves, float gain, float lacunarity, int strength) {
-    	public static final BiomeNoise DEFAULT = new BiomeNoise(Source.SIMPLEX, 24, 2, 0.5F, 2.65F, 14);
-    	
-    	public static final Codec<BiomeNoise> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    		Source.CODEC.fieldOf("type").forGetter(BiomeNoise::type),
-    		Codec.intRange(1, 500).fieldOf("scale").forGetter(BiomeNoise::scale),
-    		Codec.intRange(1, 5).fieldOf("octaves").forGetter(BiomeNoise::octaves),
-    		Codec.floatRange(0.0F, 5.5F).fieldOf("gain").forGetter(BiomeNoise::gain),
-    		Codec.floatRange(0.0F, 10.5F).fieldOf("lacunarity").forGetter(BiomeNoise::lacunarity),
-    		Codec.intRange(1, 500).fieldOf("strength").forGetter(BiomeNoise::strength)
-    	).apply(instance, BiomeNoise::new));
-    	
-        public Module build(int seed) {
-            return Source.build(seed, this.scale, this.octaves).gain(this.gain).lacunarity(this.lacunarity).build(this.type).bias(-0.5);
-        }
-    }
 
-    public record BiomeShape(int biomeSize, int macroNoiseSize, int biomeWarpScale, int biomeWarpStrength) {
-    	public static final BiomeShape DEFAULT = new BiomeShape(225, 8, 150, 80);
+    public record BiomeShape(int biomeSize, int biomeWarpScale, int biomeWarpStrength) {
+    	public static final BiomeShape DEFAULT = new BiomeShape(225, 150, 80);
     	
     	public static final Codec<BiomeShape> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Codec.intRange(50, 2000).fieldOf("biome_size").forGetter(BiomeShape::biomeSize),
-    		Codec.intRange(1, 20).fieldOf("macro_noise_size").forGetter(BiomeShape::macroNoiseSize),
     		Codec.intRange(1, 500).fieldOf("biome_warp_scale").forGetter(BiomeShape::biomeWarpScale),
     		Codec.intRange(1, 500).fieldOf("biome_warp_strength").forGetter(BiomeShape::biomeWarpStrength)
     	).apply(instance, BiomeShape::new));

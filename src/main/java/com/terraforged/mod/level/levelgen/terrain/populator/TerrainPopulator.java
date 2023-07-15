@@ -3,32 +3,43 @@
  */
 package com.terraforged.mod.level.levelgen.terrain.populator;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.cell.Populator;
-import com.terraforged.mod.level.levelgen.settings.TerrainSettings;
 //import com.terraforged.mod.level.levelgen.terrain.Terrain;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 
 public class TerrainPopulator implements Populator {
-	protected final float weight;
+	public static final Codec<TerrainPopulator> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Module.CODEC.fieldOf("base").forGetter(TerrainPopulator::getBase),
+		Module.CODEC.fieldOf("variance").forGetter(TerrainPopulator::getVariance),
+		Codec.FLOAT.fieldOf("weight").forGetter(TerrainPopulator::getWeight)
+	).apply(instance, TerrainPopulator::new));
+	
 //    protected final Terrain type;
     protected final Module base;
     protected final Module variance;
+	protected final float weight;
 
     public TerrainPopulator(/*Terrain type, */Module base, Module variance, float weight) {
 //        this.type = type;
         this.base = base;
-        this.weight = weight;
         this.variance = variance;
+        this.weight = weight;
+    }
+    
+    public Module getBase() {
+    	return this.base;
+    }
+    
+    public Module getVariance() {
+        return this.variance;
     }
 
     public float getWeight() {
         return this.weight;
-    }
-
-    public Module getVariance() {
-        return this.variance;
     }
 
 //    public Terrain getType() {
@@ -59,11 +70,11 @@ public class TerrainPopulator implements Populator {
         return new TerrainPopulator(/*type, */Source.ZERO, variance, 1.0f);
     }
 
-    public static TerrainPopulator of(/*Terrain type, */Module base, Module variance, TerrainSettings.Terrain settings) {
-        if (settings.verticalScale() == 1.0f && settings.baseScale() == 1.0f) {
-            return new TerrainPopulator(/*type, */base, variance, settings.weight());
+    public static TerrainPopulator of(/*Terrain type, */Module base, Module variance, float weight, float baseScale, float verticalScale) {
+        if (verticalScale == 1.0f &&  baseScale == 1.0f) {
+            return new TerrainPopulator(/*type, */base, variance, weight);
         }
-        return new ScaledPopulator(/*type, */base, variance, settings.baseScale(), settings.verticalScale(), settings.weight());
+        return new ScaledPopulator(/*type, */base, variance,  baseScale, verticalScale, weight);
     }
 }
 

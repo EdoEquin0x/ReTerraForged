@@ -24,34 +24,36 @@
 
 package com.terraforged.mod.level.levelgen.cave;
 
-import net.minecraft.core.Holder;
-import net.minecraft.world.level.biome.Biome;
-
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.terraforged.mod.level.levelgen.asset.NoiseCave;
-import com.terraforged.mod.level.levelgen.biome.util.BiomeList;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
 import com.terraforged.mod.noise.Module;
+
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.biome.Biome;
 
 public class CarverChunk {
     private Holder<Biome> cached;
     private int cachedX, cachedZ;
 
     private int biomeListIndex = -1;
-    private final BiomeList[] biomeLists;
-    private final Map<NoiseCave, BiomeList> biomes = new IdentityHashMap<>();
+    private final List<Holder<Biome>>[] biomeLists;
+    private final Map<NoiseCave, List<Holder<Biome>>> biomes = new IdentityHashMap<>();
 
     public Module mask;
     public Module modifier;
     public TerrainData terrainData;
 
-    public CarverChunk(int size) {
-        biomeLists = new BiomeList[size];
+    @SuppressWarnings("unchecked")
+	public CarverChunk(int size) {
+        biomeLists = new List[size];
         for (int i = 0; i < biomeLists.length; i++) {
-            biomeLists[i] = new BiomeList();
+            biomeLists[i] = new ArrayList<Holder<Biome>>();
         }
     }
 
@@ -62,7 +64,7 @@ public class CarverChunk {
         return this;
     }
 
-    public BiomeList getBiomes(NoiseCave config) {
+    public List<Holder<Biome>> getBiomes(NoiseCave config) {
         return biomes.get(config);
     }
 
@@ -85,12 +87,14 @@ public class CarverChunk {
         return 1f - noise * river;
     }
 
-    private BiomeList nextList() {
+    private List<Holder<Biome>> nextList() {
         int i = biomeListIndex + 1;
         if (i < biomeLists.length) {
             biomeListIndex = i;
-            return biomeLists[i].reset();
+            var biomeList = biomeLists[i];
+            biomeList.clear();
+            return biomeList;
         }
-        return new BiomeList();
+        return new ArrayList<>();
     }
 }

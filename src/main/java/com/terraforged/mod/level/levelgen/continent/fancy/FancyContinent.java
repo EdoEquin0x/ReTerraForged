@@ -6,9 +6,9 @@ package com.terraforged.mod.level.levelgen.continent.fancy;
 import java.util.Random;
 
 import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
-import com.terraforged.mod.level.levelgen.heightmap.ControlPoints;
 import com.terraforged.mod.level.levelgen.rivermap.RiverGenerator;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
+import com.terraforged.mod.level.levelgen.settings.ControlPoints;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.pos.PosUtil;
