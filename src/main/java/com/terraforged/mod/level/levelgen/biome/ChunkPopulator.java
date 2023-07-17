@@ -32,7 +32,7 @@ import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.cave.NoiseCaveGenerator;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -45,7 +45,7 @@ public class ChunkPopulator {
     private final FeatureDecorator featureDecorator;
     private final NoiseCaveGenerator noiseCaveGenerator;
 
-    public ChunkPopulator(Holder<VegetationConfig>[] vegetation, Holder<NoiseCave>[] caves) {
+    public ChunkPopulator(HolderSet<VegetationConfig> vegetation, HolderSet<NoiseCave> caves) {
         this.featureDecorator = new FeatureDecorator(vegetation);
         this.noiseCaveGenerator = new NoiseCaveGenerator(caves);
     }

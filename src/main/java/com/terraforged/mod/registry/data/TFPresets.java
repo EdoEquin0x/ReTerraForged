@@ -9,8 +9,8 @@ import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.util.storage.WeightMap;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -32,8 +32,7 @@ public interface TFPresets {
 	static void register(BootstapContext<WorldPreset> ctx) {
 		ctx.register(TERRAFORGED, createDefaultPreset(ctx));
     }
-	
-	@SuppressWarnings("unchecked")
+
 	private static WorldPreset createDefaultPreset(BootstapContext<WorldPreset> ctx) {
 		HolderGetter<DimensionType> dimensions = ctx.lookup(Registries.DIMENSION_TYPE);
 		HolderGetter<Module> terrain = ctx.lookup(TFDataRegistries.NOISE);
@@ -63,7 +62,7 @@ public interface TFPresets {
 							.entry(1.45F, terrain.getOrThrow(TFNoise.MOUNTAINS_1))
 							.entry(1.5F,  terrain.getOrThrow(TFNoise.PLAINS))
 							.build(),
-						new Holder[] {
+						HolderSet.direct(
 							vegetation.getOrThrow(TFVegetation.TREES_COPSE),
 							vegetation.getOrThrow(TFVegetation.TREES_HARDY),
 							vegetation.getOrThrow(TFVegetation.TREES_HARDY_SLOPES),
@@ -72,14 +71,14 @@ public interface TFPresets {
 							vegetation.getOrThrow(TFVegetation.TREES_SPARSE),
 							vegetation.getOrThrow(TFVegetation.TREES_SPARSE_RAINFOREST),
 							vegetation.getOrThrow(TFVegetation.TREES_TEMPERATE)
-						},
-						new Holder[] {
+						),
+						HolderSet.direct(						
 //							caves.getOrThrow(TFCaves.MEGA),
 //							caves.getOrThrow(TFCaves.MEGA_DEEP),
 //							caves.getOrThrow(TFCaves.SYNAPSE_HIGH),
 //							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
 //							caves.getOrThrow(TFCaves.SYNAPSE_MID)
-						},
+						),
 						MultiNoiseBiomeSource.createFromPreset(presets.getOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD))
 					)
 				)

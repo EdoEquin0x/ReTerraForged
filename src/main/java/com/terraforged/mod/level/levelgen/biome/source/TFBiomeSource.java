@@ -14,8 +14,7 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 
 public class TFBiomeSource extends BiomeSource {
-	@SuppressWarnings("unchecked")
-	private final LongCache<Holder<Biome>> cache = LossyCache.concurrent(2048, i -> (Holder<Biome>[]) new Holder[i]);
+	private final LongCache<Holder<Biome>> cache = LossyCache.concurrent(2048, Holder[]::new);
 	private final BiomeSource delegate;
 	
 	public TFBiomeSource(BiomeSource delegate) {

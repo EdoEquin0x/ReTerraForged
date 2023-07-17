@@ -37,13 +37,12 @@ import com.terraforged.mod.util.storage.WeightMap;
 import net.minecraft.core.Holder;
 
 public class TerrainBlender implements Module {
-	@SuppressWarnings("unchecked")
 	public static final Codec<TerrainBlender> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.INT.fieldOf("seed").forGetter((m) -> m.seed),
 		Codec.INT.fieldOf("scale").forGetter((m) -> m.scale),
 		Codec.FLOAT.fieldOf("jitter").forGetter((m) -> m.jitter),
 		Codec.FLOAT.fieldOf("blending").forGetter((m) -> m.blending),
-		WeightMap.codec(Module.CODEC, (size) -> (Holder<Module>[]) new Holder[size]).fieldOf("terrains").forGetter((m) -> m.terrains)
+		WeightMap.codec(Module.CODEC).fieldOf("terrains").forGetter((m) -> m.terrains)
 	).apply(instance, TerrainBlender::new));
 	
     private static final int REGION_SEED_OFFSET = 21491124;

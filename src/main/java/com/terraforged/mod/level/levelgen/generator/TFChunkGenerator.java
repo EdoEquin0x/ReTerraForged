@@ -31,7 +31,6 @@ import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.level.levelgen.SampledDensityFunction;
 import com.terraforged.mod.level.levelgen.biome.ChunkPopulator;
 import com.terraforged.mod.level.levelgen.biome.source.TFBiomeSource;
@@ -55,6 +54,7 @@ import com.terraforged.mod.util.storage.WeightMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
 import net.minecraft.data.worldgen.SurfaceRuleData;
@@ -90,13 +90,12 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 public class TFChunkGenerator extends NoiseBasedChunkGenerator {
-	@SuppressWarnings("unchecked")
 	public static final Codec<TFChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Settings.CODEC.fieldOf("settings").forGetter((g) -> g.settings),
     	TerrainLevels.CODEC.fieldOf("levels").forGetter((g) -> g.levels),
-    	WeightMap.codec(Module.CODEC, (size) -> (Holder<Module>[]) new Holder[size]).fieldOf("terrain").forGetter((g) -> g.terrain),
-    	TFCodecs.forArray(VegetationConfig.CODEC, (size) -> (Holder<VegetationConfig>[]) new Holder[size]).fieldOf("vegetation").forGetter((g) -> g.vegetation),
-    	TFCodecs.forArray(NoiseCave.CODEC, (size) -> (Holder<NoiseCave>[]) new Holder[size]).fieldOf("caves").forGetter((g) -> g.caves),
+    	WeightMap.codec(Module.CODEC).fieldOf("terrain").forGetter((g) -> g.terrain),
+    	VegetationConfig.LIST_CODEC.fieldOf("vegetation").forGetter((g) -> g.vegetation),
+    	NoiseCave.LIST_CODEC.fieldOf("caves").forGetter((g) -> g.caves),
     	BiomeSource.CODEC.fieldOf("biomes").forGetter((g) -> g.biomeSource.getDelegate())
 	).apply(instance, instance.stable(TFChunkGenerator::create)));
 
@@ -109,8 +108,8 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     protected final TerrainCache terrainCache;
     protected final ThreadLocal<GeneratorResource> localResource = ThreadLocal.withInitial(GeneratorResource::new);
     protected final WeightMap<Holder<Module>> terrain;
-    protected final Holder<VegetationConfig>[] vegetation;
-    protected final Holder<NoiseCave>[] caves;
+    protected final HolderSet<VegetationConfig> vegetation;
+    protected final HolderSet<NoiseCave> caves;
     protected final Aquifer.FluidPicker globalFluidPicker;
 
     public TFChunkGenerator(
@@ -121,8 +120,8 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	IntLazy<NoiseGenerator> noiseGenerator,
     	ClimateSampler climateSampler,
     	WeightMap<Holder<Module>> terrain,
-    	Holder<VegetationConfig>[] vegetation,
-    	Holder<NoiseCave>[] caves
+    	HolderSet<VegetationConfig> vegetation,
+    	HolderSet<NoiseCave> caves
     ) {
         super(biomeSource, createGeneratorSettings(levels, climateSampler));
         this.settings = settings;
@@ -294,8 +293,8 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	Settings settings,
     	TerrainLevels levels,
     	WeightMap<Holder<Module>> terrain,
-    	Holder<VegetationConfig>[] vegetation,
-    	Holder<NoiseCave>[] caves,
+    	HolderSet<VegetationConfig> vegetation,
+    	HolderSet<NoiseCave> caves,
     	BiomeSource delegate
     ) {
     	var chunkPopulator = new ChunkPopulator(vegetation, caves);

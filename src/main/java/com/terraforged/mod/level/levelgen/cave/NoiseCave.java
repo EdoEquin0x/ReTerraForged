@@ -33,13 +33,14 @@ import com.terraforged.mod.registry.data.TFDataRegistries;
 import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
 
 public record NoiseCave(WeightMap<Holder<Biome>> biomes, Holder<Module> elevation, Holder<Module> shape, Holder<Module> floor, Holder<Module> modifier, int size, int minY, int maxY) {
-    @SuppressWarnings("unchecked")
 	public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		WeightMap.codec(Biome.CODEC, (size) -> (Holder<Biome>[]) new Holder[size]).fieldOf("biomes").forGetter(NoiseCave::biomes),
+		WeightMap.codec(Biome.CODEC).fieldOf("biomes").forGetter(NoiseCave::biomes),
     	Module.CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
     	Module.CODEC.fieldOf("shape").forGetter(NoiseCave::shape),
     	Module.CODEC.fieldOf("floor").forGetter(NoiseCave::floor),
@@ -49,6 +50,7 @@ public record NoiseCave(WeightMap<Holder<Biome>> biomes, Holder<Module> elevatio
     	Codec.INT.fieldOf("max_y").forGetter(NoiseCave::maxY)
     ).apply(instance, NoiseCave::new));
     public static final Codec<Holder<NoiseCave>> CODEC = RegistryFileCodec.create(TFDataRegistries.CAVE, DIRECT_CODEC);
+    public static final Codec<HolderSet<NoiseCave>> LIST_CODEC = RegistryCodecs.homogeneousList(TFDataRegistries.CAVE, DIRECT_CODEC);
 
     public int getHeight(int x, int z) {
         return getScaleValue(x, z, 1F, this.minY, this.maxY - this.minY, this.elevation);

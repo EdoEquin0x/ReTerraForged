@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -113,7 +112,7 @@ public class WeightMap<T> implements Iterable<T> {
     }
 
     @SuppressWarnings("unchecked")
-	public static <T> Codec<WeightMap<T>> codec(Codec<T> valueCodec, IntFunction<T[]> generator) {
+	public static <T> Codec<WeightMap<T>> codec(Codec<T> valueCodec) {
     	return TFCodecs.forArray(Entry.codec(valueCodec), (size) -> {
     		return (Entry<T>[]) new Entry[size];
     	}).xmap((entries) -> {

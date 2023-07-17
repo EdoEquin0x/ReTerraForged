@@ -51,7 +51,7 @@ public class FeatureDecorator {
 
     private final BiomeVegetationManager vegetation;
 
-    public FeatureDecorator(Holder<VegetationConfig>[] vegetation) {
+    public FeatureDecorator(HolderSet<VegetationConfig> vegetation) {
         this.vegetation = new BiomeVegetationManager(vegetation);
     }
 

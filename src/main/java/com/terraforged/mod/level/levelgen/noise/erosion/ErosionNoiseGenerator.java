@@ -26,8 +26,6 @@ package com.terraforged.mod.level.levelgen.noise.erosion;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.function.IntFunction;
-import java.util.function.Supplier;
 
 import com.terraforged.mod.level.levelgen.noise.NoiseData;
 import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
@@ -46,8 +44,6 @@ import net.minecraft.core.Holder;
 
 public class ErosionNoiseGenerator extends NoiseGenerator {
     private static final int CACHE_SIZE = 256;
-    private static final Supplier<float[]> CHUNK_ALLOCATOR = () -> new float[16 * 16];
-    private static final IntFunction<CompletableFuture<float[]>[]> CHUNK_TASK_ALLOCATOR = CompletableFuture[]::new;
 
     private int seed;
     protected final NoiseTileSize tileSize;
@@ -65,8 +61,8 @@ public class ErosionNoiseGenerator extends NoiseGenerator {
         this.erosion = new ErosionFilter(tileSize.regionLength, settings.erosion());
         this.localSample = ThreadLocal.withInitial(NoiseSample::new);
         this.localResource = ThreadLocal.withInitial(() -> new NoiseResource(tileSize));
-        this.pool = ObjectPool.forCacheSize(CACHE_SIZE, CHUNK_ALLOCATOR);
-        this.cache = LossyCache.concurrent(CACHE_SIZE, CHUNK_TASK_ALLOCATOR, this::restore);
+        this.pool = ObjectPool.forCacheSize(CACHE_SIZE, () -> new float[16 * 16]);
+        this.cache = LossyCache.concurrent(CACHE_SIZE, CompletableFuture[]::new, this::restore);
     }
 
     @Override

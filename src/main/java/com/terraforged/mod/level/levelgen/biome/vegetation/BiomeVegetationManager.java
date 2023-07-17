@@ -29,13 +29,14 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.world.level.biome.Biome;
 
 public class BiomeVegetationManager {
-    private final Holder<VegetationConfig>[] configs;
+    private final HolderSet<VegetationConfig> configs;
     private final Map<Holder<Biome>, BiomeVegetation> vegetation = new ConcurrentHashMap<>();
 
-    public BiomeVegetationManager(Holder<VegetationConfig>[] configs) {
+    public BiomeVegetationManager(HolderSet<VegetationConfig> configs) {
         this.configs = configs;
     }
 
@@ -52,7 +53,7 @@ public class BiomeVegetationManager {
         return new BiomeVegetation(config, features);
     }
 
-    private static Optional<VegetationConfig> getConfig(Holder<Biome> biome, Holder<VegetationConfig>[] configs) {
+    private static Optional<VegetationConfig> getConfig(Holder<Biome> biome, HolderSet<VegetationConfig> configs) {
         for (var config : configs) {
         	var value = config.value();
             if (biome.is(value.biomes())) {

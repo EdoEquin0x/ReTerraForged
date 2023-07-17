@@ -33,6 +33,7 @@ import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.util.storage.ObjectPool;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -42,15 +43,15 @@ public class NoiseCaveGenerator {
     protected static final float BREACH_THRESHOLD = 0.7F;
     protected static final int GLOBAL_CAVE_REPS = 2;
 
-    protected final Holder<NoiseCave>[] caves;
+    protected final HolderSet<NoiseCave> caves;
     protected final Holder<Module> caveBreachNoise;
     protected final ObjectPool<CarverChunk> pool;
     protected final Map<ChunkPos, CarverChunk> cache = new ConcurrentHashMap<>();
 
-    public NoiseCaveGenerator(Holder<NoiseCave>[] caves) {
+    public NoiseCaveGenerator(HolderSet<NoiseCave> caves) {
     	this.caves = caves;
         this.caveBreachNoise = Holder.direct(createBreachNoise(300, BREACH_THRESHOLD));
-        this.pool = new ObjectPool<>(POOL_SIZE, () -> this.createCarverChunk(caves.length));
+        this.pool = new ObjectPool<>(POOL_SIZE, () -> this.createCarverChunk(caves.size()));
     }
     
     public Holder<Module> getBreachNoise() {
@@ -92,8 +93,8 @@ public class NoiseCaveGenerator {
         carver.mask = this.caveBreachNoise;
         carver.terrainData = generator.getChunkData(chunk.getPos());
 
-        for (int i = 0; i < this.caves.length; i++) {
-        	var config = this.caves[i];
+        for (int i = 0; i < this.caves.size(); i++) {
+        	var config = this.caves.get(i);
             carver.modifier = config.value().modifier();
 
             NoiseCaveCarver.carve(seed + (int) (i * 0xFA90C2L), chunk, carver, generator, config.value(), setBlocks);

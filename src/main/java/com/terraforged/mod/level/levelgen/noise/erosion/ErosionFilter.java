@@ -23,6 +23,7 @@
  */
 
 package com.terraforged.mod.level.levelgen.noise.erosion;
+
 import com.terraforged.mod.level.levelgen.settings.ErosionSettings;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.FastRandom;
@@ -60,7 +61,7 @@ public class ErosionFilter {
         this.maxDropletLifetime = settings.dropletLifetime();
         this.erosionBrushIndices = new int[mapSize * mapSize][];
         this.erosionBrushWeights = new float[mapSize * mapSize][];
-        initBrushes(mapSize, erosionRadius);
+        this.initBrushes(mapSize, erosionRadius);
     }
 
     public void apply(int seed, int chunkX, int chunkZ, NoiseTileSize size, Resource resource, FastRandom random, float[] map) {
