@@ -31,7 +31,6 @@ import java.util.function.Consumer;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
-import com.terraforged.mod.Environment;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class ObjectPool<T> implements Consumer<T> {
@@ -43,10 +42,6 @@ public class ObjectPool<T> implements Consumer<T> {
 
     protected final IntUnaryOperator takeOp;
     protected final IntUnaryOperator restoreOp;
-
-    public ObjectPool(Supplier<T> factory) {
-        this(Environment.CORES, factory);
-    }
 
     public ObjectPool(int capacity, Supplier<T> factory) {
         this.factory = factory;

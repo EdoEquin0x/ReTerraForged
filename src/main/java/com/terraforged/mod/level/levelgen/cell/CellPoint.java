@@ -24,6 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.cell;
 
+//wtf is this class??
 public class CellPoint {
     public float px, py;
     public float noise;

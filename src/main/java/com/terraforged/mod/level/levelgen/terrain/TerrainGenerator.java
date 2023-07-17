@@ -26,6 +26,7 @@ package com.terraforged.mod.level.levelgen.terrain;
 
 import java.util.function.Supplier;
 
+import com.terraforged.mod.Environment;
 import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
 import com.terraforged.mod.util.storage.ObjectPool;
 
@@ -37,7 +38,7 @@ public class TerrainGenerator {
     public TerrainGenerator(TerrainLevels levels, Supplier<NoiseGenerator> noiseGenerator) {
         this.levels = levels;
         this.noiseGenerator = noiseGenerator;
-        this.terrainDataPool = new ObjectPool<>(() -> new TerrainData(this.levels));
+        this.terrainDataPool = new ObjectPool<>(Environment.CORES, () -> new TerrainData(this.levels));
     }
 
     public NoiseGenerator getNoiseGenerator() {
