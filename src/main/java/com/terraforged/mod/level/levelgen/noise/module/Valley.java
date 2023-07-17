@@ -12,6 +12,8 @@ import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 
+import net.minecraft.core.Holder;
+
 // im pretty sure this is supposed to be named Valley, but change it back to Ridge if not
 public class Valley {
 	public static final Codec<Valley> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -53,21 +55,21 @@ public class Valley {
         this.blendMode = blendMode;
     }
 
-    public Noise wrap(Module source) {
+    public Noise wrap(Holder<Module> source) {
         return new Noise(this, source);
     }
 
-    public float getValue(float x, float y, Module source) {
+    public float getValue(float x, float y, Holder<Module> source) {
         return this.getValue(x, y, source, new float[25]);
     }
 
-    public float getValue(float x, float y, Module source, float[] cache) {
-        float value = source.getValue(x, y);
+    public float getValue(float x, float y, Holder<Module> source, float[] cache) {
+        float value = source.get().getValue(x, y);
         float erosion = this.getErosionValue(x, y, source, cache);
         return NoiseUtil.lerp(erosion, value, this.blendMode.blend(value, erosion, this.strength));
     }
 
-    public float getErosionValue(float x, float y, Module source, float[] cache) {
+    public float getErosionValue(float x, float y, Holder<Module> source, float[] cache) {
         float sum = 0.0f;
         float max = 0.0f;
         float gain = 1.0f;
@@ -84,7 +86,7 @@ public class Valley {
         return sum / max;
     }
 
-    public float getSingleErosionValue(float x, float y, float gridSize, Module source, float[] cache) {
+    public float getSingleErosionValue(float x, float y, float gridSize, Holder<Module> source, float[] cache) {
         Arrays.fill(cache, -1.0f);
         int pix = NoiseUtil.floor(x / gridSize);
         int piy = NoiseUtil.floor(y / gridSize);
@@ -121,11 +123,11 @@ public class Valley {
         return NoiseUtil.clamp(Valley.sqrt(minHeight2) / gridSize, 0.0f, 1.0f);
     }
 
-    private static float getNoiseValue(int dx, int dy, float px, float py, Module module, float[] cache) {
+    private static float getNoiseValue(int dx, int dy, float px, float py, Holder<Module> module, float[] cache) {
         int index = (dy + 2) * 5 + (dx + 2);
         float value = cache[index];
         if (value == -1.0f) {
-            cache[index] = value = module.getValue(px, py);
+            cache[index] = value = module.get().getValue(px, py);
         }
         return value;
     }
@@ -184,14 +186,14 @@ public class Valley {
     public static class Noise implements Module {
     	public static final Codec<Noise> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Valley.CODEC.fieldOf("ridge").forGetter((n) -> n.ridge),
-    		Module.DIRECT_CODEC.fieldOf("sourc").forGetter((n) -> n.source)
+    		Module.CODEC.fieldOf("source").forGetter((n) -> n.source)
     	).apply(instance, Noise::new));
     	
         private final Valley ridge;
-        private final Module source;
+        private final Holder<Module> source;
         private final ThreadLocal<float[]> cache = ThreadLocal.withInitial(() -> new float[25]);
 
-        private Noise(Valley ridge, Module source) {
+        private Noise(Valley ridge, Holder<Module> source) {
             this.ridge = ridge;
             this.source = source;
         }

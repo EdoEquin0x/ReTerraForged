@@ -35,6 +35,7 @@ import com.terraforged.mod.level.levelgen.biome.viability.SumViability;
 import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Source;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
@@ -71,7 +72,7 @@ public interface TFVegetation {
                     .with(0.2F, new SaturationViability(0.7F, 1F))
                     .with(-1.0F, new HeightViability(-100, 35, 150))
                     .with(-0.5F, new SlopeViability(65, 0.55F))
-                    .with(1.0F, new NoiseViability(Source.simplex(seed.next(), 110, 2).clamp(0.85, 0.95F).map(0, 1)))
+                    .with(1.0F, new NoiseViability(Holder.direct(Source.simplex(seed.next(), 110, 2).clamp(0.85, 0.95F).map(0, 1))))
                     .build());
         }
 
@@ -81,7 +82,7 @@ public interface TFVegetation {
                     .with(-1.0F, new HeightViability(-100, 40, 190))
                     .with(-0.8F, new SlopeViability(55, 0.65F))
                     .with(-0.8F, new BiomeEdgeViability(0.65F))
-                    .with(-0.4F, new NoiseViability(Source.simplex(seed.next(), 120, 2).clamp(0.4, 0.8).map(0, 1)))
+                    .with(-0.4F, new NoiseViability(Holder.direct(Source.simplex(seed.next(), 120, 2).clamp(0.4, 0.8).map(0, 1))))
                     .build());
         }
 
@@ -91,7 +92,7 @@ public interface TFVegetation {
                     .with(-1.0F, new HeightViability(-100, 40, 150))
                     .with(+1.0F, new SlopeViability(60, 0.5F))
                     .with(-0.8F, new BiomeEdgeViability(0.65F))
-                    .with(-0.5F, new NoiseViability(Source.simplex(seed.next(), 140, 2).clamp(0.2, 0.9).map(0, 1)))
+                    .with(-0.5F, new NoiseViability(Holder.direct(Source.simplex(seed.next(), 140, 2).clamp(0.2, 0.9).map(0, 1))))
                     .build());
         }
 
@@ -100,7 +101,7 @@ public interface TFVegetation {
                     .with(0.4F, new SaturationViability(0.95F, 1F))
                     .with(-1.0F, new HeightViability(-100, 50, 175))
                     .with(-1.0F, new SlopeViability(65, 0.6F))
-                    .with(1F, new NoiseViability(Source.simplex(seed.next(), 100, 3).clamp(0.8, 0.85).map(0, 1)))
+                    .with(1F, new NoiseViability(Holder.direct(Source.simplex(seed.next(), 100, 3).clamp(0.8, 0.85).map(0, 1))))
                     .build());
         }
 
@@ -110,7 +111,7 @@ public interface TFVegetation {
                     .with(-1.0F, new HeightViability(-100, 60, 180))
                     .with(-0.5F, new SlopeViability(55, 0.65F))
                     .with(-0.8F, new BiomeEdgeViability(0.7F))
-                    .with(-0.4F, new NoiseViability(Source.simplex(seed.next(), 100, 2).clamp(0.7, 0.9).map(0, 1)))
+                    .with(-0.4F, new NoiseViability(Holder.direct(Source.simplex(seed.next(), 100, 2).clamp(0.7, 0.9).map(0, 1))))
                     .build());
         }
 
@@ -119,7 +120,7 @@ public interface TFVegetation {
                     .with(0.2F, new SaturationViability(0.65F, 1F))
                     .with(-1.0F, new HeightViability(-100, 20, 150))
                     .with(-0.5F, new SlopeViability(65, 0.75F))
-                    .with(0.5F, new NoiseViability(Source.simplex(seed.next(), 80, 2).clamp(0.5, 0.7).map(0, 1)))
+                    .with(0.5F, new NoiseViability(Holder.direct(Source.simplex(seed.next(), 80, 2).clamp(0.5, 0.7).map(0, 1))))
                     .build());
         }
 
@@ -129,7 +130,7 @@ public interface TFVegetation {
                     .with(-1.0F, new HeightViability(-100, 45, 150))
                     .with(-0.6F, new SlopeViability(55, 0.65F))
                     .with(-0.8F, new BiomeEdgeViability(0.7F))
-                    .with(-0.5F, new NoiseViability(Source.simplex(seed.next(), 120, 2).clamp(0.4, 0.6).map(0, 1)))
+                    .with(-0.5F, new NoiseViability(Holder.direct(Source.simplex(seed.next(), 120, 2).clamp(0.4, 0.6).map(0, 1))))
                     .build());
         }
 
@@ -139,7 +140,7 @@ public interface TFVegetation {
                     .with(-1.0F, new HeightViability(-100, 40, 165))
                     .with(-1.0F, new SlopeViability(60, 0.65F))
                     .with(-0.75F, new BiomeEdgeViability(0.8F))
-                    .with(-0.45F, new NoiseViability(Source.simplex(seed.next(), 150, 3).clamp(0.4, 0.7).map(0, 1)))
+                    .with(-0.45F, new NoiseViability(Holder.direct(Source.simplex(seed.next(), 150, 3).clamp(0.4, 0.7).map(0, 1))))
                     .build());
         }
     }

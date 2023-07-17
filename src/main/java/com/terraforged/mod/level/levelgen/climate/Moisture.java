@@ -9,6 +9,7 @@ import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
+@Deprecated(forRemoval = true)
 public class Moisture implements Module {
 	public static final Codec<Moisture> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.originalSource),

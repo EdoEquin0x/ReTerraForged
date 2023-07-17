@@ -44,8 +44,8 @@ public class CarverChunk {
     private final List<Holder<Biome>>[] biomeLists;
     private final Map<NoiseCave, List<Holder<Biome>>> biomes = new IdentityHashMap<>();
 
-    public Module mask;
-    public Module modifier;
+    public Holder<Module> mask;
+    public Holder<Module> modifier;
     public TerrainData terrainData;
 
     @SuppressWarnings("unchecked")
@@ -81,7 +81,7 @@ public class CarverChunk {
     }
 
     public float getCarvingMask(int x, int z) {
-        float noise = mask.getValue(x, z);
+        float noise = mask.get().getValue(x, z);
         float river = terrainData.getRiver().get(x, z);
         return 1f - noise * river;
     }

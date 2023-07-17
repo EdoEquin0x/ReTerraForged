@@ -76,7 +76,7 @@ public interface TFCaves {
                     .clamp(0.75, 1.0).map(0, 1);
 
             var floor = Source.simplex(++seed, floorScale, 2).clamp(0.0, 0.3).map(0, 1);
-            return new NoiseCave(biomes, elevation, shape, floor, createUniqueNoise(500, 0.05F), size, minY, maxY);
+            return new NoiseCave(biomes, Holder.direct(elevation), Holder.direct(shape), Holder.direct(floor), Holder.direct(createUniqueNoise(500, 0.05F)), size, minY, maxY);
         }
 
         static NoiseCave synapse(WeightMap<Holder<Biome>> biomes, int seed, float scale, int minY, int maxY) {
@@ -92,7 +92,7 @@ public interface TFCaves {
                     .warp(++seed, networkWarpScale, 1, networkWarpStrength)
                     .clamp(0.35, 0.75).map(0, 1);
             var floor = Source.simplex(++seed, floorScale, 2).clamp(0.0, 0.15).map(0, 1);
-            return new NoiseCave(biomes, elevation, shape, floor, Source.ONE, size, minY, maxY);
+            return new NoiseCave(biomes, Holder.direct(elevation), Holder.direct(shape), Holder.direct(floor), Holder.direct(Source.ONE), size, minY, maxY);
         }
 
         private static Module createUniqueNoise(int scale, float density) {

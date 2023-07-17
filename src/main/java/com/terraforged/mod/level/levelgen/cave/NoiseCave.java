@@ -35,14 +35,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
 
-public record NoiseCave(WeightMap<Holder<Biome>> biomes, Module elevation, Module shape, Module floor, Module modifier, int size, int minY, int maxY) {
+public record NoiseCave(WeightMap<Holder<Biome>> biomes, Holder<Module> elevation, Holder<Module> shape, Holder<Module> floor, Holder<Module> modifier, int size, int minY, int maxY) {
     @SuppressWarnings("unchecked")
 	public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		WeightMap.codec(Biome.CODEC, (size) -> (Holder<Biome>[]) new Holder[size]).fieldOf("biomes").forGetter(NoiseCave::biomes),
-    	Module.DIRECT_CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
-    	Module.DIRECT_CODEC.fieldOf("shape").forGetter(NoiseCave::shape),
-    	Module.DIRECT_CODEC.fieldOf("floor").forGetter(NoiseCave::floor),
-    	Module.DIRECT_CODEC.fieldOf("modifier").forGetter(NoiseCave::modifier),
+    	Module.CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
+    	Module.CODEC.fieldOf("shape").forGetter(NoiseCave::shape),
+    	Module.CODEC.fieldOf("floor").forGetter(NoiseCave::floor),
+    	Module.CODEC.fieldOf("modifier").forGetter(NoiseCave::modifier),
     	Codec.INT.fieldOf("size").forGetter(NoiseCave::size),
     	Codec.INT.optionalFieldOf("min_y", -32).forGetter(NoiseCave::minY),
     	Codec.INT.fieldOf("max_y").forGetter(NoiseCave::maxY)
@@ -61,9 +61,9 @@ public record NoiseCave(WeightMap<Holder<Biome>> biomes, Module elevation, Modul
         return getScaleValue(x, z, 1F, 0, size, this.floor);
     }
 
-    private static int getScaleValue(int x, int z, float modifier, int min, int range, Module noise) {
+    private static int getScaleValue(int x, int z, float modifier, int min, int range, Holder<Module> noise) {
         if (range <= 0) return 0;
 
-        return min + NoiseUtil.floor(noise.getValue(x, z) * range * modifier);
+        return min + NoiseUtil.floor(noise.get().getValue(x, z) * range * modifier);
     }
 }

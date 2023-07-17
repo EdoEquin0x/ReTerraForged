@@ -9,6 +9,7 @@ import com.terraforged.mod.noise.domain.Domain;
 import com.terraforged.mod.noise.func.EdgeFunc;
 import com.terraforged.mod.noise.func.Interpolation;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
@@ -30,27 +31,27 @@ public interface TFNoise {
 	
     static void register(BootstapContext<Module> ctx) {
         var seed = new Seed(0);
-        ctx.register(STEPPE, Factory.createSteppe(seed));
-        ctx.register(PLAINS, Factory.createPlains(seed));
-        ctx.register(HILLS_1, Factory.createHills1(seed));
-        ctx.register(HILLS_2, Factory.createHills2(seed));
-        ctx.register(DALES, Factory.createDales(seed));
-        ctx.register(PLATEAU, Factory.createPlateau(seed));
-        ctx.register(BADLANDS, Factory.createBadlands(seed));
-        ctx.register(TORRIDONIAN, Factory.createTorridonian(seed));
-        ctx.register(MOUNTAINS_1, Factory.createMountains1(seed));
-        ctx.register(MOUNTAINS_2, Factory.createMountains2(seed, true));
-        ctx.register(MOUNTAINS_3, Factory.createMountains3(seed, true));
-        ctx.register(DOLOMITES, Factory.createDolomite(seed));
-        ctx.register(MOUNTAINS_RIDGE_1, Factory.createMountains2(seed, false));
-        ctx.register(MOUNTAINS_RIDGE_2, Factory.createMountains3(seed, false));
+        ctx.register(STEPPE, Terrain.createSteppe(seed));
+        ctx.register(PLAINS, Terrain.createPlains(seed));
+        ctx.register(HILLS_1, Terrain.createHills1(seed));
+        ctx.register(HILLS_2, Terrain.createHills2(seed));
+        ctx.register(DALES, Terrain.createDales(seed));
+        ctx.register(PLATEAU, Terrain.createPlateau(seed));
+        ctx.register(BADLANDS, Terrain.createBadlands(seed));
+        ctx.register(TORRIDONIAN, Terrain.createTorridonian(seed));
+        ctx.register(MOUNTAINS_1, Terrain.createMountains1(seed));
+        ctx.register(MOUNTAINS_2, Terrain.createMountains2(seed, true));
+        ctx.register(MOUNTAINS_3, Terrain.createMountains3(seed, true));
+        ctx.register(DOLOMITES, Terrain.createDolomite(seed));
+        ctx.register(MOUNTAINS_RIDGE_1, Terrain.createMountains2(seed, false));
+        ctx.register(MOUNTAINS_RIDGE_2, Terrain.createMountains3(seed, false));
     }
     
     private static ResourceKey<Module> resolve(String path) {
 		return TerraForged.resolve(TFDataRegistries.NOISE, path);
 	}
 
-    class Factory {
+    class Terrain {
         static final int PLAINS_H = 250;
         static final int MOUNTAINS_H = 410;
         static final double MOUNTAINS_V = 0.7;
@@ -150,7 +151,7 @@ public interface TFNoise {
         static Module makeFancy(Seed seed, Module module) {
         	Domain warp = Domain.direction(Source.perlin(seed.next(), 10, 1), Source.constant(2.0));
         	Valley erosion = new Valley(seed.next(), 2, 0.65f, 128.0f, 0.15f, 3.1f, 0.8f, Valley.Mode.CONSTANT);
-        	return erosion.wrap(module).warp(warp);
+        	return erosion.wrap(Holder.direct(module)).warp(warp);
         }
         
         static Module createDolomite(Seed seed) {

@@ -28,14 +28,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.noise.Module;
 
-public record NoiseViability(Module noise) implements Viability {
+import net.minecraft.core.Holder;
+
+public record NoiseViability(Holder<Module> noise) implements Viability {
 	public static final Codec<NoiseViability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.DIRECT_CODEC.fieldOf("noise").forGetter(NoiseViability::noise)
+		Module.CODEC.fieldOf("noise").forGetter(NoiseViability::noise)
 	).apply(instance, NoiseViability::new));
 	
     @Override
     public float getFitness(int x, int z, Context context) {
-        return noise.getValue(x, z);
+        return this.noise.get().getValue(x, z);
     }
 
 	@Override

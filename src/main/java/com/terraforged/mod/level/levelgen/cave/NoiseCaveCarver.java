@@ -60,7 +60,7 @@ public class NoiseCaveCarver {
             int surface = getSurface(x, z, chunk, generator, carver);
             int y = config.getHeight(x, z);
 
-            float value = carver.modifier.getValue(x, z);
+            float value = carver.modifier.get().getValue(x, z);
             int cavern = config.getCavernSize(x, z, value);
             if (cavern == 0) continue;
 

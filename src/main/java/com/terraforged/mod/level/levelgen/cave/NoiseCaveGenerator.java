@@ -43,17 +43,17 @@ public class NoiseCaveGenerator {
     protected static final int GLOBAL_CAVE_REPS = 2;
 
     protected final Holder<NoiseCave>[] caves;
-    protected final Module caveBreachNoise;
+    protected final Holder<Module> caveBreachNoise;
     protected final ObjectPool<CarverChunk> pool;
     protected final Map<ChunkPos, CarverChunk> cache = new ConcurrentHashMap<>();
 
     public NoiseCaveGenerator(Holder<NoiseCave>[] caves) {
     	this.caves = caves;
-        this.caveBreachNoise = createBreachNoise(300, BREACH_THRESHOLD);
+        this.caveBreachNoise = Holder.direct(createBreachNoise(300, BREACH_THRESHOLD));
         this.pool = new ObjectPool<>(POOL_SIZE, () -> this.createCarverChunk(caves.length));
     }
     
-    public Module getBreachNoise() {
+    public Holder<Module> getBreachNoise() {
     	return this.caveBreachNoise;
     }
     
