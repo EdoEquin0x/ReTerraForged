@@ -1,40 +1,29 @@
 package com.terraforged.mod.level.levelgen.biome.source;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.codec.TFCodecs;
-import com.terraforged.mod.level.levelgen.asset.NoiseCave;
-import com.terraforged.mod.level.levelgen.climate.ClimateSample;
-import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
 import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 
 public class TFBiomeSource extends BiomeSource {
-	private final ClimateSampler sampler;
-	private final BiomeTree.ParameterList<Holder<Biome>> tree;
-	@Deprecated
-	private final Holder<NoiseCave>[] caves;
 	@SuppressWarnings("unchecked")
 	private final LongCache<Holder<Biome>> cache = LossyCache.concurrent(2048, i -> (Holder<Biome>[]) new Holder[i]);
+	private final BiomeSource delegate;
 	
-	public TFBiomeSource(ClimateSampler sampler, BiomeTree.ParameterList<Holder<Biome>> tree, Holder<NoiseCave>[] caves) {
-		this.sampler = sampler;
-		this.caves = caves;
-		this.tree = tree;
+	public TFBiomeSource(BiomeSource delegate) {
+		this.delegate = delegate;
 	}
 	
-	public BiomeTree.ParameterList<Holder<Biome>> getTree() {
-		return this.tree;
+	public BiomeSource getDelegate() {
+		return this.delegate;
 	}
 	
 	@Override
@@ -44,21 +33,15 @@ public class TFBiomeSource extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return Stream.concat(this.tree.values().stream().map(Pair::getSecond), this.collectCaveBiomes());
+		return this.delegate.possibleBiomes().stream();
 	}
 
 	@Override
 	public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
-        return this.cache.computeIfAbsent(PosUtil.pack(x, z), (i) -> this.compute(x, z));
+        return this.cache.computeIfAbsent(PosUtil.pack(x, z), (i) -> this.compute(x, y, z, sampler));
 	}
 	
-	private Holder<Biome> compute(int x, int z) {
-		ClimateSample sample = this.sampler.getSample();
-		this.sampler.sample(QuartPos.toBlock(x), QuartPos.toBlock(z), sample);
-		return this.tree.findValue(sample);
-	}
-	
-	private Stream<Holder<Biome>> collectCaveBiomes() {
-		return Arrays.stream(this.caves).flatMap((cave) -> cave.get().biomes().streamValues());
+	private Holder<Biome> compute(int x, int y, int z, Climate.Sampler sampler) {
+		return this.delegate.getNoiseBiome(x, y, z, sampler);
 	}
 }

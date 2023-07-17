@@ -31,9 +31,9 @@ import com.terraforged.mod.noise.Module;
 
 public class DomainWarp implements Domain {
 	public static final Codec<DomainWarp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("x").forGetter((d) -> d.x),
-		Module.CODEC.fieldOf("y").forGetter((d) -> d.y),
-		Module.CODEC.fieldOf("distance").forGetter((d) -> d.distance)
+		Module.DIRECT_CODEC.fieldOf("x").forGetter((d) -> d.x),
+		Module.DIRECT_CODEC.fieldOf("y").forGetter((d) -> d.y),
+		Module.DIRECT_CODEC.fieldOf("distance").forGetter((d) -> d.distance)
 	).apply(instance, DomainWarp::new));
 	
     private final Module x;

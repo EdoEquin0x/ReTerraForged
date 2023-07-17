@@ -32,8 +32,8 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class DirectionWarp implements Domain {
 	public static final Codec<DirectionWarp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("direction").forGetter((d) -> d.direction),
-		Module.CODEC.fieldOf("strength").forGetter((d) -> d.strength)
+		Module.DIRECT_CODEC.fieldOf("direction").forGetter((d) -> d.direction),
+		Module.DIRECT_CODEC.fieldOf("strength").forGetter((d) -> d.strength)
 	).apply(instance, DirectionWarp::new));
 	
     private final Module direction;

@@ -26,11 +26,11 @@
 package com.terraforged.mod.noise.func;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.codec.TFCodecs;
+import com.terraforged.mod.registry.TFRegistries;
 
 public interface CurveFunc {
-	public static final Codec<CurveFunc> CODEC = TFCodecs.registryCodec(TerraForged.CURVE, CurveFunc::codec);
+	Codec<CurveFunc> CODEC = TFCodecs.registryCodec(TFRegistries.CURVE_TYPE, CurveFunc::codec);
 	
     float apply(float value);
     

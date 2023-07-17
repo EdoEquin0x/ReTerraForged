@@ -5,11 +5,12 @@ package com.terraforged.mod.level.levelgen.continent.fancy;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.continent.Continent;
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.rivermap.RiverCache;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
-import com.terraforged.mod.level.levelgen.seed.Seed;
+import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.settings.WorldSettings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
 import com.terraforged.mod.noise.util.NoiseUtil;
@@ -21,12 +22,12 @@ public class FancyContinentGenerator implements Continent {
     private final FancyContinent source;
     private final RiverCache riverCache;
 
-    public FancyContinentGenerator(Seed seed, GeneratorContext context) {
-    	WorldSettings settings = context.settings.world();
-        int warpScale = settings.continent().scale() / 2;
+    public FancyContinentGenerator(Seed seed, Levels levels, Settings settings) {
+    	WorldSettings worldSettings = settings.world();
+        int warpScale = worldSettings.continent().scale() / 2;
         double warpStrength = (double)warpScale * 0.4;
-        this.source = new FancyContinent(seed.next(), 4, 0.2f, context, this);
-        this.frequency = 1.0f / (float)settings.continent().scale();
+        this.source = new FancyContinent(4, 0.2f, seed, levels, settings, this);
+        this.frequency = 1.0f / (float)worldSettings.continent().scale();
         this.riverCache = new RiverCache(this.source);
         this.warp = Domain.warp(Source.SIMPLEX, seed.next(), warpScale, 2, warpStrength).add(Domain.warp(seed.next(), 80, 2, 40.0)).add(Domain.warp(seed.next(), 20, 1, 15.0));
     }

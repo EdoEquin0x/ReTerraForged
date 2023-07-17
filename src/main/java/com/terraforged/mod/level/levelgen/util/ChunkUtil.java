@@ -28,9 +28,9 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 import com.terraforged.mod.level.levelgen.generator.GeneratorResource;
-import com.terraforged.mod.level.levelgen.terrain.generation.StructureTerrain;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.StructureTerrain;
+import com.terraforged.mod.level.levelgen.terrain.TerrainData;
+import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -94,7 +94,7 @@ public class ChunkUtil {
         }
 
         // Here we fill the chunk section bh the block
-        for (int sy = min; sy <= max; sy += 16) {
+        for (int sy = min; sy <= Math.max(max, 24); sy += 16) {
             int index = chunk.getSectionIndex(sy);
             var section = chunk.getSection(index);
             fillSection(sy, seaLevel, terrainData, chunk, section, filler);

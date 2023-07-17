@@ -31,8 +31,8 @@ import com.terraforged.mod.noise.Module;
 
 public class Alpha extends Modifier {
 	public static final Codec<Alpha> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("alpha").forGetter((m) -> m.alpha)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("alpha").forGetter((m) -> m.alpha)
 	).apply(instance, Alpha::new));
 	
     private final Module alpha;

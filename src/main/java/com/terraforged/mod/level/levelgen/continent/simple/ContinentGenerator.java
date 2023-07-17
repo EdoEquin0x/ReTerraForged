@@ -5,13 +5,14 @@ package com.terraforged.mod.level.levelgen.continent.simple;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.continent.SimpleContinent;
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.rivermap.LegacyRiverCache;
 import com.terraforged.mod.level.levelgen.rivermap.RiverCache;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
-import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.ControlPoints;
+import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.settings.WorldSettings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
@@ -23,8 +24,6 @@ import com.terraforged.mod.util.pos.PosUtil;
 
 //TODO this shouldn't be abstract, should it?
 public abstract class ContinentGenerator implements SimpleContinent {
-    protected final GeneratorContext context;
-
     protected final int seed;
     protected final float frequency;
     protected final int continentScale;
@@ -38,23 +37,21 @@ public abstract class ContinentGenerator implements SimpleContinent {
     protected final Module shape;
     protected final RiverCache cache;
 
-    public ContinentGenerator(Seed seed, GeneratorContext context) {
-    	this.context = context;
-    	
-    	WorldSettings settings = context.settings.world();
-        int tectonicScale = settings.continent().scale() * 4;
-        this.continentScale = settings.continent().scale() / 2;
+    public ContinentGenerator(Seed seed, Levels levels, Settings settings) {
+    	WorldSettings worldSettings = settings.world();
+        int tectonicScale = worldSettings.continent().scale() * 4;
+        this.continentScale = worldSettings.continent().scale() / 2;
         this.seed = seed.next();
-        this.distanceFunc = settings.continent().shape();
-        this.controlPoints = new ControlPoints(settings.controlPoints());
+        this.distanceFunc = worldSettings.continent().shape();
+        this.controlPoints = new ControlPoints(worldSettings.controlPoints());
         this.frequency = 1.0f / (float)tectonicScale;
         this.clampMin = 0.2f;
         this.clampMax = 1.0f;
         this.clampRange = this.clampMax - this.clampMin;
-        this.offsetAlpha = context.settings.world().continent().jitter();
+        this.offsetAlpha = worldSettings.continent().jitter();
         this.warp = Domain.warp(Source.PERLIN, seed.next(), 20, 2, 20.0).warp(Domain.warp(Source.SIMPLEX, seed.next(), this.continentScale, 3, this.continentScale));
-        this.shape = Source.simplex(seed.next(), settings.continent().scale() * 2, 1).bias(0.65).clamp(0.0, 1.0);
-        this.cache = new LegacyRiverCache(new SimpleRiverGenerator(this, context));
+        this.shape = Source.simplex(seed.next(), worldSettings.continent().scale() * 2, 1).bias(0.65).clamp(0.0, 1.0);
+        this.cache = new LegacyRiverCache(new SimpleRiverGenerator(this, seed, levels, settings));
     }
 
     @Override

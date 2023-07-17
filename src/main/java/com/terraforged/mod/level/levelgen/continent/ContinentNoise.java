@@ -27,10 +27,10 @@ package com.terraforged.mod.level.levelgen.continent;
 import com.terraforged.mod.level.levelgen.continent.config.ContinentConfig;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
-import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.ControlPoints;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
 

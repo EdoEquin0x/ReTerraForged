@@ -5,16 +5,16 @@ package com.terraforged.mod.level.levelgen.continent.advanced;
 
 import com.terraforged.mod.level.levelgen.continent.SimpleContinent;
 import com.terraforged.mod.level.levelgen.continent.simple.SimpleRiverGenerator;
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.rivermap.RiverCache;
-import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.ControlPoints;
+import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.settings.WorldSettings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.pos.PosUtil;
 
 public abstract class AbstractContinent implements SimpleContinent {
-	protected final GeneratorContext context;
     protected final int seed;
     protected final int skippingSeed;
     protected final int continentScale;
@@ -24,18 +24,16 @@ public abstract class AbstractContinent implements SimpleContinent {
     protected final RiverCache riverCache;
     protected final ControlPoints controlPoints;
 
-    public AbstractContinent(Seed seed, GeneratorContext context) {
-    	this.context = context;
-    	
-    	WorldSettings settings = context.settings.world();
+    public AbstractContinent(Seed seed, Levels levels, Settings settings) {
+    	WorldSettings worldSettingssettings = settings.world();
         this.seed = seed.next();
         this.skippingSeed = seed.next();
-        this.continentScale = settings.continent().scale();
-        this.jitter = settings.continent().jitter();
-        this.skipThreshold = settings.continent().skipping();
+        this.continentScale = worldSettingssettings.continent().scale();
+        this.jitter = worldSettingssettings.continent().jitter();
+        this.skipThreshold = worldSettingssettings.continent().skipping();
         this.hasSkipping = this.skipThreshold > 0.0f;
-        this.controlPoints = new ControlPoints(settings.controlPoints());
-        this.riverCache = new RiverCache(new SimpleRiverGenerator(this, context));
+        this.controlPoints = new ControlPoints(worldSettingssettings.controlPoints());
+        this.riverCache = new RiverCache(new SimpleRiverGenerator(this, seed, levels, settings));
     }
 
     @Override

@@ -26,10 +26,10 @@ package com.terraforged.mod.level.levelgen.biome.decorator;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationFeatures;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
+import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.MathUtil;
 

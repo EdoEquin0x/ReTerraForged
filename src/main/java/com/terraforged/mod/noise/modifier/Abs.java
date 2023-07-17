@@ -34,7 +34,7 @@ import com.terraforged.mod.noise.Module;
  */
 public class Abs extends Modifier {
 	public static final Codec<Abs> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source)
 	).apply(instance, Abs::new));
 	
     public Abs(Module source) {

@@ -35,10 +35,10 @@ import com.terraforged.mod.noise.func.Interpolation;
  */
 public class VariableBlend extends Selector {
 	public static final Codec<VariableBlend> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("control").forGetter((s) -> s.control),
-		Module.CODEC.fieldOf("variator").forGetter((s) -> s.variator),
-		Module.CODEC.fieldOf("source0").forGetter((s) -> s.source0),
-		Module.CODEC.fieldOf("source1").forGetter((s) -> s.source1),
+		Module.DIRECT_CODEC.fieldOf("control").forGetter((s) -> s.control),
+		Module.DIRECT_CODEC.fieldOf("variator").forGetter((s) -> s.variator),
+		Module.DIRECT_CODEC.fieldOf("source0").forGetter((s) -> s.source0),
+		Module.DIRECT_CODEC.fieldOf("source1").forGetter((s) -> s.source1),
 		Codec.FLOAT.optionalFieldOf("midpoint", 0.5F).forGetter((s) -> s.midpoint),
 		Codec.FLOAT.optionalFieldOf("blend_min", 0.0F).forGetter((s) -> s.minBlend),
 		Codec.FLOAT.optionalFieldOf("blend_max", 1.0F).forGetter((s) -> s.maxBlend),

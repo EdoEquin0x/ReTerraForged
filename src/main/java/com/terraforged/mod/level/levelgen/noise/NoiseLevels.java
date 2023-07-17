@@ -25,7 +25,7 @@
 package com.terraforged.mod.level.levelgen.noise;
 
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class NoiseLevels {

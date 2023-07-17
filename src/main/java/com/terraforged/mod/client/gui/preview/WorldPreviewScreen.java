@@ -77,7 +77,7 @@ public class WorldPreviewScreen extends Screen {
 							int tx = cx + lx;
 							int ty = cy + ly;
 							
-							ClimateSample sample = this.generator.getClimateSampler().getSample(tx * this.scale, ty * this.scale);
+							ClimateSample sample = this.generator.getClimateSampler().sample(tx * this.scale, ty * this.scale);
 				            pixels.setPixelRGBA(tx, ty, this.layer.getColor(this.layer.getValue(sample)));
 						}
 					}

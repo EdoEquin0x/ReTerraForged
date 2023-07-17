@@ -27,7 +27,6 @@ package com.terraforged.mod.level.levelgen.cave;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;

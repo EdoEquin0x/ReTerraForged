@@ -26,14 +26,13 @@ package com.terraforged.mod.level.levelgen.noise;
 
 import java.util.function.Consumer;
 
-import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.level.levelgen.continent.ContinentNoise;
 import com.terraforged.mod.level.levelgen.continent.ContinentPoints;
-import com.terraforged.mod.level.levelgen.seed.Seed;
 import com.terraforged.mod.level.levelgen.settings.ControlPoints;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainBlender;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.TerrainBlender;
+import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.util.NoiseUtil;
@@ -55,7 +54,7 @@ public class NoiseGenerator {
     protected final ThreadLocal<NoiseData> localChunk = ThreadLocal.withInitial(NoiseData::new);
     protected final ThreadLocal<NoiseSample> localSample = ThreadLocal.withInitial(NoiseSample::new);
 
-    public NoiseGenerator(int seed, Settings settings, TerrainLevels levels, WeightMap<Holder<TerrainNoise>> terrains) {
+    public NoiseGenerator(int seed, Settings settings, TerrainLevels levels, WeightMap<Holder<Module>> terrains) {
     	this.levels = levels;
         this.ocean = createOceanTerrain(seed);
         this.land = createLandTerrain(seed, terrains);
@@ -197,7 +196,7 @@ public class NoiseGenerator {
         return Source.simplex(seed + OCEAN_OFFSET, 64, 3).scale(0.4);
     }
 
-    protected static TerrainBlender createLandTerrain(int seed, WeightMap<Holder<TerrainNoise>> terrains) {
+    protected static TerrainBlender createLandTerrain(int seed, WeightMap<Holder<Module>> terrains) {
         return new TerrainBlender(seed + TERRAIN_OFFSET, 800, 0.8F, 0.4F, terrains);
     }
 

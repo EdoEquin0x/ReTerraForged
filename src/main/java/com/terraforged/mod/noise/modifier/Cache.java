@@ -34,7 +34,7 @@ import com.terraforged.mod.noise.Module;
  */
 public class Cache extends Modifier {
 	public static final Codec<Cache> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source)
 	).apply(instance, Cache::new));
 	
     private final Value value = new Value();

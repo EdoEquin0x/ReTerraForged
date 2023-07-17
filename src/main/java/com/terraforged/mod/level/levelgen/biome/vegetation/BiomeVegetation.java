@@ -26,8 +26,6 @@ package com.terraforged.mod.level.levelgen.biome.vegetation;
 
 import java.util.Optional;
 
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
-
 public class BiomeVegetation {
     public final Optional<VegetationConfig> config;
     public final VegetationFeatures features;

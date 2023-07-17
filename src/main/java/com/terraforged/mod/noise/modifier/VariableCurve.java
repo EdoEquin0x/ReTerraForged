@@ -32,9 +32,9 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class VariableCurve extends Modifier {
 	public static final Codec<VariableCurve> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("midpoint").forGetter((m) -> m.midpoint),
-		Module.CODEC.fieldOf("gradient").forGetter((m) -> m.gradient)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("midpoint").forGetter((m) -> m.midpoint),
+		Module.DIRECT_CODEC.fieldOf("gradient").forGetter((m) -> m.gradient)
 	).apply(instance, VariableCurve::new));
 
     private final Module midpoint;

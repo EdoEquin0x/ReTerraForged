@@ -9,10 +9,10 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class Terrace extends Modifier {
 	public static final Codec<Terrace> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("ramp").forGetter((m) -> m.ramp),
-		Module.CODEC.fieldOf("cliff").forGetter((m) -> m.cliff),
-		Module.CODEC.fieldOf("ramp_height").forGetter((m) -> m.rampHeight),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("ramp").forGetter((m) -> m.ramp),
+		Module.DIRECT_CODEC.fieldOf("cliff").forGetter((m) -> m.cliff),
+		Module.DIRECT_CODEC.fieldOf("ramp_height").forGetter((m) -> m.rampHeight),
 		Codec.INT.optionalFieldOf("steps", 1).forGetter((m) -> m.steps.length),
 		Codec.FLOAT.optionalFieldOf("blend", 1.0F).forGetter((m) -> m.blend)
 	).apply(instance, Terrace::new));

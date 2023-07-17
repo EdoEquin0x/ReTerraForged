@@ -35,9 +35,9 @@ import com.terraforged.mod.noise.func.Interpolation;
  */
 public class Blend extends Selector {
 	public static final Codec<Blend> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("control").forGetter((s) -> s.control),
-		Module.CODEC.fieldOf("source0").forGetter((s) -> s.source0),
-		Module.CODEC.fieldOf("source1").forGetter((s) -> s.source1),
+		Module.DIRECT_CODEC.fieldOf("control").forGetter((s) -> s.control),
+		Module.DIRECT_CODEC.fieldOf("source0").forGetter((s) -> s.source0),
+		Module.DIRECT_CODEC.fieldOf("source1").forGetter((s) -> s.source1),
 		Codec.FLOAT.optionalFieldOf("midpoint", 0.5F).forGetter((s) -> s.midpoint),
 		Codec.FLOAT.optionalFieldOf("blendRange", 0.0F).forGetter((s) -> s.blendRange),
 		Interpolation.CODEC.optionalFieldOf("interpolation", Interpolation.LINEAR).forGetter((s) -> s.interpolation)

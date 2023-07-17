@@ -39,8 +39,8 @@ public class MultiBlend extends Selector {
 	public static final Codec<MultiBlend> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.FLOAT.optionalFieldOf("blend_range", 0.0F).forGetter((s) -> s.blend),
 		Interpolation.CODEC.fieldOf("interp").forGetter((s) -> s.interpolation),
-		Module.CODEC.fieldOf("control").forGetter((s) -> s.control),
-		TFCodecs.forArray(Module.CODEC, Module[]::new).fieldOf("modules").forGetter((s) -> s.sources)
+		Module.DIRECT_CODEC.fieldOf("control").forGetter((s) -> s.control),
+		TFCodecs.forArray(Module.DIRECT_CODEC, Module[]::new).fieldOf("modules").forGetter((s) -> s.sources)
 	).apply(instance, MultiBlend::new));
 	
     private final Node[] nodes;

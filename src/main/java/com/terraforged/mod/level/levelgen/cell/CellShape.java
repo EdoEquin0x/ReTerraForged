@@ -22,35 +22,40 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.level.levelgen.continent.cell;
+package com.terraforged.mod.level.levelgen.cell;
 
-import com.terraforged.mod.noise.func.Interpolation;
-import com.terraforged.mod.noise.util.Noise;
+import com.terraforged.mod.util.MathUtil;
 
-public enum CellSource {
-    PERLIN {
+public enum CellShape {
+    SQUARE,
+    HEXAGON {
         @Override
-        public float sample(int seed, float x, float y) {
-            return Noise.singlePerlin2(x, y, seed, Interpolation.CURVE3);
+        public float adjustY(float y) {
+            return y * 1.2f; // rough
         }
-    },
-    SIMPLEX {
+
         @Override
-        public float sample(int seed, float x, float y) {
-            return Noise.singleSimplex(x, y, seed);
-        }
-    },
-    CUBIC {
-        @Override
-        public float sample(int seed, float x, float y) {
-            return Noise.singleCubic(x, y, seed);
+        public float getCellX(int hash, int cx, int cy, float jitter) {
+            float ox = (cy & 1) * 0.5f;
+            float jx = ox > 0 ? jitter * 0.5f: jitter;
+            return MathUtil.getPosX(hash, cx, jx) + ox;
         }
     },
     ;
 
-    public abstract float sample(int seed, float x, float y);
+    public float adjustX(float x) {
+        return x;
+    }
 
-    public float getValue(int seed, float x, float y) {
-        return (1 + sample(seed, x, y)) * 0.5f;
+    public float adjustY(float y) {
+        return y;
+    }
+
+    public float getCellX(int hash, int cx, int cy, float jitter) {
+        return MathUtil.getPosX(hash, cx, jitter);
+    }
+
+    public float getCellY(int hash, int cx, int cy, float jitter) {
+        return MathUtil.getPosY(hash, cy, jitter);
     }
 }

@@ -29,15 +29,15 @@ import java.nio.file.Path;
 import com.terraforged.mod.CommonAPI;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.command.TFCommands;
-import com.terraforged.mod.level.levelgen.asset.NoiseCave;
-import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
+import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.registry.TFChunkGenerators;
 import com.terraforged.mod.registry.TFCurves;
 import com.terraforged.mod.registry.TFDomains;
 import com.terraforged.mod.registry.TFModules;
 import com.terraforged.mod.registry.TFRegistries;
 import com.terraforged.mod.registry.TFViabilities;
+import com.terraforged.mod.registry.data.TFDataRegistries;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -51,8 +51,8 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
+import com.terraforged.mod.noise.Module;
 
-//TODO TerrainNoise doesn't actually do anything i think
 @Mod(TerraForged.MODID)
 public class TFForge extends TerraForged implements CommonAPI {
 
@@ -81,9 +81,9 @@ public class TFForge extends TerraForged implements CommonAPI {
     }
     
     void onCreateDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
-    	event.dataPackRegistry(TerraForged.CAVE, NoiseCave.DIRECT_CODEC);
-    	event.dataPackRegistry(TerraForged.TERRAIN, TerrainNoise.DIRECT_CODEC);
-    	event.dataPackRegistry(TerraForged.VEGETATION, VegetationConfig.DIRECT_CODEC);
+    	event.dataPackRegistry(TFDataRegistries.NOISE, Module.DIRECT_CODEC);
+    	event.dataPackRegistry(TFDataRegistries.CAVE, NoiseCave.DIRECT_CODEC);
+    	event.dataPackRegistry(TFDataRegistries.VEGETATION, VegetationConfig.DIRECT_CODEC);
     }
     
     void onRegister(RegisterEvent event) {
@@ -91,21 +91,21 @@ public class TFForge extends TerraForged implements CommonAPI {
     		TFChunkGenerators.register(helper::register);
     		logRegister(Registries.CHUNK_GENERATOR);
     	});
-    	event.register(TerraForged.MODULE, (helper) -> {
+    	event.register(TFRegistries.MODULE_TYPE, (helper) -> {
     		TFModules.register(helper::register);
-    		logRegister(TerraForged.MODULE);
+    		logRegister(TFRegistries.MODULE_TYPE);
     	});
-    	event.register(TerraForged.DOMAIN, (helper) -> {
+    	event.register(TFRegistries.DOMAIN_TYPE, (helper) -> {
     		TFDomains.register(helper::register);
-    		logRegister(TerraForged.DOMAIN);
+    		logRegister(TFRegistries.DOMAIN_TYPE);
     	});
-    	event.register(TerraForged.CURVE, (helper) -> {
+    	event.register(TFRegistries.CURVE_TYPE, (helper) -> {
     		TFCurves.register(helper::register);
-    		logRegister(TerraForged.CURVE);
+    		logRegister(TFRegistries.CURVE_TYPE);
     	});
-    	event.register(TerraForged.VIABILITY, (helper) -> {
+    	event.register(TFRegistries.VIABILITY_TYPE, (helper) -> {
     		TFViabilities.register(helper::register);
-    		logRegister(TerraForged.VIABILITY);
+    		logRegister(TFRegistries.VIABILITY_TYPE);
     	});
     }
     

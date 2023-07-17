@@ -6,9 +6,9 @@ import com.terraforged.mod.noise.Module;
 
 public class Freq extends Modifier {
 	public static final Codec<Freq> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("x").forGetter((m) -> m.x),
-		Module.CODEC.fieldOf("y").forGetter((m) -> m.y)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("x").forGetter((m) -> m.x),
+		Module.DIRECT_CODEC.fieldOf("y").forGetter((m) -> m.y)
 	).apply(instance, Freq::new));
 	
     private final Module x;

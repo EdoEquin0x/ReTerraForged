@@ -6,10 +6,11 @@ package com.terraforged.mod.level.levelgen.continent.advanced;
 import com.terraforged.mod.concurrent.Resource;
 import com.terraforged.mod.level.levelgen.cell.Cell;
 import com.terraforged.mod.level.levelgen.continent.SimpleContinent;
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
-import com.terraforged.mod.level.levelgen.seed.Seed;
+import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.settings.WorldSettings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
@@ -27,15 +28,15 @@ public class AdvancedContinentGenerator extends AbstractContinent implements Sim
     protected final Module cliffNoise;
     protected final Module bayNoise;
 
-    public AdvancedContinentGenerator(Seed seed, GeneratorContext context) {
-        super(seed, context);
-        WorldSettings settings = context.settings.world();
+    public AdvancedContinentGenerator(Seed seed, Levels levels, Settings settings) {
+        super(seed, levels, settings);
+        WorldSettings worldSettings = settings.world();
         
-        int tectonicScale = settings.continent().scale() * 4;
+        int tectonicScale = worldSettings.continent().scale() * 4;
         this.frequency = 1.0f / (float)tectonicScale;
         this.varianceSeed = seed.next();
-        this.variance = settings.continent().variance();
-        this.warp = this.createWarp(seed, tectonicScale, settings.continent());
+        this.variance = worldSettings.continent().variance();
+        this.warp = this.createWarp(seed, tectonicScale, worldSettings.continent());
         this.cliffNoise = Source.build(seed.next(), this.continentScale / 2, 2).build(Source.SIMPLEX2).clamp(0.1, 0.25).map(0.0, 1.0).freq(1.0f / this.frequency, 1.0f / this.frequency);
         this.bayNoise = Source.simplex(seed.next(), 100, 1).scale(0.1).bias(0.9).freq(1.0f / this.frequency, 1.0f / this.frequency);
     }

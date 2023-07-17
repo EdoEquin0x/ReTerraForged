@@ -35,6 +35,6 @@ public interface TFViabilities {
 	}
 	
 	private static ResourceKey<Codec<? extends Viability>> resolve(String path) {
-		return TerraForged.resolve(TerraForged.VIABILITY, path);
+		return TerraForged.resolve(TFRegistries.VIABILITY_TYPE, path);
 	}
 }

@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.level.levelgen.asset;
+package com.terraforged.mod.level.levelgen.cave;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.registry.data.TFDataRegistries;
 import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
@@ -39,15 +39,15 @@ public record NoiseCave(WeightMap<Holder<Biome>> biomes, Module elevation, Modul
     @SuppressWarnings("unchecked")
 	public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		WeightMap.codec(Biome.CODEC, (size) -> (Holder<Biome>[]) new Holder[size]).fieldOf("biomes").forGetter(NoiseCave::biomes),
-    	Module.CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
-    	Module.CODEC.fieldOf("shape").forGetter(NoiseCave::shape),
-    	Module.CODEC.fieldOf("floor").forGetter(NoiseCave::floor),
-    	Module.CODEC.fieldOf("modifier").forGetter(NoiseCave::modifier),
+    	Module.DIRECT_CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
+    	Module.DIRECT_CODEC.fieldOf("shape").forGetter(NoiseCave::shape),
+    	Module.DIRECT_CODEC.fieldOf("floor").forGetter(NoiseCave::floor),
+    	Module.DIRECT_CODEC.fieldOf("modifier").forGetter(NoiseCave::modifier),
     	Codec.INT.fieldOf("size").forGetter(NoiseCave::size),
     	Codec.INT.optionalFieldOf("min_y", -32).forGetter(NoiseCave::minY),
     	Codec.INT.fieldOf("max_y").forGetter(NoiseCave::maxY)
     ).apply(instance, NoiseCave::new));
-    public static final Codec<Holder<NoiseCave>> CODEC = RegistryFileCodec.create(TerraForged.CAVE, DIRECT_CODEC);
+    public static final Codec<Holder<NoiseCave>> CODEC = RegistryFileCodec.create(TFDataRegistries.CAVE, DIRECT_CODEC);
 
     public int getHeight(int x, int z) {
         return getScaleValue(x, z, 1F, this.minY, this.maxY - this.minY, this.elevation);

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.level.levelgen.continent.cell;
+package com.terraforged.mod.level.levelgen.cell;
 
 public class CellPoint {
     public float px, py;

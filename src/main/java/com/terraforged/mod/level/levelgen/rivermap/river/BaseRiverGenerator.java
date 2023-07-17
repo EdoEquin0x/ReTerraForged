@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 
 import com.terraforged.mod.level.levelgen.continent.Continent;
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.rivermap.RiverGenerator;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.rivermap.gen.GenRiver;
@@ -17,6 +16,8 @@ import com.terraforged.mod.level.levelgen.rivermap.lake.LakeConfig;
 import com.terraforged.mod.level.levelgen.rivermap.wetland.Wetland;
 import com.terraforged.mod.level.levelgen.rivermap.wetland.WetlandConfig;
 import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.Variance;
@@ -34,17 +35,17 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
     protected final T continent;
     protected final Levels levels;
 
-    public BaseRiverGenerator(T continent, GeneratorContext context) {
+    public BaseRiverGenerator(T continent, Seed seed, Levels levels, Settings settings) {
         this.continent = continent;
-        this.levels = context.levels;
-        this.continentScale = context.settings.world().continent().scale();
-        this.minEdgeValue = context.settings.world().controlPoints().inland();
-        this.seed = context.seed.root() + context.settings.rivers().seedOffset();
-        this.count = context.settings.rivers().riverCount();
-        this.main = RiverConfig.builder(context.levels).bankHeight(context.settings.rivers().mainRivers().minBankHeight(), context.settings.rivers().mainRivers().maxBankHeight()).bankWidth(context.settings.rivers().mainRivers().bankWidth()).bedWidth(context.settings.rivers().mainRivers().bedWidth()).bedDepth(context.settings.rivers().mainRivers().bedDepth()).fade(context.settings.rivers().mainRivers().fade()).length(5000).main(true).order(0).build();
-        this.fork = RiverConfig.builder(context.levels).bankHeight(context.settings.rivers().branchRivers().minBankHeight(), context.settings.rivers().branchRivers().maxBankHeight()).bankWidth(context.settings.rivers().branchRivers().bankWidth()).bedWidth(context.settings.rivers().branchRivers().bedWidth()).bedDepth(context.settings.rivers().branchRivers().bedDepth()).fade(context.settings.rivers().branchRivers().fade()).length(4500).order(1).build();
-        this.wetland = new WetlandConfig(context.settings.rivers().wetlands());
-        this.lake = LakeConfig.of(context.settings.rivers().lakes(), context.levels);
+        this.levels = levels;
+        this.continentScale = settings.world().continent().scale();
+        this.minEdgeValue = settings.world().controlPoints().inland();
+        this.seed = seed.root() + settings.rivers().seedOffset();
+        this.count = settings.rivers().riverCount();
+        this.main = RiverConfig.builder(levels).bankHeight(settings.rivers().mainRivers().minBankHeight(), settings.rivers().mainRivers().maxBankHeight()).bankWidth(settings.rivers().mainRivers().bankWidth()).bedWidth(settings.rivers().mainRivers().bedWidth()).bedDepth(settings.rivers().mainRivers().bedDepth()).fade(settings.rivers().mainRivers().fade()).length(5000).main(true).order(0).build();
+        this.fork = RiverConfig.builder(levels).bankHeight(settings.rivers().branchRivers().minBankHeight(), settings.rivers().branchRivers().maxBankHeight()).bankWidth(settings.rivers().branchRivers().bankWidth()).bedWidth(settings.rivers().branchRivers().bedWidth()).bedDepth(settings.rivers().branchRivers().bedDepth()).fade(settings.rivers().branchRivers().fade()).length(4500).order(1).build();
+        this.wetland = new WetlandConfig(settings.rivers().wetlands());
+        this.lake = LakeConfig.of(settings.rivers().lakes(), levels);
     }
 
     @Override

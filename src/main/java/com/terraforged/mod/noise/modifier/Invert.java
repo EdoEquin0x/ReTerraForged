@@ -34,7 +34,7 @@ import com.terraforged.mod.noise.Module;
  */
 public class Invert extends Modifier {
 	public static final Codec<Invert> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source)
 	).apply(instance, Invert::new));
 
     public Invert(Module source) {

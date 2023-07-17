@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.level.levelgen.terrain.generation;
+package com.terraforged.mod.level.levelgen.terrain;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
@@ -44,7 +43,7 @@ public class TerrainBlender implements Module {
 		Codec.INT.fieldOf("scale").forGetter((m) -> m.scale),
 		Codec.FLOAT.fieldOf("jitter").forGetter((m) -> m.jitter),
 		Codec.FLOAT.fieldOf("blending").forGetter((m) -> m.blending),
-		WeightMap.codec(TerrainNoise.CODEC, (size) -> (Holder<TerrainNoise>[]) new Holder[size]).fieldOf("terrains").forGetter((m) -> m.terrains)
+		WeightMap.codec(Module.CODEC, (size) -> (Holder<Module>[]) new Holder[size]).fieldOf("terrains").forGetter((m) -> m.terrains)
 	).apply(instance, TerrainBlender::new));
 	
     private static final int REGION_SEED_OFFSET = 21491124;
@@ -57,10 +56,10 @@ public class TerrainBlender implements Module {
     private final float blending;
 
     private final Domain warp;
-    private final WeightMap<Holder<TerrainNoise>> terrains;
+    private final WeightMap<Holder<Module>> terrains;
     private final ThreadLocal<Blender> localBlender = ThreadLocal.withInitial(Blender::new);
 
-    public TerrainBlender(int seed, int scale, float jitter, float blending, WeightMap<Holder<TerrainNoise>> terrains) {
+    public TerrainBlender(int seed, int scale, float jitter, float blending, WeightMap<Holder<Module>> terrains) {
     	this.seed = seed;
     	this.scale = scale;
         this.frequency = 1F / scale;
@@ -141,7 +140,7 @@ public class TerrainBlender implements Module {
 
         protected final int[] hashes = new int[9];
         protected final float[] distances = new float[9];
-        protected final Object2FloatCache<Holder<TerrainNoise>> cache = new Object2FloatCache<>(9);
+        protected final Object2FloatCache<Holder<Module>> cache = new Object2FloatCache<>(9);
 
         public float getCentreNoiseIndex() {
             return getNoiseIndex(this.closestIndex);
@@ -151,12 +150,12 @@ public class TerrainBlender implements Module {
             return NoiseUtil.sqrt(this.distances[index]);
         }
 
-        public float getCentreValue(float x, float z, WeightMap<Holder<TerrainNoise>> terrains) {
+        public float getCentreValue(float x, float z, WeightMap<Holder<Module>> terrains) {
             float noise = getCentreNoiseIndex();
-            return terrains.getValue(noise).value().noise().getValue(x, z);
+            return terrains.getValue(noise).value().getValue(x, z);
         }
 
-        public float getValue(float x, float z, float blending, WeightMap<Holder<TerrainNoise>> terrains) {
+        public float getValue(float x, float z, float blending, WeightMap<Holder<Module>> terrains) {
             float dist0 = getDistance(closestIndex);
             float dist1 = getDistance(closestIndex2);
 
@@ -171,7 +170,7 @@ public class TerrainBlender implements Module {
             }
         }
 
-        public float getBlendedValue(float x, float z, float nearest, float nearest2, float blendRange, WeightMap<Holder<TerrainNoise>> terrains) {
+        public float getBlendedValue(float x, float z, float nearest, float nearest2, float blendRange, WeightMap<Holder<Module>> terrains) {
             cache.clear();
 
             float sumNoise = getCacheValue(closestIndex, x, z, terrains);
@@ -196,13 +195,13 @@ public class TerrainBlender implements Module {
             return NoiseUtil.clamp(sumNoise / sumWeight, 0, 1);
         }
 
-        private float getCacheValue(int index, float x, float z, WeightMap<Holder<TerrainNoise>> terrains) {
+        private float getCacheValue(int index, float x, float z, WeightMap<Holder<Module>> terrains) {
             float noiseIndex = getNoiseIndex(index);
             var terrain = terrains.getValue(noiseIndex);
 
             float value = cache.get(terrain);
             if (Float.isNaN(value)) {
-                value = terrain.value().noise().getValue(x, z);
+                value = terrain.value().getValue(x, z);
                 cache.put(terrain, value);
             }
 

@@ -34,8 +34,8 @@ import com.terraforged.mod.noise.Module;
  */
 public class Scale extends Modifier {
 	public static final Codec<Scale> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("scale").forGetter((m) -> m.scale)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("scale").forGetter((m) -> m.scale)
 	).apply(instance, Scale::new));
 
     private final Module scale;

@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
-
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 

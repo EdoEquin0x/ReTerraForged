@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.level.levelgen.asset;
+package com.terraforged.mod.level.levelgen.biome.vegetation;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.biome.viability.Viability;
+import com.terraforged.mod.registry.data.TFDataRegistries;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -43,5 +43,5 @@ public record VegetationConfig(float frequency, float jitter, float density, Tag
     	TagKey.hashedCodec(Registries.BIOME).fieldOf("biomes").forGetter(VegetationConfig::biomes),
     	Viability.CODEC.fieldOf("viability").forGetter(VegetationConfig::viability)
     ).apply(instance, VegetationConfig::new));
-    public static final Codec<Holder<VegetationConfig>> CODEC = RegistryFileCodec.create(TerraForged.VEGETATION, DIRECT_CODEC);
+    public static final Codec<Holder<VegetationConfig>> CODEC = RegistryFileCodec.create(TFDataRegistries.VEGETATION, DIRECT_CODEC);
 }

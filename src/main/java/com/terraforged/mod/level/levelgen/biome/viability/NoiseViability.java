@@ -30,7 +30,7 @@ import com.terraforged.mod.noise.Module;
 
 public record NoiseViability(Module noise) implements Viability {
 	public static final Codec<NoiseViability> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("noise").forGetter(NoiseViability::noise)
+		Module.DIRECT_CODEC.fieldOf("noise").forGetter(NoiseViability::noise)
 	).apply(instance, NoiseViability::new));
 	
     @Override

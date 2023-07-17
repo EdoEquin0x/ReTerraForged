@@ -35,7 +35,7 @@ import com.terraforged.mod.noise.domain.Domain;
  */
 public class Warp extends Modifier {
 	public static final Codec<Warp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
 		Domain.CODEC.fieldOf("domain").forGetter((m) -> m.domain)
 	).apply(instance, Warp::new));
 	

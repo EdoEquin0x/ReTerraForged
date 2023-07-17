@@ -4,8 +4,8 @@
 package com.terraforged.mod.level.levelgen.rivermap.wetland;
 
 import com.terraforged.mod.level.levelgen.cell.Cell;
+import com.terraforged.mod.level.levelgen.cell.Populator;
 import com.terraforged.mod.level.levelgen.settings.Levels;
-import com.terraforged.mod.level.levelgen.terrain.populator.TerrainPopulator;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.source.Line;
@@ -13,7 +13,7 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.Boundsf;
 
-public class Wetland extends TerrainPopulator {
+public class Wetland implements Populator {
     private static final float VALLEY = 0.65f;
     private static final float POOLS = 0.7f;
     private static final float BANKS = 0.050000012f;
@@ -30,7 +30,6 @@ public class Wetland extends TerrainPopulator {
     private final Module moundHeight;
 
     public Wetland(int seed, Vec2f a, Vec2f b, float radius, Levels levels) {
-        super(Source.ZERO, Source.ZERO, 1.0f);
         this.a = a;
         this.b = b;
         this.radius = radius;

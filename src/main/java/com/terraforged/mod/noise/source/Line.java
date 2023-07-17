@@ -36,9 +36,9 @@ public class Line implements Module {
 		Codec.FLOAT.optionalFieldOf("y1", 0.0F).forGetter((m) -> m.y1),
 		Codec.FLOAT.optionalFieldOf("x2", 0.0F).forGetter((m) -> m.x2),
 		Codec.FLOAT.optionalFieldOf("y2", 0.0F).forGetter((m) -> m.y2),
-		Module.CODEC.fieldOf("radius").forGetter((m) -> m.radius),
-		Module.CODEC.fieldOf("fade_in").forGetter((m) -> m.fadeIn),
-		Module.CODEC.fieldOf("fade_out").forGetter((m) -> m.fadeOut),
+		Module.DIRECT_CODEC.fieldOf("radius").forGetter((m) -> m.radius),
+		Module.DIRECT_CODEC.fieldOf("fade_in").forGetter((m) -> m.fadeIn),
+		Module.DIRECT_CODEC.fieldOf("fade_out").forGetter((m) -> m.fadeOut),
 		Codec.FLOAT.optionalFieldOf("feather", 0.0F).forGetter((m) -> m.featherScale)
 	).apply(instance, Line::new));
 	

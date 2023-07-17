@@ -41,16 +41,12 @@ public class ClimateSampler {
 		this.climateNoise = createClimate(noiseGenerator);
 		this.noiseGenerator = noiseGenerator;
 	}
-
-	public ClimateSample getSample() {
-		return localSample.get().reset();
-	}
-
+	
 	public NoiseGenerator getNoiseGenerator() {
 		return noiseGenerator.get();
 	}
 
-	public ClimateSample getSample(int x, int z) {
+	public ClimateSample sample(int x, int z) {
 		NoiseLevels levels = this.noiseGenerator.get().getLevels();
 		
 		float px = x * levels.frequency;
@@ -77,16 +73,6 @@ public class ClimateSampler {
 		climateNoise.get().sample(px, pz, sample);
 
 		return sample.biomeEdgeNoise;
-	}
-
-	public void sample(int x, int z, ClimateSample sample) {
-		NoiseLevels levels = this.noiseGenerator.get().getLevels();
-		
-		float px = x * levels.frequency;
-		float pz = z * levels.frequency;
-		noiseGenerator.get().getContinent().sampleContinent(px, pz, sample);
-		noiseGenerator.get().getContinent().sampleRiver(px, pz, sample);
-		climateNoise.get().sample(px, pz, sample);
 	}
 
 	static Supplier<ClimateNoise> createClimate(Supplier<NoiseGenerator> generator) {

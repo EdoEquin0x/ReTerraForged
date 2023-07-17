@@ -24,11 +24,11 @@
 
 package com.terraforged.mod.level.levelgen.biome;
 
-import com.terraforged.mod.level.levelgen.asset.NoiseCave;
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.decorator.FeatureDecorator;
 import com.terraforged.mod.level.levelgen.biome.decorator.SurfaceDecorator;
 import com.terraforged.mod.level.levelgen.biome.surface.Surface;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
+import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.cave.NoiseCaveGenerator;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 

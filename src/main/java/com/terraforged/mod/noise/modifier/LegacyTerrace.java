@@ -33,9 +33,9 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class LegacyTerrace extends Modifier {
 	public static final Codec<LegacyTerrace> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("lower_curve").forGetter((m) -> m.lowerCurve),
-		Module.CODEC.fieldOf("upper_curve").forGetter((m) -> m.upperCurve),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("lower_curve").forGetter((m) -> m.lowerCurve),
+		Module.DIRECT_CODEC.fieldOf("upper_curve").forGetter((m) -> m.upperCurve),
 		Codec.INT.optionalFieldOf("steps", 1).forGetter((m) -> m.steps.length),
 		Codec.FLOAT.optionalFieldOf("blend_range", 1.0F).forGetter((m) -> m.blend)
 	).apply(instance, LegacyTerrace::new));

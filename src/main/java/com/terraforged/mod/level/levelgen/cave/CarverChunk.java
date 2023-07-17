@@ -29,9 +29,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.terraforged.mod.level.levelgen.asset.NoiseCave;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
+import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.noise.Module;
 
 import net.minecraft.core.Holder;

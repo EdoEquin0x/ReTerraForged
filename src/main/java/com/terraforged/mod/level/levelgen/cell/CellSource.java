@@ -22,25 +22,35 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.level.levelgen.asset;
+package com.terraforged.mod.level.levelgen.cell;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.func.Interpolation;
+import com.terraforged.mod.noise.util.Noise;
 
-import net.minecraft.core.Holder;
-import net.minecraft.resources.RegistryFileCodec;
+public enum CellSource {
+    PERLIN {
+        @Override
+        public float sample(int seed, float x, float y) {
+            return Noise.singlePerlin2(x, y, seed, Interpolation.CURVE3);
+        }
+    },
+    SIMPLEX {
+        @Override
+        public float sample(int seed, float x, float y) {
+            return Noise.singleSimplex(x, y, seed);
+        }
+    },
+    CUBIC {
+        @Override
+        public float sample(int seed, float x, float y) {
+            return Noise.singleCubic(x, y, seed);
+        }
+    },
+    ;
 
-public record TerrainNoise(Module noise) {
-	public static final Codec<TerrainNoise> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("noise").forGetter(TerrainNoise::noise)
-	).apply(instance, TerrainNoise::new));
-	public static final Codec<Holder<TerrainNoise>> CODEC = RegistryFileCodec.create(TerraForged.TERRAIN, DIRECT_CODEC);
+    public abstract float sample(int seed, float x, float y);
 
-	private static final double MIN_NOISE = 5.0 / 255.0;
-
-	public TerrainNoise {
-		noise = noise.minValue() < MIN_NOISE ? noise.bias(MIN_NOISE).clamp(0, 1) : noise;
-	}
+    public float getValue(int seed, float x, float y) {
+        return (1 + sample(seed, x, y)) * 0.5f;
+    }
 }

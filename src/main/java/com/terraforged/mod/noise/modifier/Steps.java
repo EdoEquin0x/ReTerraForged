@@ -36,10 +36,10 @@ import com.terraforged.mod.noise.util.NoiseUtil;
  */
 public class Steps extends Modifier {
 	public static final Codec<Steps> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("steps").forGetter((m) -> m.steps),
-		Module.CODEC.fieldOf("slope_min").forGetter((m) -> m.slopeMin),
-		Module.CODEC.fieldOf("slope_max").forGetter((m) -> m.slopeMax),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("steps").forGetter((m) -> m.steps),
+		Module.DIRECT_CODEC.fieldOf("slope_min").forGetter((m) -> m.slopeMin),
+		Module.DIRECT_CODEC.fieldOf("slope_max").forGetter((m) -> m.slopeMax),
 		CurveFunc.CODEC.fieldOf("curve").forGetter((m) -> m.curve)
 	).apply(instance, Steps::new));
 	

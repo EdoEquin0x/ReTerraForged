@@ -32,7 +32,7 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class PowerCurve extends Modifier {
 	public static final Codec<PowerCurve> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
 		Codec.FLOAT.optionalFieldOf("power", 1.0F).forGetter((m) -> m.power)
 	).apply(instance, PowerCurve::new));
 

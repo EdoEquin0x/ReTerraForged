@@ -31,14 +31,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Suppliers;
-import com.mojang.serialization.Codec;
-import com.terraforged.mod.level.levelgen.asset.NoiseCave;
-import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
-import com.terraforged.mod.level.levelgen.biome.viability.Viability;
-import com.terraforged.mod.noise.Module;
-import com.terraforged.mod.noise.domain.Domain;
-import com.terraforged.mod.noise.func.CurveFunc;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -49,18 +41,6 @@ public abstract class TerraForged implements CommonAPI {
 	public static final String TITLE = "TerraForged";
 	public static final String DATAPACK_VERSION = "v0.2";
 	public static final Logger LOG = LogManager.getLogger(TITLE);
-
-	public static final ResourceLocation WORLD_PRESET = location("normal");
-	public static final ResourceLocation DIMENSION_EFFECTS = location("overworld");
-
-	// should these be in TFRegistries?
-	public static final ResourceKey<Registry<Codec<? extends Module>>> MODULE = registryKey("noise/module");
-	public static final ResourceKey<Registry<Codec<? extends Domain>>> DOMAIN = registryKey("noise/domain");
-	public static final ResourceKey<Registry<Codec<? extends CurveFunc>>> CURVE = registryKey("noise/curve");
-	public static final ResourceKey<Registry<Codec<? extends Viability>>> VIABILITY = registryKey("worldgen/viability");
-	public static final ResourceKey<Registry<NoiseCave>> CAVE = registryKey("worldgen/cave");	
-	public static final ResourceKey<Registry<TerrainNoise>> TERRAIN = registryKey("worldgen/terrain_noise");
-	public static final ResourceKey<Registry<VegetationConfig>> VEGETATION = registryKey("worldgen/vegetation");
 
 	private final Supplier<Path> path;
 
@@ -79,12 +59,12 @@ public abstract class TerraForged implements CommonAPI {
 		if (name.contains(":")) return new ResourceLocation(name);
 		return new ResourceLocation(MODID, name);
 	}
-	
-	public static <T> ResourceKey<Registry<T>> registryKey(String key) {
-		return ResourceKey.createRegistryKey(location(key));
-	}
 
 	public static <T> ResourceKey<T> resolve(ResourceKey<Registry<T>> registryKey, String valueKey) {
 		return ResourceKey.create(registryKey, location(valueKey));
+	}
+	
+	public static <T> ResourceKey<Registry<T>> registryKey(String key) {
+		return ResourceKey.createRegistryKey(TerraForged.location(key));
 	}
 }

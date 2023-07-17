@@ -35,8 +35,8 @@ import com.terraforged.mod.noise.Source;
  */
 public class Bias extends Modifier {
 	public static final Codec<Bias> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("bias").forGetter((m) -> m.bias)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("bias").forGetter((m) -> m.bias)
 	).apply(instance, Bias::new));
 	
     private final Module bias;

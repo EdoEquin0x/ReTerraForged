@@ -24,8 +24,8 @@
 
 package com.terraforged.mod.level.levelgen.continent.config;
 
-import com.terraforged.mod.level.levelgen.continent.cell.CellShape;
-import com.terraforged.mod.level.levelgen.continent.cell.CellSource;
+import com.terraforged.mod.level.levelgen.cell.CellShape;
+import com.terraforged.mod.level.levelgen.cell.CellSource;
 
 public class ContinentConfig {
     public static final int CONTINENT_SAMPLE_SCALE = 400;

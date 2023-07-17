@@ -8,10 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import com.terraforged.mod.concurrent.Resource;
-import com.terraforged.mod.concurrent.batch.Batcher;
-import com.terraforged.mod.concurrent.batch.TaskBatcher;
-
 public class BatchingThreadPool implements ThreadPool {
     private final int size;
     private final boolean managed;
@@ -56,11 +52,6 @@ public class BatchingThreadPool implements ThreadPool {
     public void shutdownNow() {
         this.taskExecutor.shutdownNow();
         this.batchExecutor.shutdownNow();
-    }
-
-    @Override
-    public Resource<Batcher> batcher() {
-        return new TaskBatcher(this.batchExecutor);
     }
 
     public static ThreadPool of(int size, boolean keepalive) {

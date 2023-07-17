@@ -9,39 +9,40 @@ import com.terraforged.mod.level.levelgen.continent.advanced.AdvancedContinentGe
 import com.terraforged.mod.level.levelgen.continent.fancy.FancyContinentGenerator;
 import com.terraforged.mod.level.levelgen.continent.simple.MultiContinentGenerator;
 import com.terraforged.mod.level.levelgen.continent.simple.SingleContinentGenerator;
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
-import com.terraforged.mod.level.levelgen.seed.Seed;
+import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 
 public enum ContinentType {
     MULTI(0) {
 
         @Override
-        public Continent create(Seed seed, GeneratorContext context) {
-            return new MultiContinentGenerator(seed, context);
+        public Continent create(Seed seed, Levels levels, Settings settings) {
+            return new MultiContinentGenerator(seed, levels, settings);
         }
     }
     ,
     SINGLE(1) {
 
         @Override
-        public Continent create(Seed seed, GeneratorContext context) {
-            return new SingleContinentGenerator(seed, context);
+        public Continent create(Seed seed, Levels levels, Settings settings) {
+            return new SingleContinentGenerator(seed, levels, settings);
         }
     }
     ,
     MULTI_IMPROVED(2) {
 
         @Override
-        public Continent create(Seed seed, GeneratorContext context) {
-            return new AdvancedContinentGenerator(seed, context);
+        public Continent create(Seed seed, Levels levels, Settings settings) {
+            return new AdvancedContinentGenerator(seed, levels, settings);
         }
     }
     ,
     FANCY(3) {
 
         @Override
-        public Continent create(Seed seed, GeneratorContext context) {
-            return new FancyContinentGenerator(seed, context);
+        public Continent create(Seed seed, Levels levels, Settings settings) {
+            return new FancyContinentGenerator(seed, levels, settings);
         }
     };
 
@@ -53,6 +54,6 @@ public enum ContinentType {
         this.index = index;
     }
 
-    public abstract Continent create(Seed seed, GeneratorContext context);
+    public abstract Continent create(Seed seed, Levels levels, Settings settings);
 }
 

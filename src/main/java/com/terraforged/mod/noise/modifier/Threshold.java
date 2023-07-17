@@ -31,8 +31,8 @@ import com.terraforged.mod.noise.Module;
 
 public class Threshold extends Modifier {
 	public static final Codec<Threshold> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("threshold").forGetter((m) -> m.threshold)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("threshold").forGetter((m) -> m.threshold)
 	).apply(instance, Threshold::new));
 
     private final Module threshold;

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.level.levelgen.terrain.generation;
+package com.terraforged.mod.level.levelgen.terrain;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;

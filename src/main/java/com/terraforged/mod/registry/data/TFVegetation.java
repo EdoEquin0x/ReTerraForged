@@ -25,14 +25,14 @@
 package com.terraforged.mod.registry.data;
 
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.viability.BiomeEdgeViability;
 import com.terraforged.mod.level.levelgen.biome.viability.HeightViability;
 import com.terraforged.mod.level.levelgen.biome.viability.NoiseViability;
 import com.terraforged.mod.level.levelgen.biome.viability.SaturationViability;
 import com.terraforged.mod.level.levelgen.biome.viability.SlopeViability;
 import com.terraforged.mod.level.levelgen.biome.viability.SumViability;
-import com.terraforged.mod.level.levelgen.seed.Seed;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Source;
 
 import net.minecraft.data.worldgen.BootstapContext;
@@ -61,7 +61,7 @@ public interface TFVegetation {
     }
     
     private static ResourceKey<VegetationConfig> resolve(String path) {
-		return TerraForged.resolve(TerraForged.VEGETATION, path);
+		return TerraForged.resolve(TFDataRegistries.VEGETATION, path);
 	}
 
     class Factory {

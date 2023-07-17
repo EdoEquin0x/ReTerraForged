@@ -29,13 +29,13 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
 
-import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
 import com.terraforged.mod.level.levelgen.noise.NoiseData;
 import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.level.levelgen.util.ThreadPool;
+import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
@@ -58,7 +58,7 @@ public class ErosionNoiseGenerator extends NoiseGenerator {
     protected final ObjectPool<float[]> pool;
     protected final LongCache<CompletableFuture<float[]>> cache;
 
-    public ErosionNoiseGenerator(int seed, Settings settings, TerrainLevels levels, WeightMap<Holder<TerrainNoise>> terrain, NoiseTileSize tileSize) {
+    public ErosionNoiseGenerator(int seed, Settings settings, TerrainLevels levels, WeightMap<Holder<Module>> terrain, NoiseTileSize tileSize) {
     	super(seed, settings, levels, terrain);
         this.seed = seed;
         this.tileSize = tileSize;

@@ -42,7 +42,7 @@ public record WorldSettings(Continent continent, ControlPoints controlPoints, Pr
     }
 
     public record Continent(ContinentType type, DistanceFunc shape, int scale, float jitter, float skipping, float variance, int octaves, float gain, float lacunarity) {
-    	public static final Continent DEFAULT = new Continent(ContinentType.MULTI_IMPROVED, DistanceFunc.EUCLIDEAN, 3000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F);
+    	public static final Continent DEFAULT = new Continent(ContinentType.MULTI_IMPROVED, DistanceFunc.EUCLIDEAN, 1000, 0.7F, 0.25F, 0.25F, 5, 0.26F, 4.33F);
     	
     	public static final Codec<Continent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		ContinentType.CODEC.fieldOf("type").forGetter(Continent::type),

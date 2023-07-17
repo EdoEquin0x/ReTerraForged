@@ -11,7 +11,7 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class Moisture implements Module {
 	public static final Codec<Moisture> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.originalSource),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.originalSource),
 		Codec.INT.fieldOf("power").forGetter((m) -> m.power)
 	).apply(instance, Moisture::new));
 	

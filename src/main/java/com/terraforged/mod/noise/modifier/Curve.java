@@ -33,7 +33,7 @@ import com.terraforged.mod.noise.func.MidPointCurve;
 
 public class Curve extends Modifier {
 	public static final Codec<Curve> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
 		CurveFunc.CODEC.fieldOf("func").forGetter((m) -> m.func)
 	).apply(instance, Curve::new));
 	

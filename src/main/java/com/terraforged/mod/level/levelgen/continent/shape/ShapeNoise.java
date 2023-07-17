@@ -24,9 +24,9 @@
 
 package com.terraforged.mod.level.levelgen.continent.shape;
 
+import com.terraforged.mod.level.levelgen.cell.CellPoint;
 import com.terraforged.mod.level.levelgen.continent.ContinentGenerator;
 import com.terraforged.mod.level.levelgen.continent.ContinentPoints;
-import com.terraforged.mod.level.levelgen.continent.cell.CellPoint;
 import com.terraforged.mod.level.levelgen.continent.config.ContinentConfig;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 import com.terraforged.mod.level.levelgen.settings.ControlPoints;

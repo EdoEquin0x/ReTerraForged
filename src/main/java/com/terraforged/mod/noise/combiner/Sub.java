@@ -35,7 +35,7 @@ import com.terraforged.mod.noise.Module;
  */
 public class Sub extends Combiner {
 	public static final Codec<Sub> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		TFCodecs.forArray(Module.CODEC, Module[]::new).fieldOf("modules").forGetter((c) -> c.sources)
+		TFCodecs.forArray(Module.DIRECT_CODEC, Module[]::new).fieldOf("modules").forGetter((c) -> c.sources)
 	).apply(instance, Sub::new));
 
     public Sub(Module... modules) {

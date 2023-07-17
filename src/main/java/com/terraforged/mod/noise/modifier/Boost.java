@@ -32,7 +32,7 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class Boost extends Modifier {
 	public static final Codec<Boost> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
 		Codec.INT.optionalFieldOf("iterations", 1).forGetter((m) -> m.iterations)
 	).apply(instance, Boost::new));
 	

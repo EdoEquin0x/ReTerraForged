@@ -36,7 +36,7 @@ public class CellNoise extends NoiseSource {
 	public static final Codec<CellNoise> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.INT.optionalFieldOf("seed", Builder.DEFAULT_SEED).forGetter((c) -> c.seed),
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((c) -> c.frequency),
-		Module.CODEC.fieldOf("source").forGetter((c) -> c.lookup),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((c) -> c.lookup),
 		CellFunc.CODEC.optionalFieldOf("cell_func", Builder.DEFAULT_CELL_FUNC).forGetter((c) -> c.cellFunc),
 		DistanceFunc.CODEC.optionalFieldOf("dist_func", Builder.DEFAULT_DIST_FUNC).forGetter((c) -> c.distFunc),
 		Codec.FLOAT.optionalFieldOf("distance", Builder.DEFAULT_DISTANCE).forGetter((c) -> c.distance)

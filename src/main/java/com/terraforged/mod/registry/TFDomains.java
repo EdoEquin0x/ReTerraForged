@@ -32,6 +32,6 @@ public interface TFDomains {
 	}
 	
 	private static ResourceKey<Codec<? extends Domain>> resolve(String path) {
-		return TerraForged.resolve(TerraForged.DOMAIN, path);
+		return TerraForged.resolve(TFRegistries.DOMAIN_TYPE, path);
 	}
 }

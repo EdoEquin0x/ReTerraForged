@@ -32,9 +32,9 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class Modulate extends Modifier {
 	public static final Codec<Modulate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("direction").forGetter((m) -> m.direction),
-		Module.CODEC.fieldOf("strength").forGetter((m) -> m.strength)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("direction").forGetter((m) -> m.direction),
+		Module.DIRECT_CODEC.fieldOf("strength").forGetter((m) -> m.strength)
 	).apply(instance, Modulate::new));
 	
     private final Module direction;

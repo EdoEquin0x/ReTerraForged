@@ -6,9 +6,6 @@ package com.terraforged.mod.concurrent.thread;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import com.terraforged.mod.concurrent.Resource;
-import com.terraforged.mod.concurrent.batch.Batcher;
-
 public interface ThreadPool {
     public int size();
 
@@ -20,10 +17,8 @@ public interface ThreadPool {
         return false;
     }
 
-    public Future<?> submit(Runnable var1);
+    public Future<?> submit(Runnable runnable);
 
-    public <T> Future<T> submit(Callable<T> var1);
-
-    public Resource<Batcher> batcher();
+    public <T> Future<T> submit(Callable<T> callable);
 }
 

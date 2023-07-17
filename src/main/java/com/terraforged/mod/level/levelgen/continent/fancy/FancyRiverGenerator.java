@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.rivermap.gen.GenRiver;
 import com.terraforged.mod.level.levelgen.rivermap.river.BaseRiverGenerator;
@@ -16,6 +15,9 @@ import com.terraforged.mod.level.levelgen.rivermap.river.River;
 import com.terraforged.mod.level.levelgen.rivermap.river.RiverCarver;
 import com.terraforged.mod.level.levelgen.rivermap.river.RiverConfig;
 import com.terraforged.mod.level.levelgen.rivermap.river.RiverWarp;
+import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.Variance;
@@ -27,9 +29,9 @@ public class FancyRiverGenerator extends BaseRiverGenerator<FancyContinentGenera
     private static final Variance MAIN_JITTER = Variance.of(-0.2, 0.4);
     private final float freq;
 
-    public FancyRiverGenerator(FancyContinentGenerator continent, GeneratorContext context) {
-        super(continent, context);
-        this.freq = 1.0f / (float)context.settings.world().continent().scale();
+    public FancyRiverGenerator(FancyContinentGenerator continent, Seed seed, Levels levels, Settings settings) {
+        super(continent, seed, levels, settings);
+        this.freq = 1.0f / (float) settings.world().continent().scale();
     }
 
     @Override

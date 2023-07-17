@@ -35,8 +35,8 @@ import com.terraforged.mod.noise.util.NoiseUtil;
  */
 public class Power extends Modifier {
 	public static final Codec<Power> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("power").forGetter((m) -> m.n)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("power").forGetter((m) -> m.n)
 	).apply(instance, Power::new));
 	
     private final Module n;

@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
-
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;

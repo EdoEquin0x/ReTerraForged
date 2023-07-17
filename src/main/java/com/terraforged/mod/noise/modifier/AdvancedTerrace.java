@@ -32,10 +32,10 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class AdvancedTerrace extends Modifier {
 	public static final Codec<AdvancedTerrace> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("modulation").forGetter((m) -> m.modulation),
-		Module.CODEC.fieldOf("mask").forGetter((m) -> m.mask),
-		Module.CODEC.fieldOf("slope").forGetter((m) -> m.slope),
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("modulation").forGetter((m) -> m.modulation),
+		Module.DIRECT_CODEC.fieldOf("mask").forGetter((m) -> m.mask),
+		Module.DIRECT_CODEC.fieldOf("slope").forGetter((m) -> m.slope),
 		Codec.FLOAT.optionalFieldOf("blend_min", 0.0F).forGetter((m) -> m.blendMin),
 		Codec.FLOAT.optionalFieldOf("blend_max", 1.0F).forGetter((m) -> m.blendMax),
 		Codec.INT.optionalFieldOf("steps", 1).forGetter((m) -> m.steps),

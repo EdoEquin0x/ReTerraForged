@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.level.levelgen.terrain.generation;
+package com.terraforged.mod.level.levelgen.terrain;
 
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;

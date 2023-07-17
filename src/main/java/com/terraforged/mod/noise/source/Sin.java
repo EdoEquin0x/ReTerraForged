@@ -34,7 +34,7 @@ public class Sin extends NoiseSource {
 	public static final Codec<Sin> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.INT.optionalFieldOf("seed", Builder.DEFAULT_SEED).forGetter((n) -> n.seed),
 		Codec.FLOAT.optionalFieldOf("frequency", Builder.DEFAULT_FREQUENCY).forGetter((n) -> n.frequency),
-		Module.CODEC.fieldOf("alpha").forGetter((n) -> n.alpha)
+		Module.DIRECT_CODEC.fieldOf("alpha").forGetter((n) -> n.alpha)
 	).apply(instance, Sin::new));
 	
 	private final int seed;

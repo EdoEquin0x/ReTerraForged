@@ -24,7 +24,7 @@
 
 package com.terraforged.mod.level.levelgen.biome;
 
-import com.terraforged.mod.level.levelgen.asset.NoiseCave;
+import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.noise.util.Noise;
 import com.terraforged.mod.noise.util.NoiseUtil;
 

@@ -156,6 +156,6 @@ public interface TFModules {
 	}
 	
 	private static ResourceKey<Codec<? extends Module>> resolve(String path) {
-		return TerraForged.resolve(TerraForged.MODULE, path);
+		return TerraForged.resolve(TFRegistries.MODULE_TYPE, path);
 	}
 }

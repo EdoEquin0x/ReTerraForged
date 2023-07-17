@@ -32,10 +32,10 @@ import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class Grad extends Modifier {
 	public static final Codec<Grad> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("lower").forGetter((m) -> m.lower),
-		Module.CODEC.fieldOf("upper").forGetter((m) -> m.upper),
-		Module.CODEC.fieldOf("strength").forGetter((m) -> m.strength)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("lower").forGetter((m) -> m.lower),
+		Module.DIRECT_CODEC.fieldOf("upper").forGetter((m) -> m.upper),
+		Module.DIRECT_CODEC.fieldOf("strength").forGetter((m) -> m.strength)
 	).apply(instance, Grad::new));
 
     private final Module lower;

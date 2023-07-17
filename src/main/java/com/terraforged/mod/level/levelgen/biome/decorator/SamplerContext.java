@@ -28,12 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.vegetation.BiomeVegetation;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationFeatures;
 import com.terraforged.mod.level.levelgen.biome.viability.ViabilityContext;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainData;
+import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.util.storage.FloatMap;
 
 import net.minecraft.core.BlockPos;

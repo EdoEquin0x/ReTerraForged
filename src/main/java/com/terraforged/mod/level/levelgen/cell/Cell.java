@@ -37,7 +37,7 @@ public class Cell {
     public int continentZ;
     public boolean erosionMask = false;
     public boolean overrideRiver = false;
-    public float erosionModifier = 1.0F;
+    public float erosionModifier = 1.3F;
     public boolean isCoast = false;
 
     public void copyFrom(Cell other) {

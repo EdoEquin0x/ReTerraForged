@@ -34,9 +34,9 @@ import com.terraforged.mod.noise.Module;
  */
 public class Map extends Modifier {
 	public static final Codec<Map> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("source").forGetter((m) -> m.source),
-		Module.CODEC.fieldOf("min").forGetter((m) -> m.min),
-		Module.CODEC.fieldOf("max").forGetter((m) -> m.max)
+		Module.DIRECT_CODEC.fieldOf("source").forGetter((m) -> m.source),
+		Module.DIRECT_CODEC.fieldOf("min").forGetter((m) -> m.min),
+		Module.DIRECT_CODEC.fieldOf("max").forGetter((m) -> m.max)
 	).apply(instance, Map::new));
 	
 	private final Module min;

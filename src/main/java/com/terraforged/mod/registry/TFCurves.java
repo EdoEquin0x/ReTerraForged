@@ -23,6 +23,6 @@ public interface TFCurves {
 	}
 	
 	private static ResourceKey<Codec<? extends CurveFunc>> resolve(String path) {
-		return TerraForged.resolve(TerraForged.CURVE, path);
+		return TerraForged.resolve(TFRegistries.CURVE_TYPE, path);
 	}
 }

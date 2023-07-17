@@ -35,9 +35,9 @@ import com.terraforged.mod.noise.func.Interpolation;
  */
 public class Select extends Selector {
 	public static final Codec<Select> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Module.CODEC.fieldOf("control").forGetter((s) -> s.control),
-		Module.CODEC.fieldOf("source0").forGetter((s) -> s.source0),
-		Module.CODEC.fieldOf("source1").forGetter((s) -> s.source1),
+		Module.DIRECT_CODEC.fieldOf("control").forGetter((s) -> s.control),
+		Module.DIRECT_CODEC.fieldOf("source0").forGetter((s) -> s.source0),
+		Module.DIRECT_CODEC.fieldOf("source1").forGetter((s) -> s.source1),
 		Codec.FLOAT.optionalFieldOf("lower_bound", 0.0F).forGetter((s) -> s.lowerBound),
 		Codec.FLOAT.optionalFieldOf("upper_bound", 1.0F).forGetter((s) -> s.upperBound),
 		Codec.FLOAT.optionalFieldOf("falloff", 0.0F).forGetter((s) -> s.edgeFalloff),

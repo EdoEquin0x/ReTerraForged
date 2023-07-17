@@ -184,7 +184,7 @@ public class Valley {
     public static class Noise implements Module {
     	public static final Codec<Noise> CODEC = RecordCodecBuilder.create(instance -> instance.group(
     		Valley.CODEC.fieldOf("ridge").forGetter((n) -> n.ridge),
-    		Module.CODEC.fieldOf("sourc").forGetter((n) -> n.source)
+    		Module.DIRECT_CODEC.fieldOf("sourc").forGetter((n) -> n.source)
     	).apply(instance, Noise::new));
     	
         private final Valley ridge;

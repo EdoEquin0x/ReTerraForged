@@ -26,13 +26,13 @@
 package com.terraforged.mod.noise.domain;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
+import com.terraforged.mod.registry.TFRegistries;
 
 public interface Domain {
-	public static final Codec<Domain> CODEC = TFCodecs.registryCodec(TerraForged.DOMAIN, Domain::codec);
+	public static final Codec<Domain> CODEC = TFCodecs.registryCodec(TFRegistries.DOMAIN_TYPE, Domain::codec);
 
     Domain DIRECT = new Domain() {
 

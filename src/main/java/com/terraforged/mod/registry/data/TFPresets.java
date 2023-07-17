@@ -1,19 +1,12 @@
 package com.terraforged.mod.registry.data;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.util.Pair;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.asset.NoiseCave;
-import com.terraforged.mod.level.levelgen.asset.TerrainNoise;
-import com.terraforged.mod.level.levelgen.asset.VegetationConfig;
-import com.terraforged.mod.level.levelgen.biome.source.BiomeTree;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.settings.Settings;
-import com.terraforged.mod.level.levelgen.terrain.generation.TerrainLevels;
+import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
@@ -22,7 +15,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterLists;
@@ -44,9 +36,9 @@ public interface TFPresets {
 	@SuppressWarnings("unchecked")
 	private static WorldPreset createDefaultPreset(BootstapContext<WorldPreset> ctx) {
 		HolderGetter<DimensionType> dimensions = ctx.lookup(Registries.DIMENSION_TYPE);
-		HolderGetter<TerrainNoise> terrain = ctx.lookup(TerraForged.TERRAIN);
-		HolderGetter<VegetationConfig> vegetation = ctx.lookup(TerraForged.VEGETATION);
-		HolderGetter<NoiseCave> caves = ctx.lookup(TerraForged.CAVE);
+		HolderGetter<Module> terrain = ctx.lookup(TFDataRegistries.NOISE);
+		HolderGetter<VegetationConfig> vegetation = ctx.lookup(TFDataRegistries.VEGETATION);
+		//HolderGetter<NoiseCave> caves = ctx.lookup(TerraForged.CAVE);
 		HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
 		HolderGetter<NoiseGeneratorSettings> noiseSettings = ctx.lookup(Registries.NOISE_SETTINGS);
 		HolderGetter<MultiNoiseBiomeSourceParameterList> presets = ctx.lookup(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
@@ -68,20 +60,8 @@ public interface TFPresets {
 						Settings.DEFAULT,
 						TerrainLevels.DEFAULT,
 						new WeightMap.Builder<>()
-							.entry(1.75F, terrain.getOrThrow(TFTerrain.BADLANDS))
-							.entry(1.5F,  terrain.getOrThrow(TFTerrain.DALES))
-							.entry(1.25F, terrain.getOrThrow(TFTerrain.DOLOMITES))
-							.entry(2.0F,  terrain.getOrThrow(TFTerrain.HILLS_1))
-							.entry(2.0F,  terrain.getOrThrow(TFTerrain.HILLS_2))
-							.entry(1.25F, terrain.getOrThrow(TFTerrain.MOUNTAINS_1))
-							.entry(1.25F, terrain.getOrThrow(TFTerrain.MOUNTAINS_2))
-							.entry(1.25F, terrain.getOrThrow(TFTerrain.MOUNTAINS_3))
-							.entry(1.25F, terrain.getOrThrow(TFTerrain.MOUNTAINS_RIDGE_1))
-							.entry(1.25F, terrain.getOrThrow(TFTerrain.MOUNTAINS_RIDGE_2))
-							.entry(2.5F,  terrain.getOrThrow(TFTerrain.PLAINS))
-							.entry(2.0F,  terrain.getOrThrow(TFTerrain.PLATEAU))
-							.entry(1.5F,  terrain.getOrThrow(TFTerrain.STEPPE))
-							.entry(2.5F,  terrain.getOrThrow(TFTerrain.TORRIDONIAN))
+							.entry(1.45F, terrain.getOrThrow(TFNoise.MOUNTAINS_1))
+							.entry(1.5F,  terrain.getOrThrow(TFNoise.PLAINS))
 							.build(),
 						new Holder[] {
 							vegetation.getOrThrow(TFVegetation.TREES_COPSE),
@@ -94,13 +74,13 @@ public interface TFPresets {
 							vegetation.getOrThrow(TFVegetation.TREES_TEMPERATE)
 						},
 						new Holder[] {
-							caves.getOrThrow(TFCaves.MEGA),
-							caves.getOrThrow(TFCaves.MEGA_DEEP),
-							caves.getOrThrow(TFCaves.SYNAPSE_HIGH),
-							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
-							caves.getOrThrow(TFCaves.SYNAPSE_MID)
-						}, 
-						createBiomes(biomes)
+//							caves.getOrThrow(TFCaves.MEGA),
+//							caves.getOrThrow(TFCaves.MEGA_DEEP),
+//							caves.getOrThrow(TFCaves.SYNAPSE_HIGH),
+//							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
+//							caves.getOrThrow(TFCaves.SYNAPSE_MID)
+						},
+						MultiNoiseBiomeSource.createFromPreset(presets.getOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD))
 					)
 				)
 			)
@@ -116,43 +96,6 @@ public interface TFPresets {
 			.build());
 	}
 	
-	private static BiomeTree.ParameterList<Holder<Biome>> createBiomes(HolderGetter<Biome> biomes) {
-		List<Pair<BiomeTree.ParameterPoint, Holder<Biome>>> params = new ArrayList<>();
-		Collections.addAll(params, 
-			Pair.of(
-				BiomeTree.parameters(
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.25F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.05F, 1.0F)
-				),
-				biomes.getOrThrow(Biomes.PLAINS)
-			),
-			Pair.of(
-				BiomeTree.parameters(
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 0.05F)
-				),
-				biomes.getOrThrow(Biomes.RIVER)
-			),
-			Pair.of(
-				BiomeTree.parameters(
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 0.25F),
-					BiomeTree.Parameter.span(0.0F, 1.0F),
-					BiomeTree.Parameter.span(0.0F, 0.05F)
-				),
-				biomes.getOrThrow(Biomes.OCEAN)
-			)
-		);
-		return new BiomeTree.ParameterList<>(params);
-	}
-
 	private static ResourceKey<WorldPreset> resolve(String path) {
 		return TerraForged.resolve(Registries.WORLD_PRESET, path);
 	}

@@ -8,18 +8,21 @@ import java.util.List;
 import java.util.Random;
 
 import com.terraforged.mod.level.levelgen.continent.SimpleContinent;
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.rivermap.gen.GenRiver;
 import com.terraforged.mod.level.levelgen.rivermap.river.BaseRiverGenerator;
 import com.terraforged.mod.level.levelgen.rivermap.river.Network;
 import com.terraforged.mod.level.levelgen.rivermap.river.River;
 import com.terraforged.mod.level.levelgen.rivermap.river.RiverCarver;
 import com.terraforged.mod.level.levelgen.rivermap.river.RiverWarp;
+import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.util.NoiseUtil;
 
 public class SimpleRiverGenerator extends BaseRiverGenerator<SimpleContinent> {
-    public SimpleRiverGenerator(SimpleContinent continent, GeneratorContext context) {
-        super(continent, context);
+	
+    public SimpleRiverGenerator(SimpleContinent continent, Seed seed, Levels levels, Settings settings) {
+        super(continent, seed, levels, settings);
     }
 
     @Override

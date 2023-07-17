@@ -5,10 +5,12 @@ package com.terraforged.mod.level.levelgen.continent.fancy;
 
 import java.util.Random;
 
-import com.terraforged.mod.level.levelgen.generator.GeneratorContext;
 import com.terraforged.mod.level.levelgen.rivermap.RiverGenerator;
 import com.terraforged.mod.level.levelgen.rivermap.Rivermap;
 import com.terraforged.mod.level.levelgen.settings.ControlPoints;
+import com.terraforged.mod.level.levelgen.settings.Levels;
+import com.terraforged.mod.level.levelgen.settings.Settings;
+import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
 import com.terraforged.mod.util.pos.PosUtil;
@@ -17,10 +19,10 @@ public class FancyContinent implements RiverGenerator {
     private final Island[] islands;
     private final FancyRiverGenerator riverGenerator;
 
-    public FancyContinent(int seed, int nodes, float radius, GeneratorContext context, FancyContinentGenerator continent) {
-        ControlPoints controlPoints = new ControlPoints(context.settings.world().controlPoints());
-        this.islands = FancyContinent.generateIslands(controlPoints, 3, nodes, radius, new Random(seed));
-        this.riverGenerator = new FancyRiverGenerator(continent, context);
+    public FancyContinent(int nodes, float radius, Seed seed, Levels levels, Settings settings, FancyContinentGenerator continent) {
+        ControlPoints controlPoints = new ControlPoints(settings.world().controlPoints());
+        this.islands = FancyContinent.generateIslands(controlPoints, 3, nodes, radius, new Random(seed.next()));
+        this.riverGenerator = new FancyRiverGenerator(continent, seed, levels, settings);
     }
 
     public float getValue(float x, float y) {
