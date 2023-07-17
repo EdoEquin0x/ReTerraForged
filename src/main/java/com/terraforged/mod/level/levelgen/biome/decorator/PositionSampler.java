@@ -74,8 +74,6 @@ public class PositionSampler {
         context.region = level;
         context.random = random;
         context.generator = generator;
-        context.viabilityContext.terrainData = terrain;
-        context.viabilityContext.climateSampler = generator.getClimateSampler();
         populate(context, decorator);
 
         int offset = 0;

@@ -60,7 +60,7 @@ public class VegetationFeatures {
         return other;
     }
 
-    public static VegetationFeatures create(Biome biome, Optional<VegetationConfig> config) {
+    public static VegetationFeatures create(Biome biome) {
         var trees = new ArrayList<PlacedFeature>();
         var grass = new ArrayList<PlacedFeature>();
         var other = new ArrayList<PlacedFeature>();
