@@ -26,8 +26,14 @@ package com.terraforged.mod.level.levelgen.biome.decorator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import com.terraforged.mod.level.levelgen.biome.vegetation.BiomeVegetation;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
+import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationFeatures;
+import com.terraforged.mod.level.levelgen.biome.viability.ViabilityContext;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
+import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.util.storage.FloatMap;
 
 import net.minecraft.core.BlockPos;
@@ -47,11 +53,14 @@ public class SamplerContext {
     public WorldgenRandom random;
 
     public Biome biome;
+    public Optional<VegetationConfig> vegetation;
+    public VegetationFeatures features;
     public float maxViability = 0F;
 
     public final FloatMap viability = new FloatMap();
 
     public final List<Holder<Biome>> biomeList = new ArrayList<>();
+    public final ViabilityContext viabilityContext = new ViabilityContext();
     public final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
     public int getHeight(int x, int z) {
@@ -62,14 +71,20 @@ public class SamplerContext {
         return region.getBiome(pos.set(x, y, z));
     }
 
+    public TerrainData terrainData() {
+        return viabilityContext.getTerrain();
+    }
+
     public SamplerContext reset() {
         biomeList.clear();
         return this;
     }
 
-    public void push(Biome biome) {
+    public void push(Biome biome, BiomeVegetation vegetation) {
         this.maxViability = 0F;
         this.biome = biome;
+        this.vegetation = vegetation.config;
+        this.features = vegetation.features;
     }
 
     public static SamplerContext get() {
