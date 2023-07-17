@@ -62,10 +62,6 @@ public class TerrainLevels {
         this.noiseLevels = new NoiseLevels(autoScale, scale, this.seaLevel, this.seaFloor, this.maxY, this.baseHeight);
     }
 
-    public TerrainLevels copy() {
-        return new TerrainLevels(noiseLevels.auto, noiseLevels.scale, minY, maxY, baseHeight, seaLevel, seaFloor);
-    }
-
     public float getScaledHeight(float heightNoise) {
         return heightNoise * maxY;
     }

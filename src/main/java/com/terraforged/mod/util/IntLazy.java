@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(forRemoval = true)
 public class IntLazy<T> implements Supplier<T> {
 	private IntFunction<T> supplier;
 	private Object lock;

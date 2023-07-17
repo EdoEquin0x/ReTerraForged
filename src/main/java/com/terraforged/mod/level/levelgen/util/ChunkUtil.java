@@ -93,8 +93,8 @@ public class ChunkUtil {
             section.recalcBlockCounts();
         }
 
-        // Here we fill the chunk section bh the block
-        for (int sy = min; sy <= Math.max(max, 24); sy += 16) {
+        // Here we fill the chunk section with the block
+        for (int sy = min; sy <= Math.max(max, chunk.getSectionsCount() - 1); sy += 16) {
             int index = chunk.getSectionIndex(sy);
             var section = chunk.getSection(index);
             fillSection(sy, seaLevel, terrainData, chunk, section, filler);

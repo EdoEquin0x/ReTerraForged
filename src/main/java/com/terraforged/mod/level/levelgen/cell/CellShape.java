@@ -40,8 +40,7 @@ public enum CellShape {
             float jx = ox > 0 ? jitter * 0.5f: jitter;
             return MathUtil.getPosX(hash, cx, jx) + ox;
         }
-    },
-    ;
+    };
 
     public float adjustX(float x) {
         return x;

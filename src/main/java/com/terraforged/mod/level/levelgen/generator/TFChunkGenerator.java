@@ -33,7 +33,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.level.levelgen.SampledDensityFunction;
-import com.terraforged.mod.level.levelgen.biome.CaveBiomeSampler;
 import com.terraforged.mod.level.levelgen.biome.ChunkPopulator;
 import com.terraforged.mod.level.levelgen.biome.source.TFBiomeSource;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
@@ -107,7 +106,6 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     protected final ChunkPopulator chunkPopulator;
     protected final IntLazy<NoiseGenerator> noiseGenerator;
     protected final ClimateSampler climateSampler;
-    protected final CaveBiomeSampler caveBiomeSampler;
     protected final TerrainCache terrainCache;
     protected final ThreadLocal<GeneratorResource> localResource = ThreadLocal.withInitial(GeneratorResource::new);
     protected final WeightMap<Holder<Module>> terrain;
@@ -122,7 +120,6 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	ChunkPopulator chunkPopulator,
     	IntLazy<NoiseGenerator> noiseGenerator,
     	ClimateSampler climateSampler,
-    	CaveBiomeSampler caveBiomeSampler,
     	WeightMap<Holder<Module>> terrain,
     	Holder<VegetationConfig>[] vegetation,
     	Holder<NoiseCave>[] caves
@@ -134,7 +131,6 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
         this.chunkPopulator = chunkPopulator;
         this.noiseGenerator = noiseGenerator;
         this.climateSampler = climateSampler;
-        this.caveBiomeSampler = caveBiomeSampler;
         this.terrainCache = new TerrainCache(levels, noiseGenerator);
         this.terrain = terrain;
         this.vegetation = vegetation;
@@ -154,10 +150,6 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	return this.climateSampler;
     }
 
-    public CaveBiomeSampler getCaveBiomeSampler() {
-    	return this.caveBiomeSampler;
-    }
-    
     public TerrainData getChunkData(ChunkPos pos) {
         return this.terrainCache.getNow(pos);
     }
@@ -261,28 +253,31 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public void addDebugScreenInfo(List<String> lines, RandomState state, BlockPos pos) {
-    	var sample = this.climateSampler.sample(pos.getX(), pos.getZ());
-        lines.add("");
-        lines.add("[TerraForged] (raw noise)");
-        lines.add("Temperature: " + sample.temperature);
-        lines.add("Moisture: " + sample.moisture);
-        lines.add("Continent noise: " + sample.continentNoise);
-        lines.add("River noise: " + sample.riverNoise);
-        lines.add("Biome noise: " + sample.biomeNoise);
-        lines.add("Base Noise: " + sample.baseNoise);
-        lines.add("Height Noise: " + sample.heightNoise);
-        lines.add("");
-        
-        var mcSample = state.sampler().sample(pos.getX(), pos.getY(), pos.getZ());
-        lines.add("");
-        lines.add("[TerraForged] [mc noise]");
-        lines.add("Temperature: " + Climate.unquantizeCoord(mcSample.temperature()));
-        lines.add("Humidity: " + Climate.unquantizeCoord(mcSample.humidity()));
-        lines.add("Continent: " + Climate.unquantizeCoord(mcSample.continentalness()));
-        lines.add("Erosion: " + Climate.unquantizeCoord(mcSample.erosion()));
-        lines.add("Depth: " + Climate.unquantizeCoord(mcSample.depth()));
-        lines.add("Weirdness: " + Climate.unquantizeCoord(mcSample.weirdness()));
-        lines.add("");
+    	{
+    		var sample = this.climateSampler.sample(pos.getX(), pos.getZ());
+	        lines.add("");
+	        lines.add("[TerraForged] (raw noise)");
+	        lines.add("Temperature: " + sample.temperature);
+	        lines.add("Moisture: " + sample.moisture);
+	        lines.add("Continent: " + sample.continentNoise);
+	        lines.add("River: " + sample.riverNoise);
+	        lines.add("Biome: " + sample.biomeNoise);
+	        lines.add("Base: " + sample.baseNoise);
+	        lines.add("Height: " + sample.heightNoise);
+	        lines.add("");
+	    }
+        {
+            var sample = state.sampler().sample(pos.getX(), pos.getY(), pos.getZ());
+            lines.add("");
+            lines.add("[TerraForged] [mc noise]");
+            lines.add("Temperature: " + Climate.unquantizeCoord(sample.temperature()));
+            lines.add("Humidity: " + Climate.unquantizeCoord(sample.humidity()));
+            lines.add("Continent: " + Climate.unquantizeCoord(sample.continentalness()));
+            lines.add("Erosion: " + Climate.unquantizeCoord(sample.erosion()));
+            lines.add("Depth: " + Climate.unquantizeCoord(sample.depth()));
+            lines.add("Weirdness: " + Climate.unquantizeCoord(sample.weirdness()));
+            lines.add("");
+        }
     }
     
     @Override
@@ -306,8 +301,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	var chunkPopulator = new ChunkPopulator(vegetation, caves);
     	IntLazy<NoiseGenerator> noiseGenerator = IntLazy.of(seed -> new ErosionNoiseGenerator(seed, settings, levels, terrain, NoiseTileSize.DEFAULT));
     	var climateSampler = new ClimateSampler(noiseGenerator);
-		var caveBiomeSampler = new CaveBiomeSampler(800);
-    	return new TFChunkGenerator(settings, levels, new TFBiomeSource(delegate), chunkPopulator, noiseGenerator, climateSampler, caveBiomeSampler, terrain, vegetation, caves);
+    	return new TFChunkGenerator(settings, levels, new TFBiomeSource(delegate), chunkPopulator, noiseGenerator, climateSampler, terrain, vegetation, caves);
     }
     
     private static Holder<NoiseGeneratorSettings> createGeneratorSettings(TerrainLevels levels, ClimateSampler sampler) {

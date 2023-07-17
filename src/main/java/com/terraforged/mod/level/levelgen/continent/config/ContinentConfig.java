@@ -27,6 +27,8 @@ package com.terraforged.mod.level.levelgen.continent.config;
 import com.terraforged.mod.level.levelgen.cell.CellShape;
 import com.terraforged.mod.level.levelgen.cell.CellSource;
 
+//TODO merge this with the WorldSettings class or something
+@Deprecated(forRemoval = true)
 public class ContinentConfig {
     public static final int CONTINENT_SAMPLE_SCALE = 400;
 

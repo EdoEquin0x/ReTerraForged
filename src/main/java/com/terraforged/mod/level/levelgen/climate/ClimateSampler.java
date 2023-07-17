@@ -43,7 +43,7 @@ public class ClimateSampler {
 	}
 	
 	public NoiseGenerator getNoiseGenerator() {
-		return noiseGenerator.get();
+		return this.noiseGenerator.get();
 	}
 
 	public ClimateSample sample(int x, int z) {
@@ -52,10 +52,10 @@ public class ClimateSampler {
 		float px = x * levels.frequency;
 		float pz = z * levels.frequency;
 
-		var sample = localSample.get().reset();
-		noiseGenerator.get().getContinent().sampleContinent(px, pz, sample);
-		noiseGenerator.get().getContinent().sampleRiver(px, pz, sample);
-		climateNoise.get().sample(px, pz, sample);
+		var sample = this.localSample.get().reset();
+		this.noiseGenerator.get().getContinent().sampleContinent(px, pz, sample);
+		this.noiseGenerator.get().getContinent().sampleRiver(px, pz, sample);
+		this.climateNoise.get().sample(px, pz, sample);
 
 		return sample;
 	}
@@ -66,11 +66,11 @@ public class ClimateSampler {
 		float px = x * levels.frequency;
 		float pz = z * levels.frequency;
 
-		var sample = localSample.get().reset();
+		var sample = this.localSample.get().reset();
 
-		noiseGenerator.get().getContinent().sampleContinent(px, pz, sample);
-		noiseGenerator.get().getContinent().sampleRiver(px, pz, sample);
-		climateNoise.get().sample(px, pz, sample);
+		this.noiseGenerator.get().getContinent().sampleContinent(px, pz, sample);
+		this.noiseGenerator.get().getContinent().sampleRiver(px, pz, sample);
+		this.climateNoise.get().sample(px, pz, sample);
 
 		return sample.biomeEdgeNoise;
 	}

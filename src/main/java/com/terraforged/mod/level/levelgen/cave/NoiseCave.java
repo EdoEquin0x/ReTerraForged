@@ -27,6 +27,7 @@ package com.terraforged.mod.level.levelgen.cave;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.util.Noise;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.registry.data.TFDataRegistries;
 import com.terraforged.mod.util.storage.WeightMap;
@@ -59,6 +60,20 @@ public record NoiseCave(WeightMap<Holder<Biome>> biomes, Holder<Module> elevatio
 
     public int getFloorDepth(int x, int z, int size) {
         return getScaleValue(x, z, 1F, 0, size, this.floor);
+    }
+
+    private static final int BIOME_SEED_OFFSET = 124897;
+    private static final float FREQUENCY = 1.0F / 800.0F;
+    public Holder<Biome> getBiome(int seed, int x, int z) {
+        float noise = sample(seed + BIOME_SEED_OFFSET, x, z, FREQUENCY);
+        return this.biomes.getValue(noise);
+    }
+
+    protected static float sample(int seed, int x, int z, float frequency) {
+        float nx = x * frequency;
+        float nz = z * frequency;
+        float noise = (1 + Noise.singleSimplex(nx, nz, seed)) * 0.5F;
+        return NoiseUtil.clamp(noise, 0F, 1F);
     }
 
     private static int getScaleValue(int x, int z, float modifier, int min, int range, Holder<Module> noise) {
