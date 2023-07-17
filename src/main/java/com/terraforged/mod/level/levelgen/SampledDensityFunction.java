@@ -13,7 +13,7 @@ public record SampledDensityFunction(ClimateSampler sampler, ToDoubleFunction<Cl
 
 	@Override
 	public double compute(FunctionContext ctx) {
-		return -1;//this.getter.applyAsDouble(this.sampler.sample(ctx.blockX(), ctx.blockZ()));
+		return this.getter.applyAsDouble(this.sampler.sample(ctx.blockX(), ctx.blockZ()));
 	}
 
 	@Override

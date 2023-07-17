@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 public class IntLazy<T> implements Supplier<T> {
-	private volatile Object lock;
+	private IntFunction<T> supplier;
+	private Object lock;
 	private volatile T instance;
-	private volatile IntFunction<T> supplier;
 
 	public IntLazy(IntFunction<T> supplier) {
 		this.supplier = supplier;
@@ -26,14 +26,8 @@ public class IntLazy<T> implements Supplier<T> {
 	@Nullable
 	public final T apply(int value) {
 		Object localLock = this.lock;
-		if (this.supplier != null) {
-			synchronized (localLock) {
-				if (this.supplier != null) {
-					this.instance = this.supplier.apply(value);
-					this.supplier = null;
-					this.lock = null;
-				}
-			}
+		synchronized (localLock) {
+			this.instance = this.supplier.apply(value);
 		}
 		return this.instance;
 	}

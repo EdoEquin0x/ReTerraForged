@@ -16,10 +16,6 @@ public class Levels {
     public final float water;
     private final float elevationRange;
 
-    public Levels(WorldSettings settings) {
-        this(settings.properties().worldHeight(), settings.properties().seaLevel());
-    }
-
     public Levels(int height, int seaLevel) {
         this.worldHeight = Math.max(1, height);
         this.unit = NoiseUtil.div(1, this.worldHeight);
@@ -63,10 +59,6 @@ public class Levels {
 
     public float ground(int amount) {
         return NoiseUtil.div(this.groundY + amount, this.worldHeight);
-    }
-
-    public static float scale(int steps, Settings settings) {
-        return (float)steps / (float)settings.world().properties().worldHeight();
     }
 }
 

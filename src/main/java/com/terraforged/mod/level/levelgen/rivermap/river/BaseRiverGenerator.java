@@ -51,7 +51,7 @@ public abstract class BaseRiverGenerator<T extends Continent> implements RiverGe
     @Override
     public Rivermap generateRivers(int x, int z, long id) {
         Random random = new Random(id + (long)this.seed);
-        GenRiver warp = new GenRiver((int)id, this.continentScale);
+        GenRiver warp = new GenRiver((int) id);
         List<Network.Builder> rivers = this.generateRoots(x, z, random, warp);
         Collections.shuffle(rivers, random);
         for (Network.Builder root : rivers) {

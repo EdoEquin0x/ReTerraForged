@@ -82,10 +82,6 @@ public class NoiseGenerator {
         return continent;
     }
 
-    public float getHeightNoise(int x, int z) {;
-        return getNoiseSample(x, z).heightNoise;
-    }
-
     public void generate(int chunkX, int chunkZ, Consumer<NoiseData> consumer) {
         var noiseData = localChunk.get();
         var blender = land.getBlenderResource();

@@ -62,7 +62,7 @@ public class ErosionNoiseGenerator extends NoiseGenerator {
     	super(seed, settings, levels, terrain);
         this.seed = seed;
         this.tileSize = tileSize;
-        this.erosion = new ErosionFilter(tileSize.regionLength, settings.filters().erosion());
+        this.erosion = new ErosionFilter(tileSize.regionLength, settings.erosion());
         this.localSample = ThreadLocal.withInitial(NoiseSample::new);
         this.localResource = ThreadLocal.withInitial(() -> new NoiseResource(tileSize));
         this.pool = ObjectPool.forCacheSize(CACHE_SIZE, CHUNK_ALLOCATOR);

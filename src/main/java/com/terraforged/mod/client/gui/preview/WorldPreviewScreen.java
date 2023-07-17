@@ -20,28 +20,24 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.biome.Biome;
 
 //TODO finish this
 public class WorldPreviewScreen extends Screen {
 	private static final int MAX_SCALE = 1000;
 	
-	private final CreateWorldScreen parent;
+	private CreateWorldScreen parent;
+	private TFChunkGenerator generator;
 	private DynamicTexture framebuffer;
-//	private final Registry<Biome> biomes;
-	private final TFChunkGenerator generator;
 	private Layer layer;
 	private int scale;
 	
-	public WorldPreviewScreen(CreateWorldScreen parent, Registry<Biome> biomes, TFChunkGenerator generator) {
+	public WorldPreviewScreen(CreateWorldScreen parent, TFChunkGenerator generator) {
 		super(Component.translatable("createWorld.customize.terraforged.title"));
 		this.parent = parent;
-		this.framebuffer = new DynamicTexture(256, 256, false);
-//		this.biomes = biomes;
 		this.generator = generator;
+		this.framebuffer = new DynamicTexture(256, 256, false);
 		this.scale = 15;
 		
 		this.setLayer(Layer.CONTINENT);
@@ -57,12 +53,12 @@ public class WorldPreviewScreen extends Screen {
 	public void setLayer(Layer layer) {
 		this.layer = layer;
 		
-		this.rebuildFramebuffer();
+		this.rebuildFramebuffer(this.scale, this.framebuffer, this.layer).join();
 	}
 	
-	private void rebuildFramebuffer() {
+	private CompletableFuture<Void> rebuildFramebuffer(int scale, DynamicTexture framebuffer, Layer layer) {
 		final int cellCount = 16;
-		NativeImage pixels = this.framebuffer.getPixels();
+		NativeImage pixels = framebuffer.getPixels();
 		int cellWidth = pixels.getWidth() / cellCount;
 		int cellHeight = pixels.getHeight() / cellCount;
 
@@ -77,17 +73,14 @@ public class WorldPreviewScreen extends Screen {
 							int tx = cx + lx;
 							int ty = cy + ly;
 							
-							ClimateSample sample = this.generator.getClimateSampler().sample(tx * this.scale, ty * this.scale);
-				            pixels.setPixelRGBA(tx, ty, this.layer.getColor(this.layer.getValue(sample)));
+							ClimateSample sample = this.generator.getClimateSampler().sample(tx * scale, ty * scale);
+				            pixels.setPixelRGBA(tx, ty, layer.getColor(layer.getValue(sample)));
 						}
 					}
 				}, Util.backgroundExecutor());
 			}
 		}
-		
-		CompletableFuture.allOf(futures).join();
-
-		this.framebuffer.upload();		
+		return CompletableFuture.allOf(futures).thenRun(framebuffer::upload);
 	}
 	
 	@Override
@@ -107,7 +100,7 @@ public class WorldPreviewScreen extends Screen {
 	         protected void applyValue() {
 	        	 WorldPreviewScreen.this.scale = (int) ((1 - this.value) * MAX_SCALE);
 	        	 
-	        	 WorldPreviewScreen.this.rebuildFramebuffer();
+	        	 WorldPreviewScreen.this.rebuildFramebuffer(WorldPreviewScreen.this.scale, WorldPreviewScreen.this.framebuffer, WorldPreviewScreen.this.layer).join();
 	         }
 		});
 
@@ -186,7 +179,7 @@ public class WorldPreviewScreen extends Screen {
 			public int getColor(float value) {
 	            float saturation = 0.7F;
 	            float brightness = 0.8F;
-				return ColorUtil.rgba(MathUtil.step(value, 8) * 0.65F, saturation, brightness);
+				return ColorUtil.rgba(MathUtil.step(1 - value, 8) * 0.65F, saturation, brightness);
 			}
 
 			@Override
@@ -234,19 +227,13 @@ public class WorldPreviewScreen extends Screen {
 			RenderSystem.setShaderTexture(0, WorldPreviewScreen.this.framebuffer.getId());
 			blit(stack, x, y, 0, 0.0F, 0.0F, this.width, this.height, this.width, this.height);
 			
-			if(this.isMouseOver(mouseX, mouseY)) {
-//				int relativeMouseX = (mouseX - this.getX()) * WorldPreviewScreen.this.scale;
-//				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
-//				
-//				IClimateSampler sampler = WorldPreviewScreen.this.generator.getClimateSampler();
-//				ClimateSample sample = sampler.getSample(relativeMouseX, relativeMouseY);
-//				Biome biome = sampler.sampleBiome(sample).value();
-//				String biomeKey = WorldPreviewScreen.this.biomes.getKey(biome).toString();
-//				drawString(stack, WorldPreviewScreen.this.font, "biome: " + biomeKey, x + 8, y + this.getHeight() - 16, 16777215);
-//				
-//				if(Screen.hasAltDown()) {
-//					drawString(stack, WorldPreviewScreen.this.font, "noise: " + WorldPreviewScreen.this.layer.getValue(sample), x + 8, y + this.getWidth() - 26, 16777215);	
-//				}
+			if(Screen.hasAltDown() && this.isMouseOver(mouseX, mouseY)) {
+				int relativeMouseX = (mouseX - this.getX()) * WorldPreviewScreen.this.scale;
+				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
+				
+				drawString(stack, WorldPreviewScreen.this.font, "noise: " + WorldPreviewScreen.this.layer.getValue(
+					WorldPreviewScreen.this.generator.getClimateSampler().sample(relativeMouseX, relativeMouseY)
+				), x + 8, y + this.getWidth() - 26, 16777215);	
 			}
 		}
 

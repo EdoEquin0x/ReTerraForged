@@ -38,10 +38,6 @@ public class TFBiomeSource extends BiomeSource {
 
 	@Override
 	public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
-        return this.cache.computeIfAbsent(PosUtil.pack(x, z), (i) -> this.compute(x, y, z, sampler));
-	}
-	
-	private Holder<Biome> compute(int x, int y, int z, Climate.Sampler sampler) {
-		return this.delegate.getNoiseBiome(x, y, z, sampler);
+        return this.cache.computeIfAbsent(PosUtil.pack(x, z), (i) -> this.delegate.getNoiseBiome(x, y, z, sampler));
 	}
 }

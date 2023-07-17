@@ -67,6 +67,7 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.OverworldBiomeBuilder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -141,6 +142,10 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
         this.globalFluidPicker = createGlobalFluidPicker(this.generatorSettings());
     }
 
+    public void init(int seed) {
+    	this.noiseGenerator.apply((int) seed);
+    }
+    
     public NoiseGenerator getNoiseGenerator() {
         return this.noiseGenerator.get();
     }
@@ -189,12 +194,13 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState state, StructureManager structureManager, ChunkAccess chunkAccess) {
-        return terrainCache.combineAsync(executor, chunkAccess, (chunk, terrainData) -> {
-            ChunkUtil.fillChunk(this.getSeaLevel(), chunk, terrainData, ChunkUtil.FILLER, this.localResource.get());
-            ChunkUtil.primeHeightmaps(this.getSeaLevel(), chunk, terrainData, ChunkUtil.FILLER);
-            ChunkUtil.buildStructureTerrain(chunk, terrainData, structureManager);
-            return chunk;
-        });
+    	return terrainCache.getAsync(chunkAccess.getPos()).thenApplyAsync((terrainData) -> {
+    		int seaLevel = this.getSeaLevel();
+    		ChunkUtil.fillChunk(seaLevel, chunkAccess, terrainData, ChunkUtil.FILLER, this.localResource.get());
+    		ChunkUtil.primeHeightmaps(seaLevel, chunkAccess, terrainData, ChunkUtil.FILLER);
+    		ChunkUtil.buildStructureTerrain(chunkAccess, terrainData, structureManager);
+    		return chunkAccess;
+    	});
     }
 
     @Override
@@ -219,7 +225,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState state) {
-        var sample = this.terrainCache.getSample(x, z);
+        var sample = this.noiseGenerator.get().getNoiseSample(x, z);
 
         float scaledBase = this.levels.getScaledBaseLevel(sample.baseNoise);
         float scaledHeight = this.levels.getScaledHeight(sample.heightNoise);
@@ -235,7 +241,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor levelHeightAccessor, RandomState state) {
-        var sample = this.terrainCache.getSample(x, z);
+        var sample = this.noiseGenerator.get().getNoiseSample(x, z);
 
         float scaledBase = this.levels.getScaledBaseLevel(sample.baseNoise);
         float scaledHeight = this.levels.getScaledHeight(sample.heightNoise);
@@ -255,10 +261,9 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public void addDebugScreenInfo(List<String> lines, RandomState state, BlockPos pos) {
-        var sample = this.climateSampler.sample(pos.getX(), pos.getZ());
-        
+    	var sample = this.climateSampler.sample(pos.getX(), pos.getZ());
         lines.add("");
-        lines.add("[TerraForged]");
+        lines.add("[TerraForged] (raw noise)");
         lines.add("Temperature: " + sample.temperature);
         lines.add("Moisture: " + sample.moisture);
         lines.add("Continent noise: " + sample.continentNoise);
@@ -267,11 +272,22 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
         lines.add("Base Noise: " + sample.baseNoise);
         lines.add("Height Noise: " + sample.heightNoise);
         lines.add("");
+        
+        var mcSample = state.sampler().sample(pos.getX(), pos.getY(), pos.getZ());
+        lines.add("");
+        lines.add("[TerraForged] [mc noise]");
+        lines.add("Temperature: " + Climate.unquantizeCoord(mcSample.temperature()));
+        lines.add("Humidity: " + Climate.unquantizeCoord(mcSample.humidity()));
+        lines.add("Continent: " + Climate.unquantizeCoord(mcSample.continentalness()));
+        lines.add("Erosion: " + Climate.unquantizeCoord(mcSample.erosion()));
+        lines.add("Depth: " + Climate.unquantizeCoord(mcSample.depth()));
+        lines.add("Weirdness: " + Climate.unquantizeCoord(mcSample.weirdness()));
+        lines.add("");
     }
     
     @Override
     public ChunkGeneratorStructureState createState(HolderLookup<StructureSet> structures, RandomState state, long seed) {
-    	this.noiseGenerator.apply((int) seed);
+    	this.init((int) seed);
     	return ChunkGeneratorStructureState.createForNormal(state, seed, this.biomeSource, structures);
     }
 
@@ -308,10 +324,8 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 	    			new SampledDensityFunction(sampler, (sample) -> sample.temperature * 2 + 1),
 	    			new SampledDensityFunction(sampler, (sample) -> sample.moisture * 2 + 1),
 	    			new SampledDensityFunction(sampler, (sample) -> sample.continentNoise * 2 + 1),
-	    			new SampledDensityFunction(sampler, (sample) -> {
-	    				return -1f;
-	    			}),
-	    			new SampledDensityFunction(sampler, (sample) -> 1),
+	    			new SampledDensityFunction(sampler, (sample) -> sample.riverNoise),
+	    			new SampledDensityFunction(sampler, (sample) -> 0),
 	    			new SampledDensityFunction(sampler, (sample) -> sample.biomeNoise),
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,

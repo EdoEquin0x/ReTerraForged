@@ -23,8 +23,7 @@
  */
 
 package com.terraforged.mod.level.levelgen.noise.erosion;
-
-import com.terraforged.mod.level.levelgen.settings.FilterSettings;
+import com.terraforged.mod.level.levelgen.settings.ErosionSettings;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.util.FastRandom;
 import com.terraforged.mod.util.MathUtil;
@@ -52,7 +51,7 @@ public class ErosionFilter {
 
     private final int iterations;
 
-    public ErosionFilter(int mapSize, FilterSettings.Erosion settings) {
+    public ErosionFilter(int mapSize, ErosionSettings settings) {
         this.iterations = settings.dropletsPerChunk();
         this.erodeSpeed = settings.erosionRate();
         this.depositSpeed = settings.depositeRate();
@@ -247,8 +246,10 @@ public class ErosionFilter {
         return height / HEIGHT_FALL_OFF;
     }
 
-    public static class Resource {
-        public final float[] grad1 = new float[3];
-        public final float[] grad2 = new float[3];
+    public record Resource(float[] grad1, float[] grad2) {
+    	
+    	public Resource() {
+    		this(new float[3], new float[3]);
+    	}
     }
 }

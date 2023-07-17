@@ -53,10 +53,4 @@ public class TerrainGenerator {
         noiseGenerator.get().generate(chunkX, chunkZ, terrainData);
         return terrainData;
     }
-
-    public int getHeight(int x, int z) {
-        float heightNoise = noiseGenerator.get().getHeightNoise(x, z);
-        float scaledHeight = levels.getScaledHeight(heightNoise);
-        return levels.getHeight(scaledHeight);
-    }
 }

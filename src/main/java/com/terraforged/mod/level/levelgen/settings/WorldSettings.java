@@ -6,29 +6,16 @@ package com.terraforged.mod.level.levelgen.settings;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.continent.ContinentType;
-import com.terraforged.mod.level.levelgen.continent.SpawnType;
 import com.terraforged.mod.noise.func.DistanceFunc;
 
-//TODO make none of these fields optional and don't have any defaults
-public record WorldSettings(Continent continent, ControlPoints controlPoints, Properties properties) {
-	public static final WorldSettings DEFAULT = new WorldSettings(Continent.DEFAULT, ControlPoints.DEFAULT, Properties.DEFAULT);
+public record WorldSettings(Continent continent, ControlPoints controlPoints) {
+	public static final WorldSettings DEFAULT = new WorldSettings(Continent.DEFAULT, ControlPoints.DEFAULT);
 	
 	public static final Codec<WorldSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Continent.CODEC.fieldOf("continent").forGetter(WorldSettings::continent),
-		ControlPoints.CODEC.fieldOf("control_points").forGetter(WorldSettings::controlPoints),
-		Properties.CODEC.fieldOf("properties").forGetter(WorldSettings::properties)
+		ControlPoints.CODEC.fieldOf("control_points").forGetter(WorldSettings::controlPoints)
 	).apply(instance, WorldSettings::new));
 	
-    public record Properties(SpawnType spawnType, int worldHeight, int seaLevel) {
-    	public static final Properties DEFAULT = new Properties(SpawnType.CONTINENT_CENTER, 256, 63);
-    	
-    	public static final Codec<Properties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-    		SpawnType.CODEC.fieldOf("spawn_type").forGetter(Properties::spawnType),
-    		Codec.intRange(0, 256).fieldOf("world_height").forGetter(Properties::worldHeight),
-    		Codec.intRange(0, 255).fieldOf("sea_level").forGetter(Properties::seaLevel)
-    	).apply(instance, Properties::new));
-    }
-
     public record ControlPoints(float deepOcean, float shallowOcean, float beach, float coast, float inland) {
     	public static final ControlPoints DEFAULT = new ControlPoints(0.1F, 0.25F, 0.327F, 0.448F, 0.502F);
     	

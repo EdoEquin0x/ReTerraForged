@@ -24,21 +24,18 @@
 
 package com.terraforged.mod.level.levelgen.terrain;
 
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import org.jetbrains.annotations.Nullable;
-
-import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
-import com.terraforged.mod.level.levelgen.noise.NoiseSample;
-import com.terraforged.mod.level.levelgen.util.ThreadPool;
-import com.terraforged.mod.util.storage.ObjectPool;
-
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
+
+import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
+import com.terraforged.mod.level.levelgen.util.ThreadPool;
+import com.terraforged.mod.util.storage.ObjectPool;
+
+import net.minecraft.world.level.ChunkPos;
 
 public class TerrainCache {
     private final TerrainGenerator generator;
@@ -77,18 +74,6 @@ public class TerrainCache {
         getAsync(pos);
     }
 
-    public int getHeight(int x, int z) {
-        return generator.getHeight(x, z);
-    }
-
-    public NoiseSample getSample(int x, int z) {
-        return generator.noiseGenerator.get().getNoiseSample(x, z);
-    }
-
-    public void sample(int x, int z, NoiseSample sample) {
-        generator.getNoiseGenerator().sample(x, z, sample);
-    }
-
     public TerrainData getNow(ChunkPos pos) {
         return getAsync(pos).join();
     }
@@ -106,13 +91,6 @@ public class TerrainCache {
     public CompletableFuture<TerrainData> getAsync(ChunkPos pos) {
         var key = allocPos(pos);
         return cache.computeIfAbsent(key, this::generate).task;
-    }
-
-    public <T> CompletableFuture<ChunkAccess> combineAsync(Executor executor,
-                                                           ChunkAccess chunk,
-                                                           BiFunction<ChunkAccess, TerrainData, ChunkAccess> function) {
-
-        return getAsync(chunk.getPos()).thenApplyAsync(terrainData -> function.apply(chunk, terrainData), executor);
     }
 
     protected CacheValue generate(CacheKey key) {
