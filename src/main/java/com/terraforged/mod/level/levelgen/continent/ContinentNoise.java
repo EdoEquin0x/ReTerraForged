@@ -51,7 +51,7 @@ public class ContinentNoise {
         this.controlPoints = new ControlPoints(settings.world().controlPoints());
         this.generator = createContinent(seed, settings, controlPoints, levels.noiseLevels);
 
-        this.frequency = 1F / settings.world().continent().scale();
+        this.frequency = 1F / settings.world().continentScale();
 
         double strength = 0.2;
 
@@ -110,7 +110,7 @@ public class ContinentNoise {
 
     protected static ContinentGenerator createContinent(Seed seed, Settings settings, ControlPoints controlPoints, NoiseLevels levels) {
         var config = new ContinentConfig();
-        config.shape.scale = settings.world().continent().scale();
+        config.shape.scale = settings.world().continentScale();
         config.shape.seed0 = seed.next();
         config.shape.seed1 = seed.next();
         return new ContinentGenerator(seed.get(), config, levels, controlPoints);
