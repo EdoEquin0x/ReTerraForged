@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -25,12 +24,12 @@ import net.minecraft.util.Mth;
 public class ClimateTree {
 	public static final int PARAM_COUNT = 5;
 
-	public static ClimateTree.ParameterPoint parameters(float temperature, float moisture, float continentalness, float height, float river) {
-		return new ClimateTree.ParameterPoint(ClimateTree.Parameter.point(temperature), ClimateTree.Parameter.point(moisture), ClimateTree.Parameter.point(continentalness), ClimateTree.Parameter.point(height), ClimateTree.Parameter.point(river));
+	public static ClimateTree.ParameterPoint parameters(Holder<Climate> climate, float temperature, float moisture, float continentalness, float height, float river) {
+		return new ClimateTree.ParameterPoint(climate, ClimateTree.Parameter.point(temperature), ClimateTree.Parameter.point(moisture), ClimateTree.Parameter.point(continentalness), ClimateTree.Parameter.point(height), ClimateTree.Parameter.point(river));
 	}
 
-	public static ClimateTree.ParameterPoint parameters(ClimateTree.Parameter temperature, ClimateTree.Parameter moisture, ClimateTree.Parameter continentalness, ClimateTree.Parameter height, ClimateTree.Parameter river) {
-		return new ClimateTree.ParameterPoint(temperature, moisture, continentalness, height, river);
+	public static ClimateTree.ParameterPoint parameters(Holder<Climate> climate, ClimateTree.Parameter temperature, ClimateTree.Parameter moisture, ClimateTree.Parameter continentalness, ClimateTree.Parameter height, ClimateTree.Parameter river) {
+		return new ClimateTree.ParameterPoint(climate, temperature, moisture, continentalness, height, river);
 	}
 
 	interface DistanceMetric {
@@ -63,6 +62,14 @@ public class ClimateTree {
 			}
 		}
 		
+		public static ClimateTree.Parameter min(float min) {
+			return span(min, 1.0F);
+		}
+		
+		public static ClimateTree.Parameter max(float max) {
+			return span(0.0F, max);
+		}
+		
 		public static ClimateTree.Parameter any() {
 			return span(0.0F, 1.0F);
 		}
@@ -93,20 +100,17 @@ public class ClimateTree {
 	}
 
 	public static class ParameterList {
-		private final List<Pair<ClimateTree.ParameterPoint, Holder<Climate>>> values;
+		private final List<ClimateTree.ParameterPoint> values;
 		private final ClimateTree.RTree index;
 
-		public static final Codec<ParameterList> CODEC = ExtraCodecs.nonEmptyList(RecordCodecBuilder.<Pair<ClimateTree.ParameterPoint, Holder<Climate>>>create((instance) -> instance.group(
-			ClimateTree.ParameterPoint.CODEC.fieldOf("parameters").forGetter(Pair::getFirst), 
-			Climate.CODEC.fieldOf("climate").forGetter(Pair::getSecond)).apply(instance, Pair::of)
-		).listOf()).xmap(ClimateTree.ParameterList::new, ClimateTree.ParameterList::values);
+		public static final Codec<ParameterList> CODEC = ExtraCodecs.nonEmptyList(ClimateTree.ParameterPoint.CODEC.listOf()).xmap(ClimateTree.ParameterList::new, ClimateTree.ParameterList::values);
 
-		public ParameterList(List<Pair<ClimateTree.ParameterPoint, Holder<Climate>>> values) {
+		public ParameterList(List<ClimateTree.ParameterPoint> values) {
 			this.values = values;
 			this.index = ClimateTree.RTree.create(values);
 		}
 
-		public List<Pair<ClimateTree.ParameterPoint, Holder<Climate>>> values() {
+		public List<ClimateTree.ParameterPoint> values() {
 			return this.values;
 		}
 
@@ -116,19 +120,15 @@ public class ClimateTree {
 		}
 	}
 
-	public static record ParameterPoint(ClimateTree.Parameter temperature, ClimateTree.Parameter moisture, ClimateTree.Parameter continentalness, ClimateTree.Parameter height, ClimateTree.Parameter river) {
+	public static record ParameterPoint(Holder<Climate> climate, ClimateTree.Parameter temperature, ClimateTree.Parameter moisture, ClimateTree.Parameter continentalness, ClimateTree.Parameter height, ClimateTree.Parameter river) {
 		public static final Codec<ClimateTree.ParameterPoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			ClimateTree.Parameter.CODEC.fieldOf("temperature").forGetter((point) -> {
-				return point.temperature;
-			}), ClimateTree.Parameter.CODEC.fieldOf("moisture").forGetter((point) -> {
-				return point.moisture;
-			}), ClimateTree.Parameter.CODEC.fieldOf("continentalness").forGetter((point) -> {
-				return point.continentalness;
-			}), ClimateTree.Parameter.CODEC.fieldOf("height").forGetter((point) -> {
-				return point.height;
-			}), ClimateTree.Parameter.CODEC.fieldOf("river").forGetter((point) -> {
-				return point.river;
-			})).apply(instance, ClimateTree.ParameterPoint::new));
+			Climate.CODEC.fieldOf("climate").forGetter(ParameterPoint::climate), 
+			ClimateTree.Parameter.CODEC.fieldOf("temperature").forGetter(ParameterPoint::temperature), 
+			ClimateTree.Parameter.CODEC.fieldOf("moisture").forGetter(ParameterPoint::moisture), 
+			ClimateTree.Parameter.CODEC.fieldOf("continentalness").forGetter(ParameterPoint::continentalness), 
+			ClimateTree.Parameter.CODEC.fieldOf("height").forGetter(ParameterPoint::height), 
+			ClimateTree.Parameter.CODEC.fieldOf("river").forGetter(ParameterPoint::river)
+		).apply(instance, ClimateTree.ParameterPoint::new));
 
 		float fitness(ClimateSample sample) {
 			return Mth.square(this.temperature.distance(sample.temperature))
@@ -151,16 +151,16 @@ public class ClimateTree {
 			this.root = root;
 		}
 
-		public static ClimateTree.RTree create(List<Pair<ClimateTree.ParameterPoint, Holder<Climate>>> points) {
+		public static ClimateTree.RTree create(List<ClimateTree.ParameterPoint> points) {
 			if (points.isEmpty()) {
 				throw new IllegalArgumentException("Need at least one value to build the search tree.");
 			} else {
-				int i = points.get(0).getFirst().parameterSpace().size();
+				int i = points.get(0).parameterSpace().size();
 				if (i != PARAM_COUNT) {
 					throw new IllegalStateException("Expecting parameter space to be " + PARAM_COUNT + ", got " + i);
 				} else {
 					List<ClimateTree.RTree.Leaf> list = points.stream().map((point) -> {
-						return new ClimateTree.RTree.Leaf(point.getFirst(), point.getSecond());
+						return new ClimateTree.RTree.Leaf(point);
 					}).collect(Collectors.toCollection(ArrayList::new));
 					return new ClimateTree.RTree(build(i, list));
 				}
@@ -290,9 +290,9 @@ public class ClimateTree {
 		static final class Leaf extends ClimateTree.RTree.Node {
 			final Holder<Climate> value;
 
-			Leaf(ClimateTree.ParameterPoint point, Holder<Climate> value) {
+			Leaf(ClimateTree.ParameterPoint point) {
 				super(point.parameterSpace());
-				this.value = value;
+				this.value = point.climate();
 			}
 
 			protected ClimateTree.RTree.Leaf search(float[] params, @Nullable ClimateTree.RTree.Leaf leaf, ClimateTree.DistanceMetric metric) {

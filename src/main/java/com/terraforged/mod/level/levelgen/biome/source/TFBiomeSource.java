@@ -2,8 +2,8 @@ package com.terraforged.mod.level.levelgen.biome.source;
 
 import java.util.stream.Stream;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.terraforged.mod.level.levelgen.biome.source.ClimateTree.ParameterPoint;
 import com.terraforged.mod.level.levelgen.climate.Climate;
 import com.terraforged.mod.level.levelgen.climate.ClimateSample;
 import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
@@ -43,7 +43,7 @@ public class TFBiomeSource extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return this.params.values().stream().map(Pair::getSecond).flatMap((climate) -> {
+		return this.params.values().stream().map(ParameterPoint::climate).flatMap((climate) -> {
 			return climate.get().biomes().streamValues();
 		});
 	}

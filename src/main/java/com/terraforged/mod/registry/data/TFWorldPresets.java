@@ -1,10 +1,12 @@
 package com.terraforged.mod.registry.data;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.util.Pair;
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.biome.source.ClimateTree;
+import com.terraforged.mod.level.levelgen.biome.source.ClimateTree.ParameterPoint;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.climate.Climate;
@@ -85,58 +87,7 @@ public interface TFWorldPresets {
 							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
 							caves.getOrThrow(TFCaves.SYNAPSE_MID)
 						),
-						new ClimateTree.ParameterList(ImmutableList.of(
-							Pair.of(
-								ClimateTree.parameters(
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.span(0.51F, 1.0F),
-									ClimateTree.Parameter.span(0.0F, 0.41F),
-									ClimateTree.Parameter.span(0.05F, 1.0F)
-								),
-								climates.getOrThrow(TFClimates.MID_ALTITUDE)
-							),
-							Pair.of(
-								ClimateTree.parameters(
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.span(0.51F, 1.0F),
-									ClimateTree.Parameter.span(0.41F, 1.0F),
-									ClimateTree.Parameter.span(0.05F, 1.0F)
-								),
-								climates.getOrThrow(TFClimates.HIGH_ALTITUDE)
-							),
-							Pair.of(
-								ClimateTree.parameters(
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.span(0.51F, 1.0F),
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.span(0.0F, 0.05F)
-								),
-								climates.getOrThrow(TFClimates.RIVER)
-							),
-							Pair.of(
-								ClimateTree.parameters(
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.span(0.5F, 0.51F),
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.any()
-								),
-								climates.getOrThrow(TFClimates.BEACH)
-							),
-							Pair.of(
-								ClimateTree.parameters(
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.span(0.0F, 0.5F),
-									ClimateTree.Parameter.any(),
-									ClimateTree.Parameter.any()
-								),
-								climates.getOrThrow(TFClimates.OCEAN)
-							)
-						))
+						new ClimateTree.ParameterList(getClimates(climates))
 					)
 				)
 			)
@@ -150,6 +101,59 @@ public interface TFWorldPresets {
 				)
 			)
 			.build());
+	}
+	
+	private static List<ParameterPoint> getClimates(HolderGetter<Climate> climates) {
+		final float beachSize = 0.1F;
+		final float inlandThreshold = 0.51F;
+		final float beachThreshold = inlandThreshold - beachSize;
+		//rivers noise goes from 1 - 0 with 0 being a river and 1 being normal land
+		//this implies that rivers are default and land is special
+		//this was inherited from terraforged and is likely gonna change as it doesn't make much sense (terrain can exist w/o rivers but not vice versa)
+		final float nonRiverThreshold = 0.05F;
+		final float highAltitudeThreshold = 0.41F;
+		return ImmutableList.of(
+			ClimateTree.parameters(
+				climates.getOrThrow(TFClimates.MID_ALTITUDE),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.min(inlandThreshold),
+				ClimateTree.Parameter.max(highAltitudeThreshold),
+				ClimateTree.Parameter.min(nonRiverThreshold)
+			),
+			ClimateTree.parameters(
+				climates.getOrThrow(TFClimates.HIGH_ALTITUDE),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.min(inlandThreshold),
+				ClimateTree.Parameter.min(highAltitudeThreshold),
+				ClimateTree.Parameter.min(nonRiverThreshold)
+			),
+			ClimateTree.parameters(
+				climates.getOrThrow(TFClimates.RIVER),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.min(inlandThreshold),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.max(nonRiverThreshold)
+			),
+			ClimateTree.parameters(
+				climates.getOrThrow(TFClimates.BEACH),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.span(beachThreshold, inlandThreshold),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.any()
+			),
+			ClimateTree.parameters(
+				climates.getOrThrow(TFClimates.OCEAN),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.max(beachThreshold),
+				ClimateTree.Parameter.any(),
+				ClimateTree.Parameter.any()
+			)
+		);
 	}
 	
 	private static ResourceKey<WorldPreset> resolve(String path) {
