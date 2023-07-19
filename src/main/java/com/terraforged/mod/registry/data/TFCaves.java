@@ -26,25 +26,20 @@ package com.terraforged.mod.registry.data;
 
 import static com.terraforged.mod.TerraForged.registryKey;
 
-import java.util.Random;
-
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.cave.UniqueCaveDistributor;
+import com.terraforged.mod.level.levelgen.climate.Climate;
 import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.util.NoiseUtil;
-import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 
 public interface TFCaves {
 	ResourceKey<Registry<NoiseCave>> REGISTRY = registryKey("worldgen/cave");
@@ -56,14 +51,15 @@ public interface TFCaves {
 	ResourceKey<NoiseCave> MEGA_DEEP = resolve("mega_deep");
 	
     static void register(BootstapContext<NoiseCave> ctx) {
-        var seed = new Seed(new Random().nextInt());
+        var seed = new Seed(0);
         
-        HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
-        ctx.register(SYNAPSE_HIGH, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 0.75F, 96, 384));
-        ctx.register(SYNAPSE_MID, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 1.0F, 0, 256));
-        ctx.register(SYNAPSE_LOW, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 1.2F, -32, 128));
-        ctx.register(MEGA, Factory.mega(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 1.0F, -16, 64));
-        ctx.register(MEGA_DEEP, Factory.mega(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 1.2F, -32, 48));
+        HolderGetter<Climate> climates = ctx.lookup(TFClimates.REGISTRY);
+        
+        ctx.register(SYNAPSE_HIGH, Factory.synapse(climates.getOrThrow(TFClimates.CAVE), seed.next(), 0.75F, 96, 384));
+        ctx.register(SYNAPSE_MID, Factory.synapse(climates.getOrThrow(TFClimates.CAVE), seed.next(), 1.0F, 0, 256));
+        ctx.register(SYNAPSE_LOW, Factory.synapse(climates.getOrThrow(TFClimates.CAVE), seed.next(), 1.2F, -32, 128));
+        ctx.register(MEGA, Factory.mega(climates.getOrThrow(TFClimates.CAVE), seed.next(), 1.0F, -16, 64));
+        ctx.register(MEGA_DEEP, Factory.mega(climates.getOrThrow(TFClimates.CAVE), seed.next(), 1.2F, -32, 48));
     }
 
     private static ResourceKey<NoiseCave> resolve(String path) {
@@ -71,7 +67,7 @@ public interface TFCaves {
 	}
     
     class Factory {
-        static NoiseCave mega(WeightMap<Holder<Biome>> biomes, int seed, float scale, int minY, int maxY) {
+        static NoiseCave mega(Holder<Climate> climate, int seed, float scale, int minY, int maxY) {
             int elevationScale = NoiseUtil.floor(200 * scale);
             int networkScale = NoiseUtil.floor(250 * scale);
             int floorScale = NoiseUtil.floor(50 * scale);
@@ -83,10 +79,10 @@ public interface TFCaves {
                     .clamp(0.75, 1.0).map(0, 1);
 
             var floor = Source.simplex(++seed, floorScale, 2).clamp(0.0, 0.3).map(0, 1);
-            return new NoiseCave(biomes, Holder.direct(elevation), Holder.direct(shape), Holder.direct(floor), Holder.direct(createUniqueNoise(500, 0.05F)), size, minY, maxY);
+            return new NoiseCave(climate, Holder.direct(elevation), Holder.direct(shape), Holder.direct(floor), Holder.direct(createUniqueNoise(500, 0.05F)), size, minY, maxY);
         }
 
-        static NoiseCave synapse(WeightMap<Holder<Biome>> biomes, int seed, float scale, int minY, int maxY) {
+        static NoiseCave synapse(Holder<Climate> climate, int seed, float scale, int minY, int maxY) {
             int elevationScale = NoiseUtil.floor(350 * scale);
             int networkScale = NoiseUtil.floor(180 * scale);
             int networkWarpScale = NoiseUtil.floor(20 * scale);
@@ -99,7 +95,7 @@ public interface TFCaves {
                     .warp(++seed, networkWarpScale, 1, networkWarpStrength)
                     .clamp(0.35, 0.75).map(0, 1);
             var floor = Source.simplex(++seed, floorScale, 2).clamp(0.0, 0.15).map(0, 1);
-            return new NoiseCave(biomes, Holder.direct(elevation), Holder.direct(shape), Holder.direct(floor), Holder.direct(Source.ONE), size, minY, maxY);
+            return new NoiseCave(climate, Holder.direct(elevation), Holder.direct(shape), Holder.direct(floor), Holder.direct(Source.ONE), size, minY, maxY);
         }
 
         private static Module createUniqueNoise(int scale, float density) {

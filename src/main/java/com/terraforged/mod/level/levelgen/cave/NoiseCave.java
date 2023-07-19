@@ -26,11 +26,11 @@ package com.terraforged.mod.level.levelgen.cave;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.terraforged.mod.level.levelgen.climate.Climate;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.util.Noise;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.registry.data.TFCaves;
-import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -38,9 +38,9 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
 
-public record NoiseCave(WeightMap<Holder<Biome>> biomes, Holder<Module> elevation, Holder<Module> shape, Holder<Module> floor, Holder<Module> modifier, int size, int minY, int maxY) {
+public record NoiseCave(Holder<Climate> climate, Holder<Module> elevation, Holder<Module> shape, Holder<Module> floor, Holder<Module> modifier, int size, int minY, int maxY) {
 	public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		WeightMap.codec(Biome.CODEC).fieldOf("biomes").forGetter(NoiseCave::biomes),
+		Climate.CODEC.fieldOf("climate").forGetter(NoiseCave::climate),
     	Module.CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
     	Module.CODEC.fieldOf("shape").forGetter(NoiseCave::shape),
     	Module.CODEC.fieldOf("floor").forGetter(NoiseCave::floor),
@@ -66,9 +66,10 @@ public record NoiseCave(WeightMap<Holder<Biome>> biomes, Holder<Module> elevatio
 
     private static final int BIOME_SEED_OFFSET = 124897;
     private static final float FREQUENCY = 1.0F / 800.0F;
+
     public Holder<Biome> getBiome(int seed, int x, int z) {
         float noise = sample(seed + BIOME_SEED_OFFSET, x, z, FREQUENCY);
-        return this.biomes.getValue(noise);
+        return this.climate.get().biomes().getValue(noise);
     }
 
     protected static float sample(int seed, int x, int z, float frequency) {
