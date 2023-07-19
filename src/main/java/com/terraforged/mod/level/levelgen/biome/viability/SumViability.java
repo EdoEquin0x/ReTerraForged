@@ -31,8 +31,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.noise.util.NoiseUtil;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;

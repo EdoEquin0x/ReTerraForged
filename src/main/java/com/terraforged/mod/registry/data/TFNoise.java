@@ -1,5 +1,7 @@
 package com.terraforged.mod.registry.data;
 
+import static com.terraforged.mod.TerraForged.registryKey;
+
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.noise.module.Valley;
 import com.terraforged.mod.level.levelgen.util.Seed;
@@ -10,10 +12,13 @@ import com.terraforged.mod.noise.func.EdgeFunc;
 import com.terraforged.mod.noise.func.Interpolation;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
 public interface TFNoise {
+	ResourceKey<Registry<Module>> REGISTRY = registryKey("worldgen/noise");
+	
 	ResourceKey<Module> STEPPE = resolve("steppe");
 	ResourceKey<Module> PLAINS = resolve("plains");
 	ResourceKey<Module> HILLS_1 = resolve("hills_1");
@@ -48,7 +53,7 @@ public interface TFNoise {
     }
     
     private static ResourceKey<Module> resolve(String path) {
-		return TerraForged.resolve(TFDataRegistries.NOISE, path);
+		return TerraForged.resolve(REGISTRY, path);
 	}
 
     class Terrain {

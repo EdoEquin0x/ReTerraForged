@@ -22,23 +22,17 @@
  * SOFTWARE.
  */
 
-package com.terraforged.mod.codec;
+package com.terraforged.mod.util.codec;
 
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.Lifecycle;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -46,19 +40,6 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.GameData;
 
 public class TFCodecs {
-
-	public static <A> MapCodec<A> opt(String name, A defaultValue, Codec<A> codec) {
-		return Codec.optionalField(name, codec).xmap(o -> o.orElse(defaultValue), a -> Optional.ofNullable(a));
-	}
-
-	public static <V> JsonElement encode(V v, Codec<V> codec) {
-		return encode(v, codec, JsonOps.INSTANCE);
-	}
-
-	public static <V> JsonElement encode(V v, Codec<V> codec, DynamicOps<JsonElement> ops) {
-		return codec.encodeStart(ops, v).result().filter(JsonElement::isJsonObject).map(JsonElement::getAsJsonObject)
-				.orElseThrow();
-	}
 
 	public static <V> Codec<V[]> forArray(Codec<V> elementCodec, IntFunction<V[]> generator) {
 		return Codec.list(elementCodec).xmap((v) -> {
@@ -68,17 +49,6 @@ public class TFCodecs {
 
 	public static <T extends Enum<T>> Codec<T> forEnum(Function<String, T> enumLookup) {
 		return Codec.STRING.xmap(String::toUpperCase, String::toLowerCase).xmap(enumLookup::apply, Enum::name);
-	}
-
-	public static <V> V modify(V v, Codec<V> codec, UnaryOperator<JsonObject> modifier) {
-		var json = encode(v, codec);
-
-		if (json == null)
-			return v;
-
-		var result = modifier.apply(json.getAsJsonObject());
-
-		return codec.decode(JsonOps.INSTANCE, result).result().map(Pair::getFirst).orElse(v);
 	}
 
 	public static <A> Codec<A> registryCodec(ResourceKey<Registry<Codec<? extends A>>> key, Function<A, Codec<? extends A>> codec) {

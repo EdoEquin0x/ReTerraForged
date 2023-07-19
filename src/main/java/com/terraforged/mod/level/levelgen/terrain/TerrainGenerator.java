@@ -27,31 +27,27 @@ package com.terraforged.mod.level.levelgen.terrain;
 import java.util.function.Supplier;
 
 import com.terraforged.mod.Environment;
-import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
+import com.terraforged.mod.level.levelgen.noise.TerrainNoise;
 import com.terraforged.mod.util.storage.ObjectPool;
 
 public class TerrainGenerator {
     protected final TerrainLevels levels;
-    protected final Supplier<NoiseGenerator> noiseGenerator;
+    protected final Supplier<TerrainNoise> terrainNoise;
     protected final ObjectPool<TerrainData> terrainDataPool;
 
-    public TerrainGenerator(TerrainLevels levels, Supplier<NoiseGenerator> noiseGenerator) {
+    public TerrainGenerator(TerrainLevels levels, Supplier<TerrainNoise> terrainNoise) {
         this.levels = levels;
-        this.noiseGenerator = noiseGenerator;
+        this.terrainNoise = terrainNoise;
         this.terrainDataPool = new ObjectPool<>(Environment.CORES, () -> new TerrainData(this.levels));
     }
 
-    public NoiseGenerator getNoiseGenerator() {
-        return noiseGenerator.get();
-    }
-
     public void restore(TerrainData terrainData) {
-        terrainDataPool.restore(terrainData);
+        this.terrainDataPool.restore(terrainData);
     }
 
     public TerrainData generate(int chunkX, int chunkZ) {
-        var terrainData = terrainDataPool.take();
-        noiseGenerator.get().generate(chunkX, chunkZ, terrainData);
+        var terrainData = this.terrainDataPool.take();
+        this.terrainNoise.get().generate(chunkX, chunkZ, terrainData);
         return terrainData;
     }
 }

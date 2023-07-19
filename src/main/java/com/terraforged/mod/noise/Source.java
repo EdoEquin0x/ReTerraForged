@@ -29,7 +29,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.noise.func.CellFunc;
 import com.terraforged.mod.noise.func.DistanceFunc;
 import com.terraforged.mod.noise.func.EdgeFunc;
@@ -37,6 +36,7 @@ import com.terraforged.mod.noise.source.Builder;
 import com.terraforged.mod.noise.source.Constant;
 import com.terraforged.mod.noise.source.Line;
 import com.terraforged.mod.noise.source.Rand;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 public enum Source {
     BILLOW(Builder::billow),

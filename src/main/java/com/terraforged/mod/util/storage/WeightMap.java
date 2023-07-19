@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.util.MathUtil;
+import com.terraforged.mod.util.codec.TFCodecs;
 import com.terraforged.mod.util.pos.PosUtil;
 
 public class WeightMap<T> implements Iterable<T> {

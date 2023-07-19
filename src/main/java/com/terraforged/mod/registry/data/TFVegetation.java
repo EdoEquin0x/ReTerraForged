@@ -24,6 +24,8 @@
 
 package com.terraforged.mod.registry.data;
 
+import static com.terraforged.mod.TerraForged.registryKey;
+
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.biome.viability.BiomeEdgeViability;
@@ -36,18 +38,21 @@ import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Source;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 
 public interface TFVegetation {
-	static ResourceKey<VegetationConfig> TREES_COPSE = resolve("trees_copse");
-	static ResourceKey<VegetationConfig> TREES_SPARSE = resolve("trees_sparse");
-	static ResourceKey<VegetationConfig> TREES_PATCHY = resolve("trees_patchy");
-	static ResourceKey<VegetationConfig> TREES_TEMPERATE = resolve("trees_temperate");
-	static ResourceKey<VegetationConfig> TREES_HARDY = resolve("trees_hardy");
-	static ResourceKey<VegetationConfig> TREES_HARDY_SLOPES = resolve("trees_hardy_slopes");
-	static ResourceKey<VegetationConfig> TREES_RAINFOREST = resolve("trees_rainforest");
-	static ResourceKey<VegetationConfig> TREES_SPARSE_RAINFOREST = resolve("trees_sparse_rainforest");
+	ResourceKey<Registry<VegetationConfig>> REGISTRY = registryKey("worldgen/vegetation");
+	
+	ResourceKey<VegetationConfig> TREES_COPSE = resolve("trees_copse");
+	ResourceKey<VegetationConfig> TREES_SPARSE = resolve("trees_sparse");
+	ResourceKey<VegetationConfig> TREES_PATCHY = resolve("trees_patchy");
+	ResourceKey<VegetationConfig> TREES_TEMPERATE = resolve("trees_temperate");
+	ResourceKey<VegetationConfig> TREES_HARDY = resolve("trees_hardy");
+	ResourceKey<VegetationConfig> TREES_HARDY_SLOPES = resolve("trees_hardy_slopes");
+	ResourceKey<VegetationConfig> TREES_RAINFOREST = resolve("trees_rainforest");
+	ResourceKey<VegetationConfig> TREES_SPARSE_RAINFOREST = resolve("trees_sparse_rainforest");
 		
     static void register(BootstapContext<VegetationConfig> ctx) {
         var seed = new Seed(0);
@@ -62,7 +67,7 @@ public interface TFVegetation {
     }
     
     private static ResourceKey<VegetationConfig> resolve(String path) {
-		return TerraForged.resolve(TFDataRegistries.VEGETATION, path);
+		return TerraForged.resolve(REGISTRY, path);
 	}
 
     class Factory {

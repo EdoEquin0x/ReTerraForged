@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.terraforged.mod.level.levelgen.noise.NoiseGenerator;
+import com.terraforged.mod.level.levelgen.noise.TerrainNoise;
 import com.terraforged.mod.level.levelgen.util.ThreadPool;
 import com.terraforged.mod.util.storage.ObjectPool;
 
@@ -45,8 +45,8 @@ public class TerrainCache {
     private final ObjectPool<CacheKey> keyPool = new ObjectPool<>(512, CacheKey::new);
     private final ObjectPool<CacheValue> valuePool = new ObjectPool<>(512, CacheValue::new);
 
-    public TerrainCache(TerrainLevels levels, Supplier<NoiseGenerator> noiseGenerator) {
-        this.generator = new TerrainGenerator(levels, noiseGenerator);
+    public TerrainCache(TerrainLevels levels, Supplier<TerrainNoise> terrainNoise) {
+        this.generator = new TerrainGenerator(levels, terrainNoise);
     }
 
     protected CacheKey allocPos(ChunkPos pos) {

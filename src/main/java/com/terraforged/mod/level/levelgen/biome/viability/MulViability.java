@@ -26,7 +26,7 @@ package com.terraforged.mod.level.levelgen.biome.viability;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.codec.TFCodecs;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 public record MulViability(Viability... rules) implements Viability {
 	public static final Codec<MulViability> CODEC = RecordCodecBuilder.create(instance -> instance.group(

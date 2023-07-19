@@ -26,7 +26,6 @@
 package com.terraforged.mod.noise;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.noise.combiner.Add;
 import com.terraforged.mod.noise.combiner.Max;
 import com.terraforged.mod.noise.combiner.Min;
@@ -64,7 +63,8 @@ import com.terraforged.mod.noise.selector.MultiBlend;
 import com.terraforged.mod.noise.selector.Select;
 import com.terraforged.mod.noise.selector.VariableBlend;
 import com.terraforged.mod.registry.TFRegistries;
-import com.terraforged.mod.registry.data.TFDataRegistries;
+import com.terraforged.mod.registry.data.TFNoise;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
@@ -74,7 +74,7 @@ import net.minecraft.resources.RegistryFileCodec;
  */
 public interface Module extends Noise {
 	public static final Codec<Module> DIRECT_CODEC = TFCodecs.registryCodec(TFRegistries.MODULE_TYPE, Module::codec);
-	public static final Codec<Holder<Module>> CODEC = RegistryFileCodec.create(TFDataRegistries.NOISE, DIRECT_CODEC);
+	public static final Codec<Holder<Module>> CODEC = RegistryFileCodec.create(TFNoise.REGISTRY, DIRECT_CODEC);
 	
 	Codec<? extends Module> codec();
 			

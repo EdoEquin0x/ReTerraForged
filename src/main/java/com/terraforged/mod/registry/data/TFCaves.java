@@ -24,6 +24,10 @@
 
 package com.terraforged.mod.registry.data;
 
+import static com.terraforged.mod.TerraForged.registryKey;
+
+import java.util.Random;
+
 import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.cave.UniqueCaveDistributor;
@@ -35,6 +39,7 @@ import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -42,6 +47,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 
 public interface TFCaves {
+	ResourceKey<Registry<NoiseCave>> REGISTRY = registryKey("worldgen/cave");
+	
 	ResourceKey<NoiseCave> SYNAPSE_HIGH = resolve("synapse_high");
 	ResourceKey<NoiseCave> SYNAPSE_MID = resolve("synapse_mid");
 	ResourceKey<NoiseCave> SYNAPSE_LOW = resolve("synapse_low");
@@ -49,18 +56,18 @@ public interface TFCaves {
 	ResourceKey<NoiseCave> MEGA_DEEP = resolve("mega_deep");
 	
     static void register(BootstapContext<NoiseCave> ctx) {
-        var seed = new Seed(0);
+        var seed = new Seed(new Random().nextInt());
         
         HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
-        ctx.register(SYNAPSE_HIGH, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.PLAINS)).build(), seed.next(), 0.75F, 96, 384));
-        ctx.register(SYNAPSE_MID, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.PLAINS)).build(), seed.next(), 1.0F, 0, 256));
-        ctx.register(SYNAPSE_LOW, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.PLAINS)).build(), seed.next(), 1.2F, -32, 128));
-        ctx.register(MEGA, Factory.mega(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.PLAINS)).build(), seed.next(), 1.0F, -32, 64));
-        ctx.register(MEGA_DEEP, Factory.mega(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.PLAINS)).build(), seed.next(), 1.2F, -48, 48));
+        ctx.register(SYNAPSE_HIGH, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 0.75F, 96, 384));
+        ctx.register(SYNAPSE_MID, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 1.0F, 0, 256));
+        ctx.register(SYNAPSE_LOW, Factory.synapse(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 1.2F, -32, 128));
+        ctx.register(MEGA, Factory.mega(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 1.0F, -16, 64));
+        ctx.register(MEGA_DEEP, Factory.mega(new WeightMap.Builder<>().entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES)).build(), seed.next(), 1.2F, -32, 48));
     }
 
     private static ResourceKey<NoiseCave> resolve(String path) {
-		return TerraForged.resolve(TFDataRegistries.CAVE, path);
+		return TerraForged.resolve(REGISTRY, path);
 	}
     
     class Factory {

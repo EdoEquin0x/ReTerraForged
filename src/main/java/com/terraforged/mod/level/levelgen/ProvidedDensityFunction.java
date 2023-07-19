@@ -2,23 +2,21 @@ package com.terraforged.mod.level.levelgen;
 
 import java.util.function.ToDoubleFunction;
 
-import com.terraforged.mod.codec.TFCodecs;
-import com.terraforged.mod.level.levelgen.climate.ClimateSample;
-import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-public record SampledDensityFunction(ClimateSampler sampler, ToDoubleFunction<ClimateSample> getter) implements DensityFunction.SimpleFunction {
+public record ProvidedDensityFunction(ToDoubleFunction<FunctionContext> getter) implements DensityFunction.SimpleFunction {
 
 	@Override
 	public double compute(FunctionContext ctx) {
-		return this.getter.applyAsDouble(this.sampler.sample(ctx.blockX(), ctx.blockZ()));
+		return this.getter.applyAsDouble(ctx);
 	}
 
 	@Override
 	public double minValue() {
-		return -1.0D;
+		return 0.0D;
 	}
 
 	@Override

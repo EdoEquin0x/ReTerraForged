@@ -26,7 +26,7 @@
 package com.terraforged.mod.noise.func;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.codec.TFCodecs;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 /**
  * https://github.com/Auburns/FastNoise_Java

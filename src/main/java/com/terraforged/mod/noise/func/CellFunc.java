@@ -26,10 +26,10 @@
 package com.terraforged.mod.noise.func;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 /**
  * @author dags <dags@dags.me>

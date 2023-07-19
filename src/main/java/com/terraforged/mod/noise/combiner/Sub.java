@@ -27,8 +27,8 @@ package com.terraforged.mod.noise.combiner;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 /**
  * @author dags <dags@dags.me>

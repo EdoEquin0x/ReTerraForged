@@ -40,7 +40,7 @@ import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.Holder;
 
-public class NoiseGenerator {
+public class TerrainNoise {
     protected static final int OCEAN_OFFSET = 8763214;
     protected static final int TERRAIN_OFFSET = 45763218;
     protected static final int CONTINENT_OFFSET = 18749560;
@@ -54,7 +54,7 @@ public class NoiseGenerator {
     protected final ThreadLocal<NoiseData> localChunk = ThreadLocal.withInitial(NoiseData::new);
     protected final ThreadLocal<NoiseSample> localSample = ThreadLocal.withInitial(NoiseSample::new);
 
-    public NoiseGenerator(int seed, Settings settings, TerrainLevels levels, WeightMap<Holder<Module>> terrains) {
+    public TerrainNoise(int seed, Settings settings, TerrainLevels levels, WeightMap<Holder<Module>> terrains) {
     	this.levels = levels;
         this.ocean = createOceanTerrain(seed);
         this.land = createLandTerrain(seed, terrains);
@@ -62,7 +62,7 @@ public class NoiseGenerator {
         this.controlPoints = continent.getControlPoints();
     }
 
-    public NoiseGenerator(TerrainLevels levels, NoiseGenerator other) {
+    public TerrainNoise(TerrainLevels levels, TerrainNoise other) {
         this.levels = levels;
         this.land = other.land;
         this.ocean = other.ocean;

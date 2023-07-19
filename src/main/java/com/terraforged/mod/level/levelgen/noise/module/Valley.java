@@ -7,10 +7,10 @@ import java.util.Arrays;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.noise.util.NoiseUtil;
 import com.terraforged.mod.noise.util.Vec2f;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 import net.minecraft.core.Holder;
 

@@ -27,11 +27,11 @@ package com.terraforged.mod.level.levelgen.biome.viability;
 import java.util.Arrays;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.codec.TFCodecs;
 import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.registry.TFRegistries;
+import com.terraforged.mod.util.codec.TFCodecs;
 
 public interface Viability {
     Codec<Viability> CODEC = TFCodecs.registryCodec(TFRegistries.VIABILITY_TYPE, Viability::codec);

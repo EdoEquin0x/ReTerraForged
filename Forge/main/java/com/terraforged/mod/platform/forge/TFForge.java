@@ -33,6 +33,7 @@ import com.terraforged.mod.TerraForged;
 import com.terraforged.mod.command.TFCommands;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.cave.NoiseCave;
+import com.terraforged.mod.level.levelgen.climate.Climate;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.registry.TFChunkGenerators;
 import com.terraforged.mod.registry.TFCurves;
@@ -42,9 +43,9 @@ import com.terraforged.mod.registry.TFRegistries;
 import com.terraforged.mod.registry.TFViabilities;
 import com.terraforged.mod.registry.data.TFBiomes;
 import com.terraforged.mod.registry.data.TFCaves;
-import com.terraforged.mod.registry.data.TFDataRegistries;
+import com.terraforged.mod.registry.data.TFClimates;
 import com.terraforged.mod.registry.data.TFNoise;
-import com.terraforged.mod.registry.data.TFPresets;
+import com.terraforged.mod.registry.data.TFWorldPresets;
 import com.terraforged.mod.registry.data.TFTags;
 import com.terraforged.mod.registry.data.TFVegetation;
 
@@ -116,18 +117,20 @@ public class TFForge extends TerraForged implements CommonAPI {
     }
     
     void onCreateDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
-    	event.dataPackRegistry(TFDataRegistries.NOISE, Module.DIRECT_CODEC);
-    	event.dataPackRegistry(TFDataRegistries.CAVE, NoiseCave.DIRECT_CODEC);
-    	event.dataPackRegistry(TFDataRegistries.VEGETATION, VegetationConfig.DIRECT_CODEC);
+    	event.dataPackRegistry(TFNoise.REGISTRY, Module.DIRECT_CODEC);
+    	event.dataPackRegistry(TFCaves.REGISTRY, NoiseCave.DIRECT_CODEC);
+    	event.dataPackRegistry(TFVegetation.REGISTRY, VegetationConfig.DIRECT_CODEC);
+    	event.dataPackRegistry(TFClimates.REGISTRY, Climate.DIRECT_CODEC);
     }
 
     void onGenerateData(GatherDataEvent event) {
     	RegistrySetBuilder builder = new RegistrySetBuilder(); {
         	builder.add(Registries.BIOME, TFBiomes::register);
-        	builder.add(TFDataRegistries.NOISE, TFNoise::register);
-        	builder.add(TFDataRegistries.CAVE, TFCaves::register);
-        	builder.add(TFDataRegistries.VEGETATION, TFVegetation::register);
-        	builder.add(Registries.WORLD_PRESET, TFPresets::register);
+        	builder.add(TFNoise.REGISTRY, TFNoise::register);
+        	builder.add(TFCaves.REGISTRY, TFCaves::register);
+        	builder.add(TFVegetation.REGISTRY, TFVegetation::register);
+        	builder.add(TFClimates.REGISTRY, TFClimates::register);
+        	builder.add(Registries.WORLD_PRESET, TFWorldPresets::register);
     	}
     	boolean includeServer = event.includeServer();
     	CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
