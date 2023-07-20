@@ -78,7 +78,8 @@ public class ChunkUtil {
         int limit = chunk.getMaxBuildHeight();
         int min = Math.min(limit, getLowestSection(terrainData));
         int max = Math.min(limit, getHighestSection(terrainData));
-
+        int sectionCount = chunk.getSectionsCount();
+        
         // @Optimization Note:
         // Here, we've precomputed a full stone chunk section and written it to a bytebuffer
         // which we are then reading into each chunk section below the lowest non-full chunk
@@ -87,17 +88,22 @@ public class ChunkUtil {
         var sectionData = resource.fullSection();
         for (int sy = chunk.getMinBuildHeight(); sy < min; sy += 16) {
             int index = chunk.getSectionIndex(sy);
-            var section = chunk.getSection(index);
-            sectionData.resetReaderIndex();
-            section.getStates().read(sectionData);
-            section.recalcBlockCounts();
+            
+            if(index < sectionCount) {
+                var section = chunk.getSection(index);
+                sectionData.resetReaderIndex();
+                section.getStates().read(sectionData);
+                section.recalcBlockCounts();
+            }
         }
 
         // Here we fill the chunk section with the block
-        for (int sy = min; sy <= Math.max(max, chunk.getSectionsCount() - 1); sy += 16) {
-            int index = chunk.getSectionIndex(sy);
-            var section = chunk.getSection(index);
-            fillSection(sy, seaLevel, terrainData, chunk, section, filler);
+        for (int sy = min; sy <= max; sy += 16) {
+        	int index = chunk.getSectionIndex(sy);
+        	if(index < sectionCount) {
+        		var section = chunk.getSection(index);
+	            fillSection(sy, seaLevel, terrainData, chunk, section, filler);
+            }
         }
     }
 
