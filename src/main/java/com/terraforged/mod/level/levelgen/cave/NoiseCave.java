@@ -24,6 +24,8 @@
 
 package com.terraforged.mod.level.levelgen.cave;
 
+import java.util.Optional;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.climate.Climate;
@@ -37,10 +39,15 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
-public record NoiseCave(Holder<Climate> climate, Holder<Module> elevation, Holder<Module> shape, Holder<Module> floor, Holder<Module> modifier, int size, int minY, int maxY) {
+public record NoiseCave(BlockState filler, RuleTest fillTest, Optional<? extends Holder<Climate>> climate, Holder<Module> elevation, Holder<Module> shape, Holder<Module> floor, Holder<Module> modifier, int size, int minY, int maxY) {
+	@SuppressWarnings("unchecked")
 	public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Climate.CODEC.fieldOf("climate").forGetter(NoiseCave::climate),
+		BlockState.CODEC.fieldOf("filler").forGetter(NoiseCave::filler),
+		RuleTest.CODEC.fieldOf("fill_test").forGetter(NoiseCave::fillTest),
+		Climate.CODEC.optionalFieldOf("climate").forGetter((c) -> (Optional<Holder<Climate>>) c.climate()),
     	Module.CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
     	Module.CODEC.fieldOf("shape").forGetter(NoiseCave::shape),
     	Module.CODEC.fieldOf("floor").forGetter(NoiseCave::floor),
@@ -69,7 +76,7 @@ public record NoiseCave(Holder<Climate> climate, Holder<Module> elevation, Holde
 
     public Holder<Biome> getBiome(int seed, int x, int z) {
         float noise = sample(seed + BIOME_SEED_OFFSET, x, z, FREQUENCY);
-        return this.climate.get().biomes().getValue(noise);
+        return this.climate.get().get().biomes().getValue(noise);
     }
 
     protected static float sample(int seed, int x, int z, float frequency) {

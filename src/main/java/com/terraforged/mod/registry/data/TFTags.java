@@ -37,9 +37,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
+import net.minecraft.data.tags.WorldPresetTagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.tags.WorldPresetTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -84,6 +86,16 @@ public interface TFTags {
 		};
     }
 
+    static DataProvider presets(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+    	return new WorldPresetTagsProvider(output, lookupProvider, TerraForged.MODID, existingFileHelper) {
+			
+			@Override
+			protected void addTags(Provider provider) {
+				this.tag(WorldPresetTags.NORMAL).add(TFWorldPresets.TERRAFORGED);
+			}
+		};
+    }
+    
     static <T> TagKey<T> resolve(ResourceKey<Registry<T>> registry, String path) {
     	return TagKey.create(registry, TerraForged.location(path));
     }

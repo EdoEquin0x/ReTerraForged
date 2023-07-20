@@ -79,7 +79,7 @@ public class TFForge extends TerraForged implements CommonAPI {
         modBus.addListener(this::onCreateRegistries);
         modBus.addListener(this::onRegister);
         modBus.addListener(this::onCreateDataPackRegistries);
-        modBus.addListener(this::onGenerateData);
+        modBus.addListener(this::onGatherData);
         modBus.addListener(this::onPresetEditorRegister);
         
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
@@ -123,7 +123,7 @@ public class TFForge extends TerraForged implements CommonAPI {
     	event.dataPackRegistry(TFClimates.REGISTRY, Climate.DIRECT_CODEC);
     }
 
-    void onGenerateData(GatherDataEvent event) {
+    void onGatherData(GatherDataEvent event) {
     	RegistrySetBuilder builder = new RegistrySetBuilder(); {
         	builder.add(Registries.BIOME, TFBiomes::register);
         	builder.add(TFNoise.REGISTRY, TFNoise::register);
@@ -141,6 +141,7 @@ public class TFForge extends TerraForged implements CommonAPI {
         generator.addProvider(includeServer, new DatapackBuiltinEntriesProvider(output, lookupProvider, builder, ImmutableSet.of(TerraForged.MODID)));
         generator.addProvider(includeServer, TFTags.biomes(output, lookupProvider, fileHelper));
         generator.addProvider(includeServer, TFTags.blocks(output, lookupProvider, fileHelper));
+        generator.addProvider(includeServer, TFTags.presets(output, lookupProvider, fileHelper));
     }
     
     //TODO

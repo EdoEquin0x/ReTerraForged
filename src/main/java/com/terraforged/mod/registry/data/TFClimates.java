@@ -23,6 +23,7 @@ public interface TFClimates {
 	ResourceKey<Climate> BEACH = resolve("beach");
 	ResourceKey<Climate> OCEAN = resolve("ocean");
 	ResourceKey<Climate> CAVE = resolve("cave");
+	ResourceKey<Climate> CAVE_DEEP = resolve("cave_deep");
 	
 	static void register(BootstapContext<Climate> ctx) {
 		HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
@@ -56,6 +57,13 @@ public interface TFClimates {
 		ctx.register(CAVE, new Climate(
 			new WeightMap.Builder<>()
 				.entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES))
+				.entry(0.5F, biomes.getOrThrow(Biomes.LUSH_CAVES))
+				.build()
+		));
+		ctx.register(CAVE_DEEP, new Climate(
+			new WeightMap.Builder<>()
+				.entry(1.0F, biomes.getOrThrow(Biomes.DRIPSTONE_CAVES))
+				.entry(0.25F, biomes.getOrThrow(Biomes.DEEP_DARK))
 				.build()
 		));
 	}

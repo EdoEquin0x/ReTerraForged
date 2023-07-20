@@ -1,9 +1,11 @@
 package com.terraforged.mod.level.levelgen.biome.source;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
 import com.terraforged.mod.level.levelgen.biome.source.ClimateTree.ParameterPoint;
+import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.climate.Climate;
 import com.terraforged.mod.level.levelgen.climate.ClimateSample;
 import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
@@ -13,6 +15,7 @@ import com.terraforged.mod.util.storage.LongCache;
 import com.terraforged.mod.util.storage.LossyCache;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -20,10 +23,12 @@ import net.minecraft.world.level.biome.Climate.Sampler;
 
 public class TFBiomeSource extends BiomeSource {
 	private final LongCache<Holder<Biome>> cache = LossyCache.concurrent(2048, Holder[]::new);
+	private final HolderSet<NoiseCave> caves;
 	private final ClimateSampler climateSampler;
 	private final ClimateTree.ParameterList params;
 	
-	public TFBiomeSource(ClimateSampler climateSampler, ClimateTree.ParameterList params) {
+	public TFBiomeSource(HolderSet<NoiseCave> caves, ClimateSampler climateSampler, ClimateTree.ParameterList params) {
+		this.caves = caves;
 		this.climateSampler = climateSampler; 
 		this.params = params;
 	}
@@ -44,7 +49,7 @@ public class TFBiomeSource extends BiomeSource {
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
 		return this.params.values().stream().map(ParameterPoint::climate).flatMap((climate) -> {
-			return climate.get().biomes().streamValues();
+			return Stream.concat(climate.get().biomes().streamValues(), getBiomes(this.caves));
 		});
 	}
 
@@ -55,4 +60,16 @@ public class TFBiomeSource extends BiomeSource {
         	return this.getClimate(sample).get().biomes().getValue(sample.biomeNoise);
         });
 	}
+	
+	private static Stream<Holder<Biome>> getBiomes(HolderSet<NoiseCave> caves) {
+		Stream<Holder<Biome>> stream = Stream.empty();
+		for(Holder<NoiseCave> cave : caves) {
+			Optional<? extends Holder<Climate>> climate = cave.get().climate();
+			if(climate.isPresent()) {
+				stream = Stream.concat(stream, climate.get().get().biomes().streamValues());
+			}
+		}
+		return stream;
+	}
+	
 }

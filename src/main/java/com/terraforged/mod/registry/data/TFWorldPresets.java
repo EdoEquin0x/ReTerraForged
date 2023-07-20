@@ -42,20 +42,20 @@ public interface TFWorldPresets {
 
 	private static WorldPreset createDefaultPreset(BootstapContext<WorldPreset> ctx) {
 		HolderGetter<DimensionType> dimensions = ctx.lookup(Registries.DIMENSION_TYPE);
-		HolderGetter<Module> terrain = ctx.lookup(TFNoise.REGISTRY);
+		HolderGetter<Module> modules = ctx.lookup(TFNoise.REGISTRY);
 		HolderGetter<VegetationConfig> vegetation = ctx.lookup(TFVegetation.REGISTRY);
 		HolderGetter<NoiseCave> caves = ctx.lookup(TFCaves.REGISTRY);
 		HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
 		HolderGetter<Climate> climates = ctx.lookup(TFClimates.REGISTRY);
 		HolderGetter<NoiseGeneratorSettings> noiseSettings = ctx.lookup(Registries.NOISE_SETTINGS);
-		HolderGetter<MultiNoiseBiomeSourceParameterList> presets = ctx.lookup(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
+		HolderGetter<MultiNoiseBiomeSourceParameterList> biomeLists = ctx.lookup(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
 		return new WorldPreset(
 			ImmutableMap.<ResourceKey<LevelStem>, LevelStem>builder()
 			.put(LevelStem.NETHER, 
 				new LevelStem(
 					dimensions.getOrThrow(BuiltinDimensionTypes.NETHER), 
 					new NoiseBasedChunkGenerator(
-						MultiNoiseBiomeSource.createFromPreset(presets.getOrThrow(MultiNoiseBiomeSourceParameterLists.NETHER)),
+						MultiNoiseBiomeSource.createFromPreset(biomeLists.getOrThrow(MultiNoiseBiomeSourceParameterLists.NETHER)),
 						noiseSettings.getOrThrow(NoiseGeneratorSettings.NETHER)
 					)
 				)
@@ -67,8 +67,8 @@ public interface TFWorldPresets {
 						Settings.DEFAULT,
 						TerrainLevels.DEFAULT,
 						new WeightMap.Builder<>()
-							.entry(1.45F, terrain.getOrThrow(TFNoise.MOUNTAINS_1))
-							.entry(1.5F,  terrain.getOrThrow(TFNoise.PLAINS))
+							.entry(1.45F, modules.getOrThrow(TFNoise.MOUNTAINS_1))
+							.entry(1.5F,  modules.getOrThrow(TFNoise.PLAINS))
 							.build(),
 						HolderSet.direct(
 							vegetation.getOrThrow(TFVegetation.TREES_COPSE),
@@ -85,7 +85,9 @@ public interface TFWorldPresets {
 							caves.getOrThrow(TFCaves.MEGA_DEEP),
 							caves.getOrThrow(TFCaves.SYNAPSE_HIGH),
 							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
-							caves.getOrThrow(TFCaves.SYNAPSE_MID)
+							caves.getOrThrow(TFCaves.SYNAPSE_MID),
+							caves.getOrThrow(TFCaves.IRON_VEIN),
+							caves.getOrThrow(TFCaves.COPPER_VEIN)
 						),
 						new ClimateTree.ParameterList(getClimates(climates))
 					)

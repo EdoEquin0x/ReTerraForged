@@ -295,7 +295,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	var chunkPopulator = new ChunkPopulator(vegetation, caves);
     	IntLazy<TerrainNoise> terrainNoise = IntLazy.of(seed -> new ErosionTerrainNoise(seed, settings, levels, terrain, NoiseTileSize.DEFAULT));
     	var climateSampler = new ClimateSampler(terrainNoise);
-    	return new TFChunkGenerator(settings, levels, new TFBiomeSource(climateSampler, climates), chunkPopulator, terrainNoise, climateSampler, terrain, vegetation, caves);
+    	return new TFChunkGenerator(settings, levels, new TFBiomeSource(caves, climateSampler, climates), chunkPopulator, terrainNoise, climateSampler, terrain, vegetation, caves);
     }
     
     private static Holder<NoiseGeneratorSettings> createGeneratorSettings(TerrainLevels levels, ClimateSampler sampler) {

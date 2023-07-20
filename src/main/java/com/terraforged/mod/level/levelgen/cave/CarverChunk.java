@@ -67,6 +67,10 @@ public class CarverChunk {
     }
 
     public Holder<Biome> getBiome(int seedOffset, int x, int z, NoiseCave cave, TFChunkGenerator generator) {
+        if(cave.climate().isEmpty()) {
+        	return null;
+        }
+
         int biomeX = QuartPos.toSection(x);
         int biomeZ = QuartPos.toSection(z);
         if (cached == null || biomeX != cachedX || biomeZ != cachedZ) {

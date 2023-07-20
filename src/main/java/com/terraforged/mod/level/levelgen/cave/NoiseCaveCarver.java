@@ -30,8 +30,9 @@ import com.terraforged.mod.util.MathUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -41,9 +42,10 @@ public class NoiseCaveCarver {
 
     public static void carve(int seedOffset,
     						 ChunkAccess chunk,
+    						 RandomSource rand,
                              CarverChunk carver,
                              TFChunkGenerator generator,
-                             NoiseCave config,
+                             NoiseCave cave,
                              boolean carve) {
         var pos = new BlockPos.MutableBlockPos();
 
@@ -58,39 +60,40 @@ public class NoiseCaveCarver {
             int z = startZ + dz;
 
             int surface = getSurface(x, z, chunk, generator, carver);
-            int y = config.getHeight(x, z);
+            int y = cave.getHeight(x, z);
 
             float value = carver.modifier.get().getValue(x, z);
-            int cavern = config.getCavernSize(x, z, value);
+            int cavern = cave.getCavernSize(x, z, value);
             if (cavern == 0) continue;
 
-            int floor = config.getFloorDepth(x, z, cavern);
+            int floor = cave.getFloorDepth(x, z, cavern);
             int top = MathUtil.clamp(y + cavern, minY, surface);
             int bottom = MathUtil.clamp(y - floor, minY, surface);
 
             if (top - bottom < 2) continue;
 
-            var biome = carver.getBiome(seedOffset, x, z, config, generator);
-
+            Holder<Biome> biome = carver.getBiome(seedOffset, x, z, cave, generator);
+            
             if (carve) {
-                carve(chunk, biome, dx, dz, bottom, top, surface, pos);
+                carve(cave, biome, chunk, rand, seedOffset, dx, dz, bottom, top, surface, pos);
             }
         }
     }
 
-    private static void carve(ChunkAccess chunk, Holder<Biome> biome, int dx, int dz, int bottom, int top, int surface, BlockPos.MutableBlockPos pos) {
-        var air = Blocks.AIR.defaultBlockState();
+    private static void carve(NoiseCave cave, Holder<Biome> biome, ChunkAccess chunk, RandomSource rand, int seedOffset, int dx, int dz, int bottom, int top, int surface, BlockPos.MutableBlockPos pos) {
+        var filler = cave.filler();
 
         int biomeX = dx >> 2;
         int biomeZ = dz >> 2;
         int maxBiomeY = (surface - 16) >> 2;
-
+        
         for (int cy = bottom; cy <= top; cy++) {
             pos.set(dx, cy, dz);
 
-            if (!chunk.getBlockState(pos).getFluidState().isEmpty()) continue;
-
-            chunk.setBlockState(pos, air, false);
+            BlockState state = chunk.getBlockState(pos);
+            if (!cave.fillTest().test(state, rand)) continue;            
+            
+            chunk.setBlockState(pos, filler, false);
 
             if ((cy >> 2) >= maxBiomeY) continue;
 
@@ -98,9 +101,10 @@ public class NoiseCaveCarver {
             int sectionIndex = chunk.getSectionIndex(cy);
             var section = chunk.getSection(sectionIndex);
 
-            // TODO:
-            var container = (PalettedContainer<Holder<Biome>>) section.getBiomes();
-            container.set(biomeX, biomeY, biomeZ, biome);
+            if(biome != null) {
+                var container = (PalettedContainer<Holder<Biome>>) section.getBiomes();
+                container.set(biomeX, biomeY, biomeZ, biome);
+            }
         }
     }
 

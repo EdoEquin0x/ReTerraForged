@@ -64,7 +64,7 @@ public class ChunkPopulator {
     }
 
     public void carve(int seed, ChunkAccess chunk, WorldGenRegion region, BiomeManager biomes, GenerationStep.Carving step, TFChunkGenerator generator) {
-    	this.noiseCaveGenerator.carve(seed, chunk, generator);
+    	this.noiseCaveGenerator.carve(seed, chunk, region.getRandom(), generator);
     }
 
     public void decorate(int seed, ChunkAccess chunk, WorldGenLevel region, StructureManager structures, TFChunkGenerator generator) {

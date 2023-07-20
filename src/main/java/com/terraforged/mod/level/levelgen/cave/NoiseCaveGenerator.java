@@ -34,6 +34,7 @@ import com.terraforged.mod.util.storage.ObjectPool;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -58,13 +59,13 @@ public class NoiseCaveGenerator {
     	return this.caveBreachNoise;
     }
     
-    public void carve(int seed, ChunkAccess chunk, TFChunkGenerator generator) {
+    public void carve(int seed, ChunkAccess chunk, RandomSource rand, TFChunkGenerator generator) {
         var carver = getPreCarveChunk(chunk);
-    	this.carve(seed, chunk, carver, generator, true);
+    	this.carve(seed, chunk, rand, carver, generator, true);
     }
 
     public void decorate(int seed, ChunkAccess chunk, WorldGenLevel region, TFChunkGenerator generator) {
-    	var carver = getPostCarveChunk(seed, chunk, generator);
+    	var carver = getPostCarveChunk(seed, chunk, region.getRandom(), generator);
 
         for (var config : this.caves) {
             NoiseCaveDecorator.decorate(chunk, carver, region, generator, config.value());
@@ -77,7 +78,7 @@ public class NoiseCaveGenerator {
         return this.cache.computeIfAbsent(chunk.getPos(), p -> this.pool.take().reset());
     }
 
-    public CarverChunk getPostCarveChunk(int seed, ChunkAccess chunk, TFChunkGenerator generator) {
+    public CarverChunk getPostCarveChunk(int seed, ChunkAccess chunk, RandomSource rand, TFChunkGenerator generator) {
         var carver = this.cache.remove(chunk.getPos());
         if (carver != null) return carver;
 
@@ -85,11 +86,11 @@ public class NoiseCaveGenerator {
         // again to populate the CarverChunk (flag set false to skip setting blocks).
 
         carver = this.pool.take().reset();
-    	this.carve(seed, chunk, carver, generator, false);
+    	this.carve(seed, chunk, rand, carver, generator, false);
         return carver;
     }
     
-    private void carve(int seed, ChunkAccess chunk, CarverChunk carver, TFChunkGenerator generator, boolean setBlocks) {
+    private void carve(int seed, ChunkAccess chunk, RandomSource rand, CarverChunk carver, TFChunkGenerator generator, boolean setBlocks) {
         carver.mask = this.caveBreachNoise;
         carver.terrainData = generator.getChunkData(chunk.getPos());
 
@@ -97,7 +98,7 @@ public class NoiseCaveGenerator {
         	var config = this.caves.get(i);
             carver.modifier = config.value().modifier();
 
-            NoiseCaveCarver.carve(seed + (int) (i * 0xFA90C2L), chunk, carver, generator, config.value(), setBlocks);
+            NoiseCaveCarver.carve(seed + (int) (i * 0xFA90C2L), chunk, rand, carver, generator, config.value(), setBlocks);
         }
     }
 
