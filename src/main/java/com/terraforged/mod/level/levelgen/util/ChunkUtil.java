@@ -74,6 +74,8 @@ public class ChunkUtil {
         }
     }
 
+    // the for loops here continue even if they're out of bounds
+    // TODO fix that
     public static void fillChunk(int seaLevel, ChunkAccess chunk, TerrainData terrainData, FillerBlock filler, GeneratorResource resource) {
         int limit = chunk.getMaxBuildHeight();
         int min = Math.min(limit, getLowestSection(terrainData));
