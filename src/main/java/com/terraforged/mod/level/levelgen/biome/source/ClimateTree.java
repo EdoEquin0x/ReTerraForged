@@ -32,10 +32,6 @@ public class ClimateTree {
 		return new ClimateTree.ParameterPoint(climate, temperature, moisture, continentalness, height, river);
 	}
 
-	interface DistanceMetric {
-		float distance(ClimateTree.RTree.Node node, float[] params);
-	}
-
 	public static record Parameter(float min, float max) {
 		public static final Codec<ClimateTree.Parameter> CODEC = ExtraCodecs.intervalCodec(
 			Codec.floatRange(0.0F, 1.0F),
@@ -114,9 +110,8 @@ public class ClimateTree {
 			return this.values;
 		}
 
-		private static final DistanceMetric DIST_METRIC = ClimateTree.RTree.Node::distance;
 		public Holder<Climate> findValue(ClimateSample sample) {
-			return this.index.search(sample, DIST_METRIC);
+			return this.index.search(sample);
 		}
 	}
 
@@ -246,7 +241,6 @@ public class ClimateTree {
 			if (!list1.isEmpty()) {
 				list.add(new ClimateTree.RTree.SubTree(list1));
 			}
-
 			return list;
 		}
 
@@ -280,9 +274,9 @@ public class ClimateTree {
 			}
 		}
 
-		public Holder<Climate> search(ClimateSample point, ClimateTree.DistanceMetric metric) {
+		public Holder<Climate> search(ClimateSample point) {
 			float[] along = toParameterArray(point);
-			ClimateTree.RTree.Leaf leaf = this.root.search(along, this.lastResult.get(), metric);
+			ClimateTree.RTree.Leaf leaf = this.root.search(along, this.lastResult.get());
 			this.lastResult.set(leaf);
 			return leaf.value;
 		}
@@ -295,7 +289,7 @@ public class ClimateTree {
 				this.value = point.climate();
 			}
 
-			protected ClimateTree.RTree.Leaf search(float[] params, @Nullable ClimateTree.RTree.Leaf leaf, ClimateTree.DistanceMetric metric) {
+			protected ClimateTree.RTree.Leaf search(float[] params, @Nullable ClimateTree.RTree.Leaf leaf) {
 				return this;
 			}
 		}
@@ -307,7 +301,7 @@ public class ClimateTree {
 				this.parameterSpace = paramSpace.toArray(new ClimateTree.Parameter[0]);
 			}
 
-			protected abstract ClimateTree.RTree.Leaf search(float[] params, @Nullable ClimateTree.RTree.Leaf leaf, ClimateTree.DistanceMetric metric);
+			protected abstract ClimateTree.RTree.Leaf search(float[] params, @Nullable ClimateTree.RTree.Leaf leaf);
 
 			protected float distance(float[] params) {
 				float i = 0L;
@@ -336,15 +330,15 @@ public class ClimateTree {
 				this.children = nodes.toArray(new ClimateTree.RTree.Node[0]);
 			}
 
-			protected ClimateTree.RTree.Leaf search(float[] params, @Nullable ClimateTree.RTree.Leaf leaf, ClimateTree.DistanceMetric metric) {
-				float i = leaf == null ? Float.MAX_VALUE : metric.distance(leaf, params);
+			protected ClimateTree.RTree.Leaf search(float[] params, @Nullable ClimateTree.RTree.Leaf leaf) {
+				float i = leaf == null ? Float.MAX_VALUE : leaf.distance(params);
 				ClimateTree.RTree.Leaf found = leaf;
 
 				for (ClimateTree.RTree.Node node : this.children) {
-					float j = metric.distance(node, params);
+					float j = node.distance(params);
 					if (i > j) {
-						ClimateTree.RTree.Leaf leaf1 = node.search(params, found, metric);
-						float k = node == leaf1 ? j : metric.distance(leaf1, params);
+						ClimateTree.RTree.Leaf leaf1 = node.search(params, found);
+						float k = node == leaf1 ? j : leaf1.distance(params);
 						if (i > k) {
 							i = k;
 							found = leaf1;

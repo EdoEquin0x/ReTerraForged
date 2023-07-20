@@ -40,7 +40,6 @@ public class MathUtil {
     public static float clamp(float value, float min, float max) {
         return value < min ? min : value > max ? max : value;
     }
-    
 
 	public static float step(float value, int steps) {
         return ((float) NoiseUtil.round(value * steps)) / steps;
