@@ -24,16 +24,16 @@
 
 package com.terraforged.mod.level.levelgen.cave;
 
-import java.util.ArrayList;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
+import com.terraforged.mod.level.levelgen.biome.util.BiomeList;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.noise.Module;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
 
 public class CarverChunk {
@@ -41,18 +41,17 @@ public class CarverChunk {
     private int cachedX, cachedZ;
 
     private int biomeListIndex = -1;
-    private final List<Holder<Biome>>[] biomeLists;
-    private final Map<NoiseCave, List<Holder<Biome>>> biomes = new IdentityHashMap<>();
+    private final BiomeList[] biomeLists;
+    private final Map<NoiseCave, BiomeList> biomes = new IdentityHashMap<>();
 
     public Holder<Module> mask;
     public Holder<Module> modifier;
     public TerrainData terrainData;
-
-    @SuppressWarnings("unchecked")
+ 
 	public CarverChunk(int size) {
-        biomeLists = new List[size];
+        biomeLists = new BiomeList[size];
         for (int i = 0; i < biomeLists.length; i++) {
-            biomeLists[i] = new ArrayList<Holder<Biome>>();
+            biomeLists[i] = new BiomeList();
         }
     }
 
@@ -63,18 +62,18 @@ public class CarverChunk {
         return this;
     }
 
-    public List<Holder<Biome>> getBiomes(NoiseCave config) {
+    public BiomeList getBiomes(NoiseCave config) {
         return biomes.get(config);
     }
 
     public Holder<Biome> getBiome(int seedOffset, int x, int z, NoiseCave cave, TFChunkGenerator generator) {
-        int biomeX = x >> 2;
-        int biomeZ = z >> 2;
+        int biomeX = QuartPos.toSection(x);
+        int biomeZ = QuartPos.toSection(z);
         if (cached == null || biomeX != cachedX || biomeZ != cachedZ) {
             cached = cave.getBiome(seedOffset, x, z);
             cachedX = biomeX;
             cachedZ = biomeZ;
-            biomes.computeIfAbsent(cave, c -> nextList()).add(cached);
+            biomes.computeIfAbsent(cave, c -> nextList()).add(this.cached);
         }
         return cached;
     }
@@ -85,14 +84,14 @@ public class CarverChunk {
         return 1f - noise * river;
     }
 
-    private List<Holder<Biome>> nextList() {
+    private BiomeList nextList() {
         int i = biomeListIndex + 1;
         if (i < biomeLists.length) {
             biomeListIndex = i;
             var biomeList = biomeLists[i];
-            biomeList.clear();
+            biomeList.reset();
             return biomeList;
         }
-        return new ArrayList<>();
+        return new BiomeList();
     }
 }

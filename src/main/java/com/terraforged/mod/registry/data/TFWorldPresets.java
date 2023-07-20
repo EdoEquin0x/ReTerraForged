@@ -81,8 +81,8 @@ public interface TFWorldPresets {
 							vegetation.getOrThrow(TFVegetation.TREES_TEMPERATE)
 						),
 						HolderSet.direct(
-//							caves.getOrThrow(TFCaves.MEGA),
-//							caves.getOrThrow(TFCaves.MEGA_DEEP),
+							caves.getOrThrow(TFCaves.MEGA),
+							caves.getOrThrow(TFCaves.MEGA_DEEP),
 							caves.getOrThrow(TFCaves.SYNAPSE_HIGH),
 							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
 							caves.getOrThrow(TFCaves.SYNAPSE_MID)

@@ -46,8 +46,8 @@ public class NoiseCaveDecorator {
         var pos = new BlockPos(startX, startY, startZ);
         var random = new WorldgenRandom(new LegacyRandomSource(region.getSeed()));
 
-        for (int i = 0; i < biomes.size(); i++) {
-            var biome = biomes.get(i);
+        for(int i = 0; i < biomes.size(); i++) {
+        	var biome = biomes.get(i);
             decorate(pos, region, generator, biome.value().getGenerationSettings(), random);
         }
     }
