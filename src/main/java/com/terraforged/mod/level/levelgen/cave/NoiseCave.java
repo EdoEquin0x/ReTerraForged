@@ -40,13 +40,14 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 public record NoiseCave(BlockState filler, RuleTest fillTest, Optional<? extends Holder<Climate>> climate, Holder<Module> elevation, Holder<Module> shape, Holder<Module> floor, Holder<Module> modifier, int size, int minY, int maxY) {
 	@SuppressWarnings("unchecked")
 	public static final Codec<NoiseCave> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		BlockState.CODEC.fieldOf("filler").forGetter(NoiseCave::filler),
-		RuleTest.CODEC.fieldOf("fill_test").forGetter(NoiseCave::fillTest),
+		RuleTest.CODEC.optionalFieldOf("fill_test", AlwaysTrueTest.INSTANCE).forGetter(NoiseCave::fillTest),
 		Climate.CODEC.optionalFieldOf("climate").forGetter((c) -> (Optional<Holder<Climate>>) c.climate()),
     	Module.CODEC.fieldOf("elevation").forGetter(NoiseCave::elevation),
     	Module.CODEC.fieldOf("shape").forGetter(NoiseCave::shape),

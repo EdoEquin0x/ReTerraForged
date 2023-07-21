@@ -34,13 +34,51 @@ import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
 
 public interface TFWorldPresets {
-	public static final ResourceKey<WorldPreset> TERRAFORGED = resolve("terraforged");
+	ResourceKey<WorldPreset> TERRAFORGED = resolve("terraforged");
+	ResourceKey<WorldPreset> VANILLA = resolve("vanilla");
 	
 	static void register(BootstapContext<WorldPreset> ctx) {
-		ctx.register(TERRAFORGED, createDefaultPreset(ctx));
+		ctx.register(TERRAFORGED, createTFPreset(ctx));
+//		ctx.register(VANILLA, createVanillaPreset(ctx));
     }
 
-	private static WorldPreset createDefaultPreset(BootstapContext<WorldPreset> ctx) {
+	static WorldPreset createVanillaPreset(BootstapContext<WorldPreset> ctx) {
+		HolderGetter<DimensionType> dimensions = ctx.lookup(Registries.DIMENSION_TYPE);
+		HolderGetter<Biome> biomes = ctx.lookup(Registries.BIOME);
+		HolderGetter<NoiseGeneratorSettings> noiseSettings = ctx.lookup(Registries.NOISE_SETTINGS);
+		return new WorldPreset(
+			ImmutableMap.<ResourceKey<LevelStem>, LevelStem>builder()
+			.put(LevelStem.NETHER, 
+				new LevelStem(
+					dimensions.getOrThrow(BuiltinDimensionTypes.NETHER), 
+					new NoiseBasedChunkGenerator(
+						MultiNoiseBiomeSource.createFromList(new MultiNoiseBiomeSourceParameterList(MultiNoiseBiomeSourceParameterList.Preset.NETHER, biomes).parameters()),
+						noiseSettings.getOrThrow(NoiseGeneratorSettings.NETHER)
+					)
+				)
+			)
+			.put(LevelStem.OVERWORLD, 
+				new LevelStem(
+					dimensions.getOrThrow(BuiltinDimensionTypes.OVERWORLD), 
+					new NoiseBasedChunkGenerator(
+						MultiNoiseBiomeSource.createFromList(new MultiNoiseBiomeSourceParameterList(MultiNoiseBiomeSourceParameterList.Preset.OVERWORLD, biomes).parameters()),
+						noiseSettings.getOrThrow(NoiseGeneratorSettings.NETHER)
+					)
+				)
+			)
+			.put(LevelStem.END,
+				new LevelStem(
+					dimensions.getOrThrow(BuiltinDimensionTypes.END), 
+					new NoiseBasedChunkGenerator(
+						TheEndBiomeSource.create(biomes),
+						noiseSettings.getOrThrow(NoiseGeneratorSettings.END)
+					)
+				)
+			)
+			.build());
+	}
+	
+	private static WorldPreset createTFPreset(BootstapContext<WorldPreset> ctx) {
 		HolderGetter<DimensionType> dimensions = ctx.lookup(Registries.DIMENSION_TYPE);
 		HolderGetter<Module> modules = ctx.lookup(TFNoise.REGISTRY);
 		HolderGetter<VegetationConfig> vegetation = ctx.lookup(TFVegetation.REGISTRY);
@@ -87,7 +125,8 @@ public interface TFWorldPresets {
 							caves.getOrThrow(TFCaves.SYNAPSE_LOW),
 							caves.getOrThrow(TFCaves.SYNAPSE_MID),
 							caves.getOrThrow(TFCaves.IRON_VEIN),
-							caves.getOrThrow(TFCaves.COPPER_VEIN)
+							caves.getOrThrow(TFCaves.COPPER_VEIN),
+							caves.getOrThrow(TFCaves.DEEP_LAVA_GEN)
 						),
 						new ClimateTree.ParameterList(getClimates(climates))
 					)

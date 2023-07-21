@@ -45,6 +45,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
@@ -58,17 +59,18 @@ public interface TFCaves {
 	ResourceKey<NoiseCave> MEGA_DEEP = resolve("mega_deep");
 	ResourceKey<NoiseCave> IRON_VEIN = resolve("iron_vein");
 	ResourceKey<NoiseCave> COPPER_VEIN = resolve("copper_vein");
+	ResourceKey<NoiseCave> DEEP_LAVA_GEN = resolve("deep_lava_gen");
 	
     static void register(BootstapContext<NoiseCave> ctx) {
         var seed = new Seed(0);
         
         HolderGetter<Climate> climates = ctx.lookup(TFClimates.REGISTRY);
         
-        BlockState air = Blocks.AIR.defaultBlockState();
+        BlockState air = Blocks.CAVE_AIR.defaultBlockState();
         BlockState copper = Blocks.IRON_ORE.defaultBlockState();
         BlockState iron = Blocks.COPPER_ORE.defaultBlockState();
         RuleTest carverTest = new TagMatchTest(BlockTags.OVERWORLD_CARVER_REPLACEABLES);
-        //TODO these should still through errors is the climate is missing
+        //TODO these should still throw errors if the climate is missing
         ctx.register(SYNAPSE_HIGH, Factory.synapse(air, carverTest, climates.get(TFClimates.CAVE), seed.next(), 0.75F, 96, 384));
         ctx.register(SYNAPSE_MID, Factory.synapse(air, carverTest, climates.get(TFClimates.CAVE), seed.next(), 1.0F, 0, 256));
         ctx.register(SYNAPSE_LOW, Factory.synapse(air, carverTest, climates.get(TFClimates.CAVE), seed.next(), 1.2F, -32, 128));
@@ -76,6 +78,7 @@ public interface TFCaves {
         ctx.register(MEGA_DEEP, Factory.mega(air, carverTest, climates.get(TFClimates.CAVE_DEEP), seed.next(), 1.4F, -64, 48));
         ctx.register(COPPER_VEIN, Factory.ore(copper, carverTest, seed.next(), 0.4F, -64, 200));
         ctx.register(IRON_VEIN, Factory.ore(iron, carverTest, seed.next(), 0.375F, -64, 150));
+        ctx.register(DEEP_LAVA_GEN, Factory.deepLavaGen());
     }
 
     private static ResourceKey<NoiseCave> resolve(String path) {
@@ -128,6 +131,10 @@ public interface TFCaves {
                     .clamp(0.35, 0.75).map(0, 1);
             var floor = Source.simplex(++seed, floorScale, 2).clamp(0.0, 0.15).map(0, 1);
             return new NoiseCave(state, test, Optional.empty(), Holder.direct(elevation), Holder.direct(shape), Holder.direct(floor), Holder.direct(createOreNoise(250, 0.55F)), size, minY, maxY);
+        }
+        
+        static NoiseCave deepLavaGen() {
+            return new NoiseCave(Blocks.LAVA.defaultBlockState(), new BlockMatchTest(Blocks.CAVE_AIR), Optional.empty(), Holder.direct(Source.ZERO), Holder.direct(Source.ONE), Holder.direct(Source.ZERO), Holder.direct(Source.ONE), Math.abs(-64 - -55), -64, -55);
         }
 
         private static Module createUniqueCaveNoise(int scale, float density) {

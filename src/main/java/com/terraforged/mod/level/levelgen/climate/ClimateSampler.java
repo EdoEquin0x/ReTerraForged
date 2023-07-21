@@ -26,11 +26,10 @@ package com.terraforged.mod.level.levelgen.climate;
 
 import java.util.function.Supplier;
 
+import com.google.common.base.Suppliers;
 import com.terraforged.mod.level.levelgen.continent.ContinentNoise;
-import com.terraforged.mod.level.levelgen.noise.TerrainNoise;
 import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
-
-import net.minecraftforge.common.util.Lazy;
+import com.terraforged.mod.level.levelgen.noise.TerrainNoise;
 
 public class ClimateSampler {
 	protected final Supplier<ClimateNoise> climateNoise;
@@ -38,27 +37,25 @@ public class ClimateSampler {
 	protected final ThreadLocal<ClimateSample> localSample = ThreadLocal.withInitial(ClimateSample::new);
 
 	public ClimateSampler(Supplier<TerrainNoise> terrainNoise) {
-		this.climateNoise = createClimate(terrainNoise);
+		this.climateNoise = Suppliers.memoize(() -> createClimate(terrainNoise.get()));
 		this.terrainNoise = terrainNoise;
 	}
 
 	public ClimateSample sample(int x, int z) {
-		NoiseLevels levels = this.terrainNoise.get().getLevels();
+		TerrainNoise noise = this.terrainNoise.get();
+		NoiseLevels levels = noise.getLevels();
 		
 		float px = x * levels.frequency;
 		float pz = z * levels.frequency;
 
 		var sample = this.localSample.get().reset();
-		this.terrainNoise.get().sample(x, z, sample);
+		noise.sample(x, z, sample);
 		this.climateNoise.get().sample(px, pz, sample);
-
 		return sample;
 	}
 	
-	static Supplier<ClimateNoise> createClimate(Supplier<TerrainNoise> generator) {
-		return Lazy.concurrentOf(() -> {
-			ContinentNoise continent = generator.get().getContinent();
-			return new ClimateNoise(continent.getSeed(), continent.getSettings());
-		});
+	static ClimateNoise createClimate(TerrainNoise noise) {
+		ContinentNoise continent = noise.getContinent();
+		return new ClimateNoise(continent.getSeed(), continent.getSettings());
 	}
 }
