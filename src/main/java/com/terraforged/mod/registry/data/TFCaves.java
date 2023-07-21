@@ -66,7 +66,7 @@ public interface TFCaves {
         
         HolderGetter<Climate> climates = ctx.lookup(TFClimates.REGISTRY);
         
-        BlockState air = Blocks.CAVE_AIR.defaultBlockState();
+        BlockState air = Blocks.AIR.defaultBlockState();
         BlockState copper = Blocks.IRON_ORE.defaultBlockState();
         BlockState iron = Blocks.COPPER_ORE.defaultBlockState();
         RuleTest carverTest = new TagMatchTest(BlockTags.OVERWORLD_CARVER_REPLACEABLES);
@@ -134,7 +134,7 @@ public interface TFCaves {
         }
         
         static NoiseCave deepLavaGen() {
-            return new NoiseCave(Blocks.LAVA.defaultBlockState(), new BlockMatchTest(Blocks.CAVE_AIR), Optional.empty(), Holder.direct(Source.ZERO), Holder.direct(Source.ONE), Holder.direct(Source.ZERO), Holder.direct(Source.ONE), Math.abs(-64 - -55), -64, -55);
+            return new NoiseCave(Blocks.LAVA.defaultBlockState(), new BlockMatchTest(Blocks.AIR), Optional.empty(), Holder.direct(Source.ZERO), Holder.direct(Source.ONE), Holder.direct(Source.ZERO), Holder.direct(Source.ONE), Math.abs(-64 - -55), -64, -55);
         }
 
         private static Module createUniqueCaveNoise(int scale, float density) {
