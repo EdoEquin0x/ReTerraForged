@@ -25,6 +25,7 @@
 package com.terraforged.mod.level.levelgen.climate;
 
 import com.terraforged.mod.level.levelgen.cell.CellShape;
+import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
 import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Module;
@@ -44,11 +45,11 @@ public class ClimateNoise {
     private final Domain warp;
     private final Module moisture;
     private final Module temperature;
-
-    private final ThreadLocal<ClimateSample> localSample = ThreadLocal.withInitial(ClimateSample::new);
-
-    public ClimateNoise(Seed seed, Settings settings) {
+    private final NoiseLevels levels;
+    
+    public ClimateNoise(Seed seed, Settings settings, NoiseLevels levels) {
     	this.seed = seed.get();
+    	this.levels = levels;
     	
     	int biomeSize = settings.climate().biomeShape().biomeSize();
         float tempScaler = settings.climate().temperature().scale();
@@ -83,13 +84,10 @@ public class ClimateNoise {
         );
     }
 
-    public ClimateSample getSample(float x, float y) {
-        var sample = localSample.get().reset();
-        sample(x, y, sample);
-        return sample;
-    }
-
     public void sample(float x, float y, ClimateSample sample) {
+    	x = this.levels.toCoord(x);
+    	y = this.levels.toCoord(y);
+    	
         float px = warp.getX(x, y);
         float py = warp.getY(x, y);
 

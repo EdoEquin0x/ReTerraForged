@@ -28,8 +28,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import com.terraforged.mod.level.levelgen.noise.NoiseData;
-import com.terraforged.mod.level.levelgen.noise.TerrainNoise;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
+import com.terraforged.mod.level.levelgen.noise.TerrainNoise;
 import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.level.levelgen.util.ThreadPool;

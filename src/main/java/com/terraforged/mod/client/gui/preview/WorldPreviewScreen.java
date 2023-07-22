@@ -73,7 +73,7 @@ public class WorldPreviewScreen extends Screen {
 							int tx = cx + lx;
 							int ty = cy + ly;
 							
-							ClimateSample sample = this.generator.getClimateSampler().sample(tx * scale, ty * scale);
+							ClimateSample sample = this.generator.getClimateSampler().get().sample(tx * scale, ty * scale);
 				            pixels.setPixelRGBA(tx, ty, layer.getColor(layer.getValue(sample)));
 						}
 					}
@@ -232,7 +232,7 @@ public class WorldPreviewScreen extends Screen {
 				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
 				
 				drawString(stack, WorldPreviewScreen.this.font, "noise: " + WorldPreviewScreen.this.layer.getValue(
-					WorldPreviewScreen.this.generator.getClimateSampler().sample(relativeMouseX, relativeMouseY)
+					WorldPreviewScreen.this.generator.getClimateSampler().get().sample(relativeMouseX, relativeMouseY)
 				), x + 8, y + this.getWidth() - 26, 16777215);	
 			}
 		}

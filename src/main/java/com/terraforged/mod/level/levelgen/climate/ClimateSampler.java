@@ -24,38 +24,66 @@
 
 package com.terraforged.mod.level.levelgen.climate;
 
-import java.util.function.Supplier;
+import java.util.List;
 
-import com.google.common.base.Suppliers;
+import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.level.levelgen.continent.ContinentNoise;
-import com.terraforged.mod.level.levelgen.noise.NoiseLevels;
 import com.terraforged.mod.level.levelgen.noise.TerrainNoise;
+import com.terraforged.mod.level.levelgen.util.NoiseTree;
+import com.terraforged.mod.level.levelgen.util.NoiseTree.Point;
+
+import net.minecraft.core.Holder;
 
 public class ClimateSampler {
-	protected final Supplier<ClimateNoise> climateNoise;
-	protected final Supplier<TerrainNoise> terrainNoise;
+	protected final ClimateNoise climate;
+	protected final TerrainNoise terrain;
 	protected final ThreadLocal<ClimateSample> localSample = ThreadLocal.withInitial(ClimateSample::new);
 
-	public ClimateSampler(Supplier<TerrainNoise> terrainNoise) {
-		this.climateNoise = Suppliers.memoize(() -> createClimate(terrainNoise.get()));
-		this.terrainNoise = terrainNoise;
+	public ClimateSampler(TerrainNoise terrainNoise) {
+		this.climate = createClimate(terrainNoise);
+		this.terrain = terrainNoise;
 	}
 
 	public ClimateSample sample(int x, int z) {
-		TerrainNoise noise = this.terrainNoise.get();
-		NoiseLevels levels = noise.getLevels();
-		
-		float px = x * levels.frequency;
-		float pz = z * levels.frequency;
-
 		var sample = this.localSample.get().reset();
-		noise.sample(x, z, sample);
-		this.climateNoise.get().sample(px, pz, sample);
+		this.terrain.sample(x, z, sample);
+		this.climate.sample(x, z, sample);
 		return sample;
 	}
 	
-	static ClimateNoise createClimate(TerrainNoise noise) {
+	private static ClimateNoise createClimate(TerrainNoise noise) {
 		ContinentNoise continent = noise.getContinent();
-		return new ClimateNoise(continent.getSeed(), continent.getSettings());
+		return new ClimateNoise(continent.getSeed(), continent.getSettings(), noise.getLevels());
+	}
+	
+	public record ParameterPoint(Holder<Climate> climate, NoiseTree.Parameter temperature, NoiseTree.Parameter moisture, NoiseTree.Parameter continentalness, NoiseTree.Parameter height, NoiseTree.Parameter river) implements Point<Holder<Climate>> {
+		public static final Codec<ClimateSampler.ParameterPoint> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Climate.CODEC.fieldOf("climate").forGetter(ClimateSampler.ParameterPoint::climate), 
+			NoiseTree.Parameter.CODEC.fieldOf("temperature").forGetter(ClimateSampler.ParameterPoint::temperature), 
+			NoiseTree.Parameter.CODEC.fieldOf("moisture").forGetter(ClimateSampler.ParameterPoint::moisture), 
+			NoiseTree.Parameter.CODEC.fieldOf("continentalness").forGetter(ClimateSampler.ParameterPoint::continentalness), 
+			NoiseTree.Parameter.CODEC.fieldOf("height").forGetter(ClimateSampler.ParameterPoint::height), 
+			NoiseTree.Parameter.CODEC.fieldOf("river").forGetter(ClimateSampler.ParameterPoint::river)
+		).apply(instance, ClimateSampler.ParameterPoint::new));
+
+		@Override
+		public Holder<Climate> value() {
+			return this.climate;
+		}
+
+		@Override
+		public List<NoiseTree.Parameter> parameterSpace() {
+			return ImmutableList.of(this.temperature, this.moisture, this.continentalness, this.height, this.river);
+		}
+
+		public static ClimateSampler.ParameterPoint of(Holder<Climate> climate, float temperature, float moisture, float continentalness, float height, float river) {
+			return new ClimateSampler.ParameterPoint(climate, NoiseTree.Parameter.point(temperature), NoiseTree.Parameter.point(moisture), NoiseTree.Parameter.point(continentalness), NoiseTree.Parameter.point(height), NoiseTree.Parameter.point(river));
+		}
+
+		public static ClimateSampler.ParameterPoint of(Holder<Climate> climate, NoiseTree.Parameter temperature, NoiseTree.Parameter moisture, NoiseTree.Parameter continentalness, NoiseTree.Parameter height, NoiseTree.Parameter river) {
+			return new ClimateSampler.ParameterPoint(climate, temperature, moisture, continentalness, height, river);
+		}
 	}
 }

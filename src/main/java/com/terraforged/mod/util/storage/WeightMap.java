@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.mojang.datafixers.util.Pair;
@@ -12,7 +11,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.util.MathUtil;
 import com.terraforged.mod.util.codec.TFCodecs;
-import com.terraforged.mod.util.pos.PosUtil;
 
 public class WeightMap<T> implements Iterable<T> {
     protected final Object[] values;
@@ -53,30 +51,6 @@ public class WeightMap<T> implements Iterable<T> {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-	public T find(Predicate<T> predicate) {
-        for (var t : values) {
-            if (predicate.test((T) t)) {
-                return (T) t;
-            }
-        }
-        return null;
-    }
-
-    public long getBand(T value) {
-        float lower = 0F;
-        for (int i = 0; i < values.length; i++) {
-            float upper = cumulativeWeights[i];
-
-            if (values[i] == value) {
-                return PosUtil.packf(lower / sumWeight, upper / sumWeight);
-            }
-
-            lower = upper;
-        }
-        return 0L;
-    }
-
 	@Override
 	public Iterator<T> iterator() {
 		return new Iterator<>() {
@@ -95,18 +69,6 @@ public class WeightMap<T> implements Iterable<T> {
 		};
 	}
 
-    public interface Weighted {
-        float weight();
-    }
-
-    public static <T extends Weighted> WeightMap<T> of(T[] values) {
-        float[] weights = new float[values.length];
-        for (int i = 0; i < weights.length; i++) {
-            weights[i] = values[i].weight();
-        }
-        return new WeightMap<>(weights, values);
-    }
-    
     public static <T> WeightMap<T> of(float[] weights, T[] values) {
         return new WeightMap<>(weights, values);
     }

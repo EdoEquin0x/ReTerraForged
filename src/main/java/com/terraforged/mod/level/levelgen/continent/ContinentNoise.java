@@ -33,6 +33,8 @@ import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.level.levelgen.util.Seed;
 import com.terraforged.mod.noise.Source;
 import com.terraforged.mod.noise.domain.Domain;
+import com.terraforged.mod.noise.util.Vec2i;
+import com.terraforged.mod.util.pos.PosUtil;
 
 public class ContinentNoise {
     protected final TerrainLevels levels;
@@ -94,6 +96,23 @@ public class ContinentNoise {
         py += offset.y;
 
         generator.riverNoise.sample(px, py, sample);
+    }
+    
+    public Vec2i getCell(int x, int y) {
+        x *= frequency;
+        y *= frequency;
+
+        float px = warp.getX(x, y);
+        float py = warp.getY(x, y);
+
+        var offset = generator.getWorldOffset();
+        px += offset.x;
+        py += offset.y;
+
+        long centre = this.generator.getNearestCell(px, py);
+        int cellX = PosUtil.unpackLeft(centre);
+        int cellZ = PosUtil.unpackRight(centre);
+        return new Vec2i(cellX, cellZ);
     }
 
     public Seed getSeed() {

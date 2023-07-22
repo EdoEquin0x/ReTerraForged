@@ -33,22 +33,16 @@ public class NoiseSample {
     public float heightNoise = 0;
     public float riverNoise = 1;
 
-    public NoiseSample() {}
-
-    public NoiseSample(NoiseSample other) {
-        copy(other);
-    }
-
     public NoiseSample reset() {
-        return copy(DEFAULT);
+        return this.copy(DEFAULT);
     }
 
     public NoiseSample copy(NoiseSample other) {
-        continentCentre = other.continentCentre;
-        continentNoise = other.continentNoise;
-        heightNoise = other.heightNoise;
-        baseNoise = other.baseNoise;
-        riverNoise = other.riverNoise;
+    	this.continentCentre = other.continentCentre;
+    	this.continentNoise = other.continentNoise;
+    	this.heightNoise = other.heightNoise;
+    	this.baseNoise = other.baseNoise;
+    	this.riverNoise = other.riverNoise;
         return this;
     }
 }

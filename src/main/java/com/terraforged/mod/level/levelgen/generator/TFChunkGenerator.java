@@ -29,15 +29,12 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
 
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.ProvidedDensityFunction;
 import com.terraforged.mod.level.levelgen.biome.ChunkPopulator;
-import com.terraforged.mod.level.levelgen.biome.source.ClimateTree;
 import com.terraforged.mod.level.levelgen.biome.source.TFBiomeSource;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.cave.NoiseCave;
@@ -52,9 +49,11 @@ import com.terraforged.mod.level.levelgen.terrain.TerrainCache;
 import com.terraforged.mod.level.levelgen.terrain.TerrainData;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
 import com.terraforged.mod.level.levelgen.util.ChunkUtil;
+import com.terraforged.mod.level.levelgen.util.NoiseTree;
 import com.terraforged.mod.level.levelgen.util.NoopNoise;
 import com.terraforged.mod.level.levelgen.util.ThreadPool;
 import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.util.Vec2i;
 import com.terraforged.mod.util.storage.WeightMap;
 
 import net.minecraft.core.BlockPos;
@@ -75,11 +74,9 @@ import net.minecraft.world.level.biome.OverworldBiomeBuilder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.Aquifer.FluidPicker;
-import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
@@ -101,7 +98,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	WeightMap.codec(Module.CODEC).fieldOf("terrain").forGetter((g) -> g.terrain),
     	VegetationConfig.LIST_CODEC.fieldOf("vegetation").forGetter((g) -> g.vegetation),
     	NoiseCave.LIST_CODEC.fieldOf("caves").forGetter((g) -> g.caves),
-    	ClimateTree.ParameterList.CODEC.fieldOf("climates").forGetter((g) -> g.biomeSource.getParams())
+    	NoiseTree.ParameterList.codec(ClimateSampler.ParameterPoint.CODEC, 5).fieldOf("climates").forGetter((g) -> g.biomeSource.getParams())
 	).apply(instance, instance.stable(TFChunkGenerator::create)));
 
 	protected final Settings settings;
@@ -109,7 +106,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     protected final TFBiomeSource biomeSource;
     protected final ChunkPopulator chunkPopulator;
     protected final Supplier<TerrainNoise> terrainNoise;
-    protected final ClimateSampler climateSampler;
+    protected final Supplier<ClimateSampler> climateSampler;
     protected final TerrainCache terrainCache;
     protected final ThreadLocal<GeneratorResource> localResource = ThreadLocal.withInitial(GeneratorResource::new);
     protected final WeightMap<Holder<Module>> terrain;
@@ -123,12 +120,12 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	TFBiomeSource biomeSource,
     	ChunkPopulator chunkPopulator,
     	Supplier<TerrainNoise> terrainNoise,
-    	ClimateSampler climateSampler,
+    	Supplier<ClimateSampler> climateSampler,
     	WeightMap<Holder<Module>> terrain,
     	HolderSet<VegetationConfig> vegetation,
     	HolderSet<NoiseCave> caves
     ) {
-        super(biomeSource, createGeneratorSettings(levels, climateSampler));
+        super(biomeSource, createGeneratorSettings(levels));
         this.settings = settings;
         this.levels = levels;
         this.biomeSource = biomeSource;
@@ -146,7 +143,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	return this.terrainNoise;
     }
     
-    public ClimateSampler getClimateSampler() {
+    public Supplier<ClimateSampler> getClimateSampler() {
     	return this.climateSampler;
     }
 
@@ -159,7 +156,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    public Codec<? extends ChunkGenerator> codec() {
+    public Codec<TFChunkGenerator> codec() {
         return CODEC;
     }
 
@@ -253,7 +250,10 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public void addDebugScreenInfo(List<String> lines, RandomState state, BlockPos pos) {
-    	var sample = this.climateSampler.sample(pos.getX(), pos.getZ());
+    	int x = pos.getX();
+    	int z = pos.getZ();
+    	
+    	ClimateSample sample = this.climateSampler.get().sample(x, z);
     	lines.add("");
     	lines.add("[TerraForged]");
     	lines.add("Temperature Noise: " + sample.temperature);
@@ -262,9 +262,15 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	lines.add("River Noise: " + sample.riverNoise);
     	lines.add("Base Noise: " + sample.baseNoise);
     	lines.add("Height Noise: " + sample.heightNoise);
+
+    	if(this.terrainNoise.get().getTerrain(x, z) instanceof Holder.Reference<Module> ref) {
+        	lines.add("Terrain: " + ref.key().location());
+    	}
+    	Vec2i cell = this.terrainNoise.get().getContinent().getCell(x, z);
+        lines.add("Cell X: " + cell.x);
+    	lines.add("Cell Z: " + cell.y);
     	
-    	Holder<Climate> climate = this.biomeSource.getClimate(sample);	
-    	if(climate instanceof Holder.Reference<Climate> ref) {
+    	if(this.biomeSource.getClimate(sample) instanceof Holder.Reference<Climate> ref) {
     		lines.add("Climate: " + ref.key().location());
 	    }
     	lines.add("");
@@ -280,7 +286,7 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	WeightMap<Holder<Module>> terrain,
     	HolderSet<VegetationConfig> vegetation,
     	HolderSet<NoiseCave> caves,
-    	ClimateTree.ParameterList climates
+    	NoiseTree.ParameterList<Holder<Climate>, ClimateSampler.ParameterPoint> climates
     ) {
     	var chunkPopulator = new ChunkPopulator(vegetation, caves);
     	Supplier<TerrainNoise> terrainNoise = Suppliers.memoize(() -> {
@@ -292,11 +298,11 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	   	}
         	return new ErosionTerrainNoise((int) seed, settings, levels, terrain, NoiseTileSize.DEFAULT);
     	});
-    	var climateSampler = new ClimateSampler(terrainNoise);
+    	var climateSampler = Suppliers.memoize(() -> new ClimateSampler(terrainNoise.get()));
     	return new TFChunkGenerator(settings, levels, new TFBiomeSource(caves, climateSampler, climates), chunkPopulator, terrainNoise, climateSampler, terrain, vegetation, caves);
     }
     
-    private static Holder<NoiseGeneratorSettings> createGeneratorSettings(TerrainLevels levels, ClimateSampler sampler) {
+    private static Holder<NoiseGeneratorSettings> createGeneratorSettings(TerrainLevels levels) {
     	return Holder.direct(
     		new NoiseGeneratorSettings(
 	    		new NoiseSettings(levels.minY, levels.maxY, 1, 1), 
@@ -307,12 +313,12 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,
-	    			forClimate(sampler, (sample) -> sample.temperature),
-	    			forClimate(sampler, (sample) -> sample.moisture),
-	    			forClimate(sampler, (sample) -> sample.continentNoise),
-	    			forClimate(sampler, (sample) -> sample.riverNoise),
-	    			forClimate(sampler, (sample) -> 0),
-	    			forClimate(sampler, (sample) -> sample.biomeNoise),
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
+	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,
 	    			NoopNoise.NOOP,
@@ -330,10 +336,10 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	);
     }
    
-    //FIXME this samples all parameters even though only a single one gets used
-    private static DensityFunction forClimate(ClimateSampler sampler, ToDoubleFunction<ClimateSample> sample) {
-    	return new ProvidedDensityFunction((ctx) -> sample.applyAsDouble(sampler.sample(ctx.blockX(), ctx.blockZ())));
-    }
+//    //FIXME this samples all parameters even though only a single one gets used
+//    private static DensityFunction forClimate(ClimateSampler sampler, ToDoubleFunction<ClimateSample> sample) {
+//    	return new ProvidedDensityFunction((ctx) -> sample.applyAsDouble(sampler.sample(ctx.blockX(), ctx.blockZ())));
+//    }
     
     private static FluidPicker createGlobalFluidPicker(Holder<NoiseGeneratorSettings> settings) {
     	Aquifer.FluidStatus fluidStatus1 = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());

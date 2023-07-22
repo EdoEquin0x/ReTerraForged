@@ -5,14 +5,14 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.terraforged.mod.TerraForged;
-import com.terraforged.mod.level.levelgen.biome.source.ClimateTree;
-import com.terraforged.mod.level.levelgen.biome.source.ClimateTree.ParameterPoint;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.climate.Climate;
+import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.level.levelgen.settings.Settings;
 import com.terraforged.mod.level.levelgen.terrain.TerrainLevels;
+import com.terraforged.mod.level.levelgen.util.NoiseTree;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.util.storage.WeightMap;
 
@@ -105,8 +105,20 @@ public interface TFWorldPresets {
 						Settings.DEFAULT,
 						TerrainLevels.DEFAULT,
 						new WeightMap.Builder<>()
-							.entry(1.45F, modules.getOrThrow(TFNoise.MOUNTAINS_1))
-							.entry(1.5F,  modules.getOrThrow(TFNoise.PLAINS))
+							.entry(0.75F, modules.getOrThrow(TFNoise.STEPPE))
+							.entry(0.75F, modules.getOrThrow(TFNoise.PLAINS))
+							.entry(0.75F, modules.getOrThrow(TFNoise.HILLS_1))
+							.entry(0.75F, modules.getOrThrow(TFNoise.HILLS_2))
+							.entry(0.65F, modules.getOrThrow(TFNoise.DALES))
+							.entry(0.75F, modules.getOrThrow(TFNoise.PLATEAU))
+							.entry(0.65F, modules.getOrThrow(TFNoise.BADLANDS))
+							.entry(0.65F, modules.getOrThrow(TFNoise.TORRIDONIAN))
+							.entry(0.55F, modules.getOrThrow(TFNoise.MOUNTAINS_1))
+							.entry(0.55F, modules.getOrThrow(TFNoise.MOUNTAINS_2))
+							.entry(0.55F, modules.getOrThrow(TFNoise.MOUNTAINS_3))
+							.entry(0.65F, modules.getOrThrow(TFNoise.DOLOMITES))
+							.entry(0.55F, modules.getOrThrow(TFNoise.MOUNTAINS_RIDGE_1))
+							.entry(0.55F, modules.getOrThrow(TFNoise.MOUNTAINS_RIDGE_2))
 							.build(),
 						HolderSet.direct(
 							vegetation.getOrThrow(TFVegetation.TREES_COPSE),
@@ -128,7 +140,7 @@ public interface TFWorldPresets {
 							caves.getOrThrow(TFCaves.COPPER_VEIN),
 							caves.getOrThrow(TFCaves.DEEP_LAVA_GEN)
 						),
-						new ClimateTree.ParameterList(getClimates(climates))
+						new NoiseTree.ParameterList<>(5, getClimates(climates))
 					)
 				)
 			)
@@ -144,7 +156,7 @@ public interface TFWorldPresets {
 			.build());
 	}
 	
-	private static List<ParameterPoint> getClimates(HolderGetter<Climate> climates) {
+	private static List<ClimateSampler.ParameterPoint> getClimates(HolderGetter<Climate> climates) {
 		final float beachSize = 0.1F;
 		final float inlandThreshold = 0.51F;
 		final float beachThreshold = inlandThreshold - beachSize;
@@ -152,47 +164,66 @@ public interface TFWorldPresets {
 		//this implies that rivers are default and land is special
 		//this was inherited from terraforged and is likely gonna change as it doesn't make much sense (terrain can exist w/o rivers but not vice versa)
 		final float nonRiverThreshold = 0.05F;
-		final float highAltitudeThreshold = 0.41F;
+		final float baseAltitudePoint = 0.3F;
+		final float highLowAltitudePoint = 0.4F;
+		final float highMidAltitudePoint = 0.45F;
+		final float peakPoint = 0.5F;
 		return ImmutableList.of(
-			ClimateTree.parameters(
-				climates.getOrThrow(TFClimates.MID_ALTITUDE),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.min(inlandThreshold),
-				ClimateTree.Parameter.max(highAltitudeThreshold),
-				ClimateTree.Parameter.min(nonRiverThreshold)
+			ClimateSampler.ParameterPoint.of(
+				climates.getOrThrow(TFClimates.TEMPERATE),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.min(inlandThreshold),
+				NoiseTree.Parameter.point(baseAltitudePoint),
+				NoiseTree.Parameter.min(nonRiverThreshold)
 			),
-			ClimateTree.parameters(
-				climates.getOrThrow(TFClimates.HIGH_ALTITUDE),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.min(inlandThreshold),
-				ClimateTree.Parameter.min(highAltitudeThreshold),
-				ClimateTree.Parameter.min(nonRiverThreshold)
+			ClimateSampler.ParameterPoint.of(
+				climates.getOrThrow(TFClimates.HIGH_LOW),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.min(inlandThreshold),
+				NoiseTree.Parameter.point(highLowAltitudePoint),
+				NoiseTree.Parameter.min(nonRiverThreshold)
 			),
-			ClimateTree.parameters(
-				climates.getOrThrow(TFClimates.RIVER),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.min(inlandThreshold),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.max(nonRiverThreshold)
+			ClimateSampler.ParameterPoint.of(
+				climates.getOrThrow(TFClimates.HIGH_MID),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.min(inlandThreshold),
+				NoiseTree.Parameter.point(highMidAltitudePoint),
+				NoiseTree.Parameter.min(nonRiverThreshold)
 			),
-			ClimateTree.parameters(
-				climates.getOrThrow(TFClimates.BEACH),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.span(beachThreshold, inlandThreshold),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.any()
+			ClimateSampler.ParameterPoint.of(
+				climates.getOrThrow(TFClimates.PEAK),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.min(inlandThreshold),
+				NoiseTree.Parameter.point(peakPoint),
+				NoiseTree.Parameter.min(nonRiverThreshold)
 			),
-			ClimateTree.parameters(
-				climates.getOrThrow(TFClimates.OCEAN),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.max(beachThreshold),
-				ClimateTree.Parameter.any(),
-				ClimateTree.Parameter.any()
+			ClimateSampler.ParameterPoint.of(
+				climates.getOrThrow(TFClimates.TEMPERATE_RIVER),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.min(inlandThreshold),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.max(nonRiverThreshold)
+			),
+			ClimateSampler.ParameterPoint.of(
+				climates.getOrThrow(TFClimates.TEMPERATE_BEACH),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.span(beachThreshold, inlandThreshold),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore()
+			),
+			ClimateSampler.ParameterPoint.of(
+				climates.getOrThrow(TFClimates.TEMPERATE_OCEAN),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.max(beachThreshold),
+				NoiseTree.Parameter.ignore(),
+				NoiseTree.Parameter.ignore()
 			)
 		);
 	}

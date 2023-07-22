@@ -24,7 +24,6 @@
 
 package com.terraforged.mod.level.levelgen.climate;
 
-import com.terraforged.mod.level.levelgen.biome.source.ClimateTree;
 import com.terraforged.mod.level.levelgen.noise.NoiseSample;
 
 //TODO this shouldn't extend NoiseSample
@@ -33,8 +32,6 @@ public class ClimateSample extends NoiseSample {
     public float biomeEdgeNoise;
     public float moisture;
     public float temperature;
-    @Deprecated
-    public float[] params = new float[ClimateTree.PARAM_COUNT];
     
     public ClimateSample reset() {
     	super.reset();

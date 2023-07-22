@@ -57,7 +57,12 @@ public interface TFNoise {
 	}
 
     class Terrain {
-        static final int PLAINS_H = 250;
+    	static final float STEPPE_HSCALE = 1.0F;
+    	static final float STEPPE_VSCALE = 1.0F;
+    	static final float PLAINS_HSCALE = 3.505F;
+    	static final float PLAINS_VSCALE = 3.505F;
+    	static final float PLATEAU_HSCALE = 1.776F; //TODO
+    	static final float PLATEAU_VSCALE = 2.575F;
         static final int MOUNTAINS_H = 410;
         static final double MOUNTAINS_V = 0.7;
         static final int MOUNTAINS2_H = 400;
@@ -65,23 +70,23 @@ public interface TFNoise {
         static final float TERRAIN_VERTICAL_SCALE = 0.98F;
 
         static Module createSteppe(Seed seed) {
-            int scaleH = Math.round(PLAINS_H);
-            double erosionAmount = 0.45;
-            Module erosion = Source.build(seed.next(), scaleH * 2, 3).lacunarity(3.75).perlin().alpha(erosionAmount);
-            Module warpX = Source.build(seed.next(), scaleH / 4, 3).lacunarity(3.0).perlin();
-            Module warpY = Source.build(seed.next(), scaleH / 4, 3).lacunarity(3.0).perlin();
-            Module module = Source.perlin(seed.next(), scaleH, 1).mul(erosion).warp(warpX, warpY, Source.constant((float)scaleH / 4.0f)).warp(seed.next(), 256, 1, 200.0);
-            return module.scale(0.08).bias(-0.02);
+            int scaleH = Math.round(250.0F * STEPPE_HSCALE);
+            double erosionAmount = 0.45D;
+            Module erosion = Source.build(seed.next(), scaleH * 2, 3).lacunarity(3.75D).perlin().alpha(erosionAmount);
+            Module warpX = Source.build(seed.next(), scaleH / 4, 3).lacunarity(3.0D).perlin();
+            Module warpY = Source.build(seed.next(), scaleH / 4, 3).lacunarity(3.0D).perlin();
+            Module module = Source.perlin(seed.next(), scaleH, 1).mul(erosion).warp(warpX, warpY, Source.constant((double)((float)scaleH / 4.0F))).warp(seed.next(), 256, 1, 200.0D);
+            return module.scale(STEPPE_VSCALE).scale(0.08D).bias(-0.02D);
         }
         
         static Module createPlains(Seed seed) {
-        	 int scaleH = Math.round(250.0f);
-             double erosionAmount = 0.45;
-             Module erosion = Source.build(seed.next(), scaleH * 2, 3).lacunarity(3.75).perlin().alpha(erosionAmount);
-             Module warpX = Source.build(seed.next(), scaleH / 4, 3).lacunarity(3.5).perlin();
-             Module warpY = Source.build(seed.next(), scaleH / 4, 3).lacunarity(3.5).perlin();
-             Module module = Source.perlin(seed.next(), scaleH, 1).mul(erosion).warp(warpX, warpY, Source.constant((float)scaleH / 4.0f)).warp(seed.next(), 256, 1, 256.0);
-             return module.scale(0.15f * TERRAIN_VERTICAL_SCALE).bias(-0.02);
+            int scaleH = Math.round(250.0F * PLAINS_HSCALE);
+            double erosionAmount = 0.45D;
+            Module erosion = Source.build(seed.next(), scaleH * 2, 3).lacunarity(3.75D).perlin().alpha(erosionAmount);
+            Module warpX = Source.build(seed.next(), scaleH / 4, 3).lacunarity(3.5D).perlin();
+            Module warpY = Source.build(seed.next(), scaleH / 4, 3).lacunarity(3.5D).perlin();
+            Module module = Source.perlin(seed.next(), scaleH, 1).mul(erosion).warp(warpX, warpY, Source.constant((double)((float)scaleH / 4.0F))).warp(seed.next(), 256, 1, 256.0D);
+            return module.scale(PLAINS_VSCALE).scale((double)(0.15F * TERRAIN_VERTICAL_SCALE)).bias(-0.02D);
         }
         
         static Module createHills1(Seed seed) {
@@ -92,20 +97,20 @@ public interface TFNoise {
             return Source.cubic(seed.next(), 128, 2).mul(Source.perlin(seed.next(), 32, 4).alpha(0.075)).warp(seed.next(), 30, 3, 20.0).warp(seed.next(), MOUNTAINS2_H, 3, 200.0).mul(Source.ridge(seed.next(), 512, 2).alpha(0.8)).scale(0.55f * TERRAIN_VERTICAL_SCALE);
         }
         
+        static Module createPlateau(Seed seed) {
+            Module valley = Source.ridge(seed.next(), 500, 1).invert().warp(seed.next(), 100, 1, 150.0D).warp(seed.next(), 20, 1, 15.0D);
+            Module top = Source.build(seed.next(), 150, 3).lacunarity(2.45D).ridge().warp(seed.next(), 300, 1, 150.0D).warp(seed.next(), 40, 2, 20.0D).scale(0.15D).mul(valley.clamp(0.02D, 0.1D).map(0.0D, 1.0D));
+            Module surface = Source.perlin(seed.next(), 20, 3).scale(0.05D).warp(seed.next(), 40, 2, 20.0D);
+            Module module = valley.mul(Source.cubic(seed.next(), 500, 1).scale(0.6D).bias(0.3D)).add(top).terrace(Source.constant(0.9D), Source.constant(0.15D), Source.constant(0.35D), 4, 0.4D).add(surface);
+            return module.scale(0.475D * (double) TERRAIN_VERTICAL_SCALE);
+        }
+        
         static Module createDales(Seed seed) {
             Module hills1 = Source.build(seed.next(), 300, 4).gain(0.8).lacunarity(4.0).billow().powCurve(0.5).scale(0.75);
             Module hills2 = Source.build(seed.next(), 350, 3).gain(0.8).lacunarity(4.0).billow().pow(1.25);
             Module combined = Source.perlin(seed.next(), MOUNTAINS2_H, 1).clamp(0.3, 0.6).map(0.0, 1.0).blend(hills1, hills2, 0.4, 0.75);
             Module module = combined.pow(1.125).warp(seed.next(), 300, 1, 100.0);
             return module.scale(0.4);
-        }
-        
-        static Module createPlateau(Seed seed) {
-            Module valley = Source.ridge(seed.next(), 500, 1).invert().warp(seed.next(), 100, 1, 150.0).warp(seed.next(), 20, 1, 15.0);
-            Module top = Source.build(seed.next(), 150, 3).lacunarity(2.45).ridge().warp(seed.next(), 300, 1, 150.0).warp(seed.next(), 40, 2, 20.0).scale(0.15).mul(valley.clamp(0.02, 0.1).map(0.0, 1.0));
-            Module surface = Source.perlin(seed.next(), 20, 3).scale(0.05).warp(seed.next(), 40, 2, 20.0);
-            Module module = valley.mul(Source.cubic(seed.next(), 500, 1).scale(0.6).bias(0.3)).add(top).terrace(Source.constant(0.9), Source.constant(0.15), Source.constant(0.35), 4, 0.4).add(surface);
-            return module.scale(0.475 * TERRAIN_VERTICAL_SCALE);
         }
         
         static Module createBadlands(Seed seed) {
@@ -155,7 +160,7 @@ public interface TFNoise {
         
         static Module makeFancy(Seed seed, Module module) {
         	Domain warp = Domain.direction(Source.perlin(seed.next(), 10, 1), Source.constant(2.0));
-        	Valley erosion = new Valley(seed.next(), 2, 0.65f, 128.0f, 0.15f, 3.1f, 0.8f, Valley.Mode.CONSTANT);
+        	Valley erosion = new Valley(seed.next(), 5, 0.65f, 128.0f, 0.2f, 3.1f, 0.6f, Valley.Mode.CONSTANT);
         	return erosion.wrap(Holder.direct(module)).warp(warp);
         }
         

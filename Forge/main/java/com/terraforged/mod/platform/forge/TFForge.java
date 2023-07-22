@@ -44,10 +44,11 @@ import com.terraforged.mod.registry.TFViabilities;
 import com.terraforged.mod.registry.data.TFBiomes;
 import com.terraforged.mod.registry.data.TFCaves;
 import com.terraforged.mod.registry.data.TFClimates;
+import com.terraforged.mod.registry.data.TFDimensionTypes;
 import com.terraforged.mod.registry.data.TFNoise;
-import com.terraforged.mod.registry.data.TFWorldPresets;
 import com.terraforged.mod.registry.data.TFTags;
 import com.terraforged.mod.registry.data.TFVegetation;
+import com.terraforged.mod.registry.data.TFWorldPresets;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -130,6 +131,7 @@ public class TFForge extends TerraForged implements CommonAPI {
         	builder.add(TFCaves.REGISTRY, TFCaves::register);
         	builder.add(TFVegetation.REGISTRY, TFVegetation::register);
         	builder.add(TFClimates.REGISTRY, TFClimates::register);
+        	builder.add(Registries.DIMENSION_TYPE, TFDimensionTypes::register);
         	builder.add(Registries.WORLD_PRESET, TFWorldPresets::register);
     	}
     	boolean includeServer = event.includeServer();

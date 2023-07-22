@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record WorldSettings(int continentScale, ControlPoints controlPoints) {
-	public static final WorldSettings DEFAULT = new WorldSettings(1000, ControlPoints.DEFAULT);
+	public static final WorldSettings DEFAULT = new WorldSettings(10000, ControlPoints.DEFAULT);
 	
 	public static final Codec<WorldSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		Codec.INT.fieldOf("continent_scale").forGetter(WorldSettings::continentScale),

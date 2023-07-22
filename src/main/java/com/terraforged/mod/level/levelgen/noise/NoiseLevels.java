@@ -55,6 +55,10 @@ public class NoiseLevels {
 
         TerraForged.LOG.debug("Sea Level: {}, Base Height:  {}, World Height: {}", seaLevel, baseHeight, worldHeight);
     }
+    
+    public float toCoord(float coord) {
+    	return coord * this.frequency;
+    }
 
     public float scale(int level) {
         return level * unit;

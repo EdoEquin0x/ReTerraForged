@@ -41,7 +41,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class NoiseCaveGenerator {
     protected static final int POOL_SIZE = 32;
-    protected static final float BREACH_THRESHOLD = 0.7F;
+    protected static final float BREACH_THRESHOLD = 0.8F;
     protected static final int GLOBAL_CAVE_REPS = 2;
 
     protected final HolderSet<NoiseCave> caves;

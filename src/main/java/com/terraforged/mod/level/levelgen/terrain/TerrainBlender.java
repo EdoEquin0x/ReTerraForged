@@ -56,7 +56,7 @@ public class TerrainBlender implements Module {
 
     private final Domain warp;
     private final WeightMap<Holder<Module>> terrains;
-    private final ThreadLocal<Blender> localBlender = ThreadLocal.withInitial(Blender::new);
+    private final ThreadLocal<LocalBlender> blender = ThreadLocal.withInitial(LocalBlender::new);
 
     public TerrainBlender(int seed, int scale, float jitter, float blending, WeightMap<Holder<Module>> terrains) {
     	this.seed = seed;
@@ -68,9 +68,14 @@ public class TerrainBlender implements Module {
         this.warp = Domain.warp(Source.SIMPLEX, seed + WARP_SEED_OFFSET, scale, 3,scale / 2.5F);
     }
 
+    public Holder<Module> getTerrain(LocalBlender blender) {
+        float index = blender.getCentreNoiseIndex();
+        return this.terrains.getValue(index);
+    }
+    
     @Override
     public float getValue(float x, float z) {
-        var blender = this.localBlender.get();
+        var blender = this.blender.get();
         return this.getValue(x, z, blender);
     }
     
@@ -79,18 +84,18 @@ public class TerrainBlender implements Module {
 		return CODEC;
 	}
 
-    public float getValue(float x, float z, Blender blender) {
+    public float getValue(float x, float z, LocalBlender blender) {
         float rx = this.warp.getX(x, z) * this.frequency;
         float rz = this.warp.getY(x, z) * this.frequency;    	
         getCell(this.seed + REGION_SEED_OFFSET, rx, rz, this.jitter, blender);
         return blender.getValue(x, z, this.blending, this.terrains);
     }
 
-    public Blender getBlenderResource() {
-        return this.localBlender.get();
+    public LocalBlender getBlenderResource() {
+        return this.blender.get();
     }
 
-    private static void getCell(int seed, float x, float z, float jitter, Blender blender) {
+    private static void getCell(int seed, float x, float z, float jitter, LocalBlender blender) {
         int maxX = NoiseUtil.floor(x) + 1;
         int maxZ = NoiseUtil.floor(z) + 1;
 
@@ -133,7 +138,7 @@ public class TerrainBlender implements Module {
         blender.closestIndex2 = nearestIndex2;
     }
 
-    public static class Blender {
+    public static class LocalBlender {
         protected int closestIndex;
         protected int closestIndex2;
 

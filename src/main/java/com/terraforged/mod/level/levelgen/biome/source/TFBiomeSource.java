@@ -1,14 +1,15 @@
 package com.terraforged.mod.level.levelgen.biome.source;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.mojang.serialization.Codec;
-import com.terraforged.mod.level.levelgen.biome.source.ClimateTree.ParameterPoint;
 import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.climate.Climate;
 import com.terraforged.mod.level.levelgen.climate.ClimateSample;
 import com.terraforged.mod.level.levelgen.climate.ClimateSampler;
+import com.terraforged.mod.level.levelgen.util.NoiseTree;
 import com.terraforged.mod.util.codec.TFCodecs;
 import com.terraforged.mod.util.pos.PosUtil;
 import com.terraforged.mod.util.storage.LongCache;
@@ -21,26 +22,27 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate.Sampler;
 
+//TODO move this behavior to ClimateSampler
 public class TFBiomeSource extends BiomeSource {
 	private final LongCache<Holder<Biome>> cache = LossyCache.concurrent(2048, Holder[]::new);
 	private final HolderSet<NoiseCave> caves;
-	private final ClimateSampler climateSampler;
-	private final ClimateTree.ParameterList params;
+	private final Supplier<ClimateSampler> climateSampler;
+	private final NoiseTree.ParameterList<Holder<Climate>, ClimateSampler.ParameterPoint> params;
 	
-	public TFBiomeSource(HolderSet<NoiseCave> caves, ClimateSampler climateSampler, ClimateTree.ParameterList params) {
+	public TFBiomeSource(HolderSet<NoiseCave> caves, Supplier<ClimateSampler> climateSampler, NoiseTree.ParameterList<Holder<Climate>, ClimateSampler.ParameterPoint> params) {
 		this.caves = caves;
 		this.climateSampler = climateSampler; 
 		this.params = params;
 	}
 	
-	public ClimateTree.ParameterList getParams() {
+	public NoiseTree.ParameterList<Holder<Climate>, ClimateSampler.ParameterPoint> getParams() {
 		return this.params;
 	}
 	
 	public Holder<Climate> getClimate(ClimateSample sample) {
-		return this.params.findValue(sample);
+		return this.params.findValue(sample.temperature, sample.moisture, sample.continentNoise, sample.heightNoise, sample.riverNoise);
 	}
-	
+
 	@Override
 	protected Codec<TFBiomeSource> codec() {
 		return TFCodecs.error("TODO");
@@ -48,7 +50,7 @@ public class TFBiomeSource extends BiomeSource {
 
 	@Override
 	protected Stream<Holder<Biome>> collectPossibleBiomes() {
-		return this.params.values().stream().map(ParameterPoint::climate).flatMap((climate) -> {
+		return this.params.values().stream().map(ClimateSampler.ParameterPoint::climate).flatMap((climate) -> {
 			return Stream.concat(climate.get().biomes().streamValues(), getBiomes(this.caves));
 		});
 	}
@@ -56,7 +58,7 @@ public class TFBiomeSource extends BiomeSource {
 	@Override
 	public Holder<Biome> getNoiseBiome(int x, int y, int z, Sampler sampler) {
 		return this.cache.computeIfAbsent(PosUtil.pack(x, z), (i) -> {
-        	ClimateSample sample = this.climateSampler.sample(QuartPos.toBlock(x), QuartPos.toBlock(z));
+        	ClimateSample sample = this.climateSampler.get().sample(QuartPos.toBlock(x), QuartPos.toBlock(z));
         	return this.getClimate(sample).get().biomes().getValue(sample.biomeNoise);
         });
 	}
