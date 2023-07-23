@@ -40,18 +40,13 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.features.MiscOverworldFeatures;
-import net.minecraft.data.worldgen.features.OreFeatures;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -104,16 +99,7 @@ public class VanillaDecorator {
             }
         }
     }
-    
-    private static final List<ResourceKey<ConfiguredFeature<?, ?>>> HIDDEN = ImmutableList.of(
-    	OreFeatures.ORE_DIRT,
-    	OreFeatures.ORE_GRANITE,
-    	OreFeatures.ORE_DIORITE,
-    	OreFeatures.ORE_ANDESITE,
-    	OreFeatures.ORE_GRAVEL,
-    	MiscOverworldFeatures.SPRING_LAVA_OVERWORLD,
-    	MiscOverworldFeatures.SPRING_WATER
-    );
+
     private static void placeFeatures(long seed,
                                       int offset,
                                       int stage,
@@ -122,20 +108,9 @@ public class VanillaDecorator {
                                       TFChunkGenerator generator,
                                       WorldgenRandom random,
                                       HolderSet<PlacedFeature> features) {
-
-    	//TODO don't hardcode this
-    	//TODO make it a placement or something
-    	
-    	int minOreDepth = 8;
-    	int height = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, origin.getX(), origin.getZ()) - minOreDepth;
+   	
         for (int i = 0; i < features.size(); i++) {
             var feature = features.get(i).value();
-            //move ore into the ground
-            if(feature.feature() instanceof Holder.Reference<ConfiguredFeature<?,?>> ref) {
-                if(origin.getY() > height && HIDDEN.contains(ref.key())) {
-                	origin = origin.atY(height);
-                }
-            }
             
             random.setFeatureSeed(seed, offset + i, stage);
             feature.placeWithBiomeCheck(level, generator, random, origin);

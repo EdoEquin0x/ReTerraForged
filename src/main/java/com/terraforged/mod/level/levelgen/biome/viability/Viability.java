@@ -34,7 +34,7 @@ import com.terraforged.mod.registry.TFRegistries;
 import com.terraforged.mod.util.codec.TFCodecs;
 
 public interface Viability {
-    Codec<Viability> CODEC = TFCodecs.registryCodec(TFRegistries.VIABILITY_TYPE, Viability::codec);
+    Codec<Viability> CODEC = TFCodecs.forRegistry(TFRegistries.VIABILITY_TYPE, Viability::codec);
     
     float getFitness(int x, int z, Context context);
 

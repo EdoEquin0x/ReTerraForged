@@ -73,7 +73,7 @@ import net.minecraft.resources.RegistryFileCodec;
  * @author dags <dags@dags.me>
  */
 public interface Module extends Noise {
-	public static final Codec<Module> DIRECT_CODEC = TFCodecs.registryCodec(TFRegistries.MODULE_TYPE, Module::codec);
+	public static final Codec<Module> DIRECT_CODEC = TFCodecs.forRegistry(TFRegistries.MODULE_TYPE, Module::codec);
 	public static final Codec<Holder<Module>> CODEC = RegistryFileCodec.create(TFNoise.REGISTRY, DIRECT_CODEC);
 	
 	Codec<? extends Module> codec();

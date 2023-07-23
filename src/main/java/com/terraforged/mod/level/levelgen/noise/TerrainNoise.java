@@ -83,7 +83,7 @@ public class TerrainNoise {
         return continent;
     }
     
-    public Holder<Module> getTerrain(int x, int z, LocalBlender blender) {
+    public Holder<Module> getTerrain(LocalBlender blender) {
     	return this.land.getTerrain(blender);
     }
 

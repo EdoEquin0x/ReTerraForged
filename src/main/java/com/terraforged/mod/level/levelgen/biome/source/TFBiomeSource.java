@@ -45,7 +45,7 @@ public class TFBiomeSource extends BiomeSource {
 
 	@Override
 	protected Codec<TFBiomeSource> codec() {
-		return TFCodecs.error("TODO");
+		return TFCodecs.forError("TODO");
 	}
 
 	@Override

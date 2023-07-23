@@ -91,9 +91,8 @@ public interface TFClimates {
 		));
 		ctx.register(PEAK, new Climate(
 			new WeightMap.Builder<>()
-				.entry(0.75F, biomes.getOrThrow(Biomes.FROZEN_PEAKS))
 				.entry(0.25F, biomes.getOrThrow(Biomes.SNOWY_SLOPES))
-				.entry(0.25F, biomes.getOrThrow(Biomes.STONY_PEAKS))
+//				.entry(0.25F, biomes.getOrThrow(Biomes.STONY_PEAKS))
 				.build()
 		));
 	}

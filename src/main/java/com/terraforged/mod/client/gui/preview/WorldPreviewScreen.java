@@ -9,6 +9,8 @@ import com.terraforged.mod.level.levelgen.climate.ClimateSample;
 import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.util.ColorUtil;
 import com.terraforged.mod.util.MathUtil;
+import com.terraforged.mod.noise.Module;
+import com.terraforged.mod.noise.Source;
 
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractSliderButton;
@@ -40,7 +42,31 @@ public class WorldPreviewScreen extends Screen {
 		this.framebuffer = new DynamicTexture(256, 256, false);
 		this.scale = 15;
 		
-		this.setLayer(Layer.CONTINENT);
+	//	this.setLayer(Layer.CONTINENT);
+		this.setLayer(new Layer() {
+			private Module noise;
+			{
+				Module noise = Source.builder().frequency(0.0025D).build(Source.PERLIN2);
+				Module mask = Source.simplex(9, 2).freq(0.0025D, 0.0025D).alpha(0.8).invert();
+				this.noise = noise.mul(mask);
+				
+			}
+			
+			@Override
+			public float getValue(TFChunkGenerator generator, int x, int z) {
+				return this.noise.getValue(x, z);
+			}
+			
+			@Override
+			public Component getName() {
+				return Component.literal("test");
+			}
+			
+			@Override
+			public int getColor(float value) {
+				return ColorUtil.rgba((int) (200 * value), (int) (200 * value), (int) (200 * value));
+			}
+		});
 	}
 
 	@Override
@@ -73,8 +99,7 @@ public class WorldPreviewScreen extends Screen {
 							int tx = cx + lx;
 							int ty = cy + ly;
 							
-							ClimateSample sample = this.generator.getClimateSampler().get().sample(tx * scale, ty * scale);
-				            pixels.setPixelRGBA(tx, ty, layer.getColor(layer.getValue(sample)));
+				            pixels.setPixelRGBA(tx, ty, layer.getColor(layer.getValue(this.generator, tx * scale, ty * scale)));
 						}
 					}
 				}, Util.backgroundExecutor());
@@ -131,7 +156,8 @@ public class WorldPreviewScreen extends Screen {
 		static final Layer TEMPERATURE = new Layer() {
 
 			@Override
-			public float getValue(ClimateSample sample) {
+			public float getValue(TFChunkGenerator generator, int x, int z) {
+				ClimateSample sample = generator.getClimateSampler().get().sample(x, z);
 				return sample.temperature;
 			}
 
@@ -151,7 +177,8 @@ public class WorldPreviewScreen extends Screen {
 		static final Layer MOISTURE = new Layer() {
 
 			@Override
-			public float getValue(ClimateSample sample) {
+			public float getValue(TFChunkGenerator generator, int x, int z) {
+				ClimateSample sample = generator.getClimateSampler().get().sample(x, z);
 				return sample.moisture;
 			}
 
@@ -171,7 +198,8 @@ public class WorldPreviewScreen extends Screen {
 		static final Layer CONTINENT = new Layer() {
 
 			@Override
-			public float getValue(ClimateSample sample) {
+			public float getValue(TFChunkGenerator generator, int x, int z) {
+				ClimateSample sample = generator.getClimateSampler().get().sample(x, z);
 				return sample.continentNoise;
 			}
 
@@ -191,7 +219,8 @@ public class WorldPreviewScreen extends Screen {
 		static final Layer WATER = new Layer() {
 
 			@Override
-			public float getValue(ClimateSample sample) {
+			public float getValue(TFChunkGenerator generator, int x, int z) {
+				ClimateSample sample = generator.getClimateSampler().get().sample(x, z);
 				return Math.max(1 - sample.continentNoise, 1 - sample.riverNoise);
 			}
 
@@ -206,7 +235,7 @@ public class WorldPreviewScreen extends Screen {
 			}
 		};
 		
-		float getValue(ClimateSample sample);
+		float getValue(TFChunkGenerator generator, int x, int z);
 		
 		int getColor(float value);
 		
@@ -232,8 +261,11 @@ public class WorldPreviewScreen extends Screen {
 				int relativeMouseY = (mouseY - this.getY()) * WorldPreviewScreen.this.scale;
 				
 				drawString(stack, WorldPreviewScreen.this.font, "noise: " + WorldPreviewScreen.this.layer.getValue(
-					WorldPreviewScreen.this.generator.getClimateSampler().get().sample(relativeMouseX, relativeMouseY)
-				), x + 8, y + this.getWidth() - 26, 16777215);	
+					WorldPreviewScreen.this.generator, relativeMouseX, relativeMouseY
+				), x + 8, y + this.getWidth() - 16, 16777215);	
+
+				drawString(stack, WorldPreviewScreen.this.font, "x: " + relativeMouseX, x + 8, y + this.getWidth() - 26, 16777215);	
+				drawString(stack, WorldPreviewScreen.this.font, "y: " + relativeMouseY, x + 8, y + this.getWidth() - 36, 16777215);	
 			}
 		}
 

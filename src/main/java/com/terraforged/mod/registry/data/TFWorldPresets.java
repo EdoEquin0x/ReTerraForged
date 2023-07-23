@@ -62,7 +62,7 @@ public interface TFWorldPresets {
 					dimensions.getOrThrow(BuiltinDimensionTypes.OVERWORLD), 
 					new NoiseBasedChunkGenerator(
 						MultiNoiseBiomeSource.createFromList(new MultiNoiseBiomeSourceParameterList(MultiNoiseBiomeSourceParameterList.Preset.OVERWORLD, biomes).parameters()),
-						noiseSettings.getOrThrow(NoiseGeneratorSettings.NETHER)
+						noiseSettings.getOrThrow(NoiseGeneratorSettings.OVERWORLD)
 					)
 				)
 			)
@@ -105,12 +105,12 @@ public interface TFWorldPresets {
 						Settings.DEFAULT,
 						TerrainLevels.DEFAULT,
 						new WeightMap.Builder<>()
-							.entry(0.75F, modules.getOrThrow(TFNoise.STEPPE))
-							.entry(0.75F, modules.getOrThrow(TFNoise.PLAINS))
-							.entry(0.75F, modules.getOrThrow(TFNoise.HILLS_1))
-							.entry(0.75F, modules.getOrThrow(TFNoise.HILLS_2))
+							.entry(0.55F, modules.getOrThrow(TFNoise.STEPPE))
+							.entry(0.65F, modules.getOrThrow(TFNoise.PLAINS))
+							.entry(0.55F, modules.getOrThrow(TFNoise.HILLS_1))
+							.entry(0.55F, modules.getOrThrow(TFNoise.HILLS_2))
 							.entry(0.65F, modules.getOrThrow(TFNoise.DALES))
-							.entry(0.75F, modules.getOrThrow(TFNoise.PLATEAU))
+							.entry(0.45F, modules.getOrThrow(TFNoise.PLATEAU))
 							.entry(0.65F, modules.getOrThrow(TFNoise.BADLANDS))
 							.entry(0.65F, modules.getOrThrow(TFNoise.TORRIDONIAN))
 							.entry(0.55F, modules.getOrThrow(TFNoise.MOUNTAINS_1))
@@ -119,6 +119,7 @@ public interface TFWorldPresets {
 							.entry(0.65F, modules.getOrThrow(TFNoise.DOLOMITES))
 							.entry(0.55F, modules.getOrThrow(TFNoise.MOUNTAINS_RIDGE_1))
 							.entry(0.55F, modules.getOrThrow(TFNoise.MOUNTAINS_RIDGE_2))
+//							.entry(1.0F, modules.getOrThrow(TFNoise.TEST))
 							.build(),
 						HolderSet.direct(
 							vegetation.getOrThrow(TFVegetation.TREES_COPSE),

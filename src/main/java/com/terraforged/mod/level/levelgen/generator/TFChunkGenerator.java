@@ -262,17 +262,18 @@ public class TFChunkGenerator extends NoiseBasedChunkGenerator {
     	lines.add("River Noise: " + sample.riverNoise);
     	lines.add("Base Noise: " + sample.baseNoise);
     	lines.add("Height Noise: " + sample.heightNoise);
-
-    	if(this.terrainNoise.get().getTerrain(x, z) instanceof Holder.Reference<Module> ref) {
-        	lines.add("Terrain: " + ref.key().location());
-    	}
+    	
     	Vec2i cell = this.terrainNoise.get().getContinent().getCell(x, z);
         lines.add("Cell X: " + cell.x);
     	lines.add("Cell Z: " + cell.y);
-    	
+
+    	if(this.terrainNoise.get().getTerrain(x, z) instanceof Holder.Reference<Module> ref) {
+//        	lines.add("Terrain: " + ref.key().location());
+    	}
     	if(this.biomeSource.getClimate(sample) instanceof Holder.Reference<Climate> ref) {
     		lines.add("Climate: " + ref.key().location());
 	    }
+    	
     	lines.add("");
     }
 

@@ -51,7 +51,7 @@ public class TFCodecs {
 		return Codec.STRING.xmap(String::toUpperCase, String::toLowerCase).xmap(enumLookup::apply, Enum::name);
 	}
 
-	public static <A> Codec<A> registryCodec(ResourceKey<Registry<Codec<? extends A>>> key, Function<A, Codec<? extends A>> codec) {
+	public static <A> Codec<A> forRegistry(ResourceKey<Registry<Codec<? extends A>>> key, Function<A, Codec<? extends A>> codec) {
 		return new Codec<A>() {
 			private final Lazy<Codec<A>> delegate = Lazy.of(() -> {
 				return GameData.getWrapper(key, Lifecycle.stable()).byNameCodec().dispatch(codec, Function.identity());
@@ -69,7 +69,7 @@ public class TFCodecs {
 		};
 	}
 	
-	public static <A> Codec<A> error(String error) {
+	public static <A> Codec<A> forError(String error) {
 		return new Codec<>() {
 
 			@Override

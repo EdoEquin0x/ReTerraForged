@@ -32,7 +32,7 @@ import com.terraforged.mod.registry.TFRegistries;
 import com.terraforged.mod.util.codec.TFCodecs;
 
 public interface Domain {
-	public static final Codec<Domain> CODEC = TFCodecs.registryCodec(TFRegistries.DOMAIN_TYPE, Domain::codec);
+	public static final Codec<Domain> CODEC = TFCodecs.forRegistry(TFRegistries.DOMAIN_TYPE, Domain::codec);
 
     Domain DIRECT = new Domain() {
 

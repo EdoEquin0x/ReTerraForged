@@ -26,6 +26,6 @@ public record ProvidedDensityFunction(ToDoubleFunction<FunctionContext> getter) 
 	
 	@Override
 	public KeyDispatchDataCodec<? extends DensityFunction> codec() {
-		return new KeyDispatchDataCodec<>(TFCodecs.error("not serializable"));
+		return new KeyDispatchDataCodec<>(TFCodecs.forError("not serializable"));
 	}
 }

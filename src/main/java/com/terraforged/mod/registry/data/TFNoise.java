@@ -33,6 +33,7 @@ public interface TFNoise {
 	ResourceKey<Module> DOLOMITES = resolve("dolomites");
 	ResourceKey<Module> MOUNTAINS_RIDGE_1 = resolve("mountains_ridge_1");
 	ResourceKey<Module> MOUNTAINS_RIDGE_2 = resolve("mountains_ridge_2");
+	ResourceKey<Module> TEST = resolve("test");
 	
     static void register(BootstapContext<Module> ctx) {
         var seed = new Seed(0);
@@ -50,6 +51,7 @@ public interface TFNoise {
         ctx.register(DOLOMITES, Terrain.createDolomite(seed));
         ctx.register(MOUNTAINS_RIDGE_1, Terrain.createMountains2(seed, false));
         ctx.register(MOUNTAINS_RIDGE_2, Terrain.createMountains3(seed, false));
+//        ctx.register(TEST, Terrain.createTest(seed));
     }
     
     private static ResourceKey<Module> resolve(String path) {
@@ -61,12 +63,10 @@ public interface TFNoise {
     	static final float STEPPE_VSCALE = 1.0F;
     	static final float PLAINS_HSCALE = 3.505F;
     	static final float PLAINS_VSCALE = 3.505F;
-    	static final float PLATEAU_HSCALE = 1.776F; //TODO
-    	static final float PLATEAU_VSCALE = 2.575F;
-        static final int MOUNTAINS_H = 410;
-        static final double MOUNTAINS_V = 0.7;
-        static final int MOUNTAINS2_H = 400;
-        static final double MOUNTAINS2_V = 0.645;
+        static final int MOUNTAINS_H = 610;
+        static final double MOUNTAINS_V = 1.3;
+        static final int MOUNTAINS2_H = 600;
+        static final double MOUNTAINS2_V = 1.145;
         static final float TERRAIN_VERTICAL_SCALE = 0.98F;
 
         static Module createSteppe(Seed seed) {
@@ -185,6 +185,18 @@ public interface TFNoise {
             return shape.mul(peaks).max(slopes)
                     .warp(seed.next(), 800, 3, 300)
                     .scale(0.75);
+        }
+        
+        static Module createTest(Seed seed) {
+        	Module base = Source.builder().frequency(0.0025D).build(Source.PERLIN2);
+        	Module scale = Source.simplex(9, 2).freq(0.0025D, 0.0025D).alpha(0.8).invert();
+            // Sharp ridges
+        	Module peaks = Source.build(seed.next(), 400, 5).lacunarity(2.7).gain(0.6).simplexRidge()
+                    .clamp(0, 0.675).map(0, 1)
+                    .warp(Domain.warp(Source.SIMPLEX, seed.next(), 40, 5, 30))
+                    .alpha(0.875)
+                    .scale(0.4);
+        	return base.mul(scale).max(peaks);
         }
     }
 }

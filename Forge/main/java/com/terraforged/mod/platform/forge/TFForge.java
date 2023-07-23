@@ -30,10 +30,12 @@ import java.util.concurrent.CompletableFuture;
 import com.google.common.collect.ImmutableSet;
 import com.terraforged.mod.CommonAPI;
 import com.terraforged.mod.TerraForged;
+import com.terraforged.mod.client.gui.preview.WorldPreviewScreen;
 import com.terraforged.mod.command.TFCommands;
 import com.terraforged.mod.level.levelgen.biome.vegetation.VegetationConfig;
 import com.terraforged.mod.level.levelgen.cave.NoiseCave;
 import com.terraforged.mod.level.levelgen.climate.Climate;
+import com.terraforged.mod.level.levelgen.generator.TFChunkGenerator;
 import com.terraforged.mod.noise.Module;
 import com.terraforged.mod.registry.TFChunkGenerators;
 import com.terraforged.mod.registry.TFCurves;
@@ -56,6 +58,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
@@ -148,15 +151,14 @@ public class TFForge extends TerraForged implements CommonAPI {
     
     //TODO
     void onPresetEditorRegister(RegisterPresetEditorsEvent event) {
-//    	event.register(TFPresets.TERRAFORGED, (parent, ctx) -> {
-//    		LevelStem overworld = ctx.selectedDimensions().dimensions().getOrThrow(LevelStem.OVERWORLD);
-//    		if(overworld.generator() instanceof TFChunkGenerator tfGen) {
-//        		tfGen.init((int) ctx.options().seed());
-//        		return new WorldPreviewScreen(parent, tfGen);
-//    		} else {
-//    			return parent;
-//    		}
-//    	});
+    	event.register(TFWorldPresets.TERRAFORGED, (parent, ctx) -> {
+    		LevelStem overworld = ctx.selectedDimensions().dimensions().getOrThrow(LevelStem.OVERWORLD);
+    		if(overworld.generator() instanceof TFChunkGenerator tfGen) {
+        		return new WorldPreviewScreen(parent, tfGen);
+    		} else {
+    			return parent;
+    		}
+    	});
     }
     
     private static void logRegister(ResourceKey<?> registry) {

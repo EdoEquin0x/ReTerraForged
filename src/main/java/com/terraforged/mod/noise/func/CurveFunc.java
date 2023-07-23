@@ -30,7 +30,7 @@ import com.terraforged.mod.registry.TFRegistries;
 import com.terraforged.mod.util.codec.TFCodecs;
 
 public interface CurveFunc {
-	Codec<CurveFunc> CODEC = TFCodecs.registryCodec(TFRegistries.CURVE_TYPE, CurveFunc::codec);
+	Codec<CurveFunc> CODEC = TFCodecs.forRegistry(TFRegistries.CURVE_TYPE, CurveFunc::codec);
 	
     float apply(float value);
     
